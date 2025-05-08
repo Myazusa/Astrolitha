@@ -1,0 +1,41 @@
+# spring框架的配置，包含AI的部分
+spring:
+  application:
+    name: AstrolithaBackend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/default?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: staff
+    password: staff
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: deepseek-r1:1.5b
+      embedding:
+        model: bge-m3:latest
+
+# mybatis配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+# 线程池配置
+async-task:
+  execution:
+    pool:
+      core-size: 4
+      max-size: 10
+
+
+# 本项目自定义的一些变量
+app:
+  resource:
+    location:
+      rag:
+        origin: "file:./uploads/rag/"
+        mapping: "/uploads/rag/"
+
+microservice:
+  gpt-sovits:
+    url: http://localhost:9880
