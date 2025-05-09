@@ -10,11 +10,15 @@ const routes: RouteRecordRaw[] = [
                 component: ()=>import("@/pages/UserLogin.vue"),
             }
         ]
+    },
+    {
+        path:'/uc',
+        name: 'UserCenter',
+        component: ()=>import("@/pages/UserCenter.vue"),
     }
 ]
 
 const router = createRouter({
-    end: undefined, sensitive: undefined, strict: undefined,
     history: createWebHistory('/'),
     routes,
     scrollBehavior(to){

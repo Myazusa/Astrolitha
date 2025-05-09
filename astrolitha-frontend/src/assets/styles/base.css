@@ -1,0 +1,143 @@
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: 500;
+}
+
+body {
+  min-height: 100vh;
+  height: 100vh;
+  width:  100vw;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: normal;
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    'ResourceHanRoundedCN',
+    sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+html{
+  font-family:
+          'ResourceHanRoundedCN',
+          sans-serif;
+  font-weight: 500;
+}
+/**
+ * 这里指定所有路由链接的样式
+ * 所有路由链接标签都不允许拥有自己的边距，否则不方便布局
+ */
+a:hover{
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+a{
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+/**
+ * 所有按钮的默认样式
+ */
+button{
+  background: none;
+  border: none;
+}
+/**
+ * 设置输入框默认样式
+ */
+input,textarea{
+  border: none;
+  background: transparent;
+}
+input:focus,textarea:focus{
+  outline: none;
+}
+/**
+ * 含有这个类都不监听鼠标事件
+ */
+.no-pointer-event {
+  pointer-events: none;
+}
+.allow-pointer-event {
+  pointer-events: auto; /*如果需要子元素能监听*/
+}
+/**
+ * 定义字体
+ */
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+}
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-Light.ttf') format('truetype');
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-Normal.ttf') format('truetype');
+  font-weight: 370;
+}
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'ResourceHanRoundedCN';
+  src: url('@/assets/font/ResourceHanRoundedCN-Heavy.ttf') format('truetype');
+  font-weight: 900;
+}
+@font-face {
+  font-family: 'Honglei';
+  src: url('@/assets/font/Honglei.ttf');
+  font-weight: 500;
+}
+/**
+ * 定义主题色
+ */
+:root{
+  --theme-color-hover: #d24d7c;
+  --theme-color-surface-container: #3a3939;
+  --theme-color-primary: #17181a;
+  --theme-color-on-primary: #dddfe1;
+  --theme-color-secondary: #1e2022;
+  --theme-color-on-secondary: #a1a6ad;
+  --theme-color-tertiary: #d24d7c;
+  --theme-color-on-tertiary: #dddfe1;
+  --theme-color-error: #fb4e4e;
+  --theme-color-on-error: #dddfe1;
+  --theme-color-outline: #79747e;
+}
+/**
+ * 修改el的样式
+ */
+:root{
+  --el-font-family: 'ResourceHanRoundedCN';
+}
