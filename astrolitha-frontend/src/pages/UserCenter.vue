@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import { ElMenu, ElMenuItem, ElScrollbar } from 'element-plus'
 import { User, Setting, Document, SwitchButton, ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue'
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 const activeMenu = ref('profile')
 const menuItems = [
@@ -47,10 +50,10 @@ const toggleSidebar = () => {
       </el-icon>
     </button>
     <main class="content">
-      <div v-if="activeMenu === 'profile'">这里是个人信息内容区</div>
-      <div v-else-if="activeMenu === 'settings'">这里是设置内容区</div>
-      <div v-else-if="activeMenu === 'docs'">这里是文档内容区</div>
-      <div v-else-if="activeMenu === 'logout'">这里是退出登录内容区</div>
+      <div v-if="activeMenu === 'profile'">這裏是個人内容區</div>
+      <div v-else-if="activeMenu === 'settings'">這裏是設置内容區</div>
+      <div v-else-if="activeMenu === 'docs'">這裏是文檔内容區</div>
+      <div v-else-if="activeMenu === 'logout'">這裏是退出登錄内容區</div>
     </main>
   </div>
 </template>

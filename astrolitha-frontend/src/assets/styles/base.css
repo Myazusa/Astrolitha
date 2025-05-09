@@ -4,7 +4,7 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: 500;
+  font-weight: normal;
 }
 
 body {
@@ -21,20 +21,18 @@ body {
     color 0.5s,
     background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    'ResourceHanRoundedCN',
+  font-family: var(--theme-font),
     sans-serif;
-  font-weight: 500;
+  font-weight: var(--theme-font-weight);
   font-size: 1rem;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-html{
-  font-family:
-          'ResourceHanRoundedCN',
-          sans-serif;
-  font-weight: 500;
+.emotion-icon{
+  white-space: pre;
+  font-family: 'ResourceHanRoundedCN',
+  sans-serif;
 }
 /**
  * 这里指定所有路由链接的样式
@@ -115,9 +113,9 @@ input:focus,textarea:focus{
   font-weight: 900;
 }
 @font-face {
-  font-family: 'Honglei';
-  src: url('@/assets/font/Honglei.ttf');
-  font-weight: 500;
+  font-family: 'SetoFont';
+  src: url('@/assets/font/SetoFont.ttf');
+  font-weight: normal;
 }
 /**
  * 定义主题色
@@ -136,8 +134,9 @@ input:focus,textarea:focus{
   --theme-color-outline: #79747e;
 }
 /**
- * 修改el的样式
+ * 定義主題字體
  */
 :root{
-  --el-font-family: 'ResourceHanRoundedCN';
+  --theme-font: 'SetoFont';
+  --theme-font-weight: normal;
 }

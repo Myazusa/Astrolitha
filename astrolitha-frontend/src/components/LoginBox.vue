@@ -1,7 +1,9 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const loginForm = reactive({
   username: '',
@@ -10,20 +12,28 @@ const loginForm = reactive({
 
 const loading = ref(false)
 
+const handleSignin = async () => {
+  ElMessage({
+    message: '暫不開放注冊哦',
+    type: 'warning',
+    plain: true
+  })
+}
+
 const handleLogin = async () => {
   loading.value = true
   try {
-    // 这里添加登录逻辑
+    // todo:添加登录逻辑
     await new Promise(resolve => setTimeout(resolve, 1000))
     ElMessage({
-      message: '登录成功',
+      message: '登錄成功',
       type: 'success',
       plain: true
     })
-    await useRouter().replace({path: '/uc'})
+    await router.replace({name: 'UserCenter'})
   } catch (error) {
     ElMessage({
-      message: '登录失败',
+      message: '登錄失敗',
       type: 'error',
       plain: true
     })
@@ -35,44 +45,54 @@ const handleLogin = async () => {
 
 <template>
   <div class="login-box">
-    <h2 class="title">欢迎登录</h2>
-    <el-form :model="loginForm" class="login-form">
-      <el-form-item label="用户名" label-position="top">
-        <el-input
-          v-model="loginForm.username"
-          prefix-icon="User"
-        />
-      </el-form-item>
-      <el-form-item label="密码" label-position="top">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          prefix-icon="Lock"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          :loading="loading"
-          :plain="true"
-          class="login-button"
-          @click="handleLogin">
-          登录
-        </el-button>
-      </el-form-item>
-    </el-form>
+    <el-col>
+      <el-row justify="center">
+        <h2 class="title">歡迎登錄</h2>
+      </el-row>
+      <el-row justify="center">
+        <el-form :model="loginForm" class="login-form">
+          <el-form-item label="君の名は" label-position="top">
+            <el-input
+                v-model="loginForm.username"
+                prefix-icon="User"
+            />
+          </el-form-item>
+          <el-form-item label="密碼" label-position="top">
+            <el-input
+                v-model="loginForm.password"
+                type="password"
+                prefix-icon="Lock"
+            />
+          </el-form-item>
+        </el-form>
+      </el-row>
+      <el-row justify="center" :gutter=30>
+        <el-col :span="50">
+          <el-button type="primary" class="login-button" color="var(--theme-color-surface-container)" @click="handleSignin">
+            加入我們<span class="emotion-icon"> ~￣▽￣)~■</span>
+          </el-button>
+        </el-col>
+        <el-col :span="40">
+          <el-button type="primary" class="login-button" color="var(--theme-color-tertiary)" :loading="loading" @click="handleLogin">
+            讓我們<span class="emotion-icon"> Go! ~(#°Д°)!</span>
+          </el-button>
+        </el-col>
+      </el-row>
+    </el-col>
   </div>
 </template>
 
 <style scoped>
 .login-box {
-  width: 30rem;
+  width: 35rem;
   padding: 2rem 4rem 3rem 4rem;
   background: rgba(18, 18, 18, 0.8);
   border-radius: 1rem;
   box-shadow: 0 0 1rem rgba(0, 46, 110, 0.5);
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
@@ -84,8 +104,14 @@ const handleLogin = async () => {
 }
 
 .login-form {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+}
+
+.login-button{
+  font-family: var(--theme-font),sans-serif;
+  height: 2.5rem;
+  margin-top: 1.5rem;
+  border-radius: 10rem;
 }
 
 :deep(.el-form-item__label) {
@@ -111,19 +137,5 @@ const handleLogin = async () => {
 :deep(.el-input__prefix-inner) {
   color: #909399;
   font-size: 1.2rem;
-}
-
-.login-button {
-  width: 100%;
-  height: 2.5rem;
-  margin-top: 2rem;
-  background: #409EFF;
-  border: none;
-  border-radius: 3rem;
-  font-family: 'ResourceHanRoundedCN',sans-serif;
-  font-weight: 500;
-  color: #eaeaea;
-  font-size: 1rem;
-  cursor: pointer;
 }
 </style> 
