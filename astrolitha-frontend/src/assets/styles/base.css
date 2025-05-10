@@ -132,6 +132,7 @@ input:focus,textarea:focus{
   --theme-color-error: #fb4e4e;
   --theme-color-on-error: #dddfe1;
   --theme-color-outline: #79747e;
+
 }
 /**
  * 定義主題字體

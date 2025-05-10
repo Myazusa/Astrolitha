@@ -15,6 +15,11 @@ const routes: RouteRecordRaw[] = [
         path:'/uc',
         name: 'UserCenter',
         component: ()=>import("@/pages/UserCenter.vue"),
+    },
+    {
+        path: '/l2d',
+        name: 'Live2DStudio',
+        component: ()=>import("@/pages/Live2DStudio.vue"),
     }
 ]
 
