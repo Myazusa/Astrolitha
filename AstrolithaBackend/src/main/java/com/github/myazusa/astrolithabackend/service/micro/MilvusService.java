@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.service;
+package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.exception.VectorDatabaseAccessException;
 import com.google.gson.Gson;
@@ -15,6 +15,7 @@ import io.milvus.v2.service.vector.request.InsertReq;
 import io.milvus.v2.service.vector.request.SearchReq;
 import io.milvus.v2.service.vector.request.data.FloatVec;
 import io.milvus.v2.service.vector.response.SearchResp;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Service
 public class MilvusService {
     private final MilvusClientV2 milvusClientV2;
@@ -49,11 +51,16 @@ public class MilvusService {
         try {
             milvusClientV2.useDatabase(databaseName);
         } catch (InterruptedException e) {
+            log.error("选择了不存在的数据库");
             e.printStackTrace();
         }
     }
 
     public Boolean InitCollectionSchema(){
+        // 如果有这表就不创建
+        if (getCollectionState("default_collection")){
+            return true;
+        }
         // 创建列名和定义
         CreateCollectionReq.CollectionSchema schema = milvusClientV2.createSchema();
         schema.addField(AddFieldReq.builder()
@@ -63,9 +70,14 @@ public class MilvusService {
                 .autoID(true)
                 .build());
         schema.addField(AddFieldReq.builder()
-                .fieldName("vector")
+                .fieldName("embedding")
                 .dataType(DataType.FloatVector)
-                .dimension(1024)
+                .dimension(1024) // bge-m3的维度是1024，如果用其他的模型需要修改
+                .build());
+        schema.addField(AddFieldReq.builder()
+                .fieldName("content")
+                .dataType(DataType.VarChar)
+                .maxLength(800) // 这里是因为进行chunking时，默认chunk尺寸为800
                 .build());
         schema.addField(AddFieldReq.builder()
                 .fieldName("meta")
@@ -73,13 +85,13 @@ public class MilvusService {
                 .maxLength(512)
                 .build());
 
-        // 创建索引
+        // 创建索引，最主要是向量的索引要有，其他不那么重要
         IndexParam indexParamForIdField = IndexParam.builder()
                 .fieldName("id")
                 .indexType(IndexParam.IndexType.AUTOINDEX)
                 .build();
         IndexParam indexParamForVectorField = IndexParam.builder()
-                .fieldName("vector")
+                .fieldName("embedding")
                 .indexType(IndexParam.IndexType.AUTOINDEX)
                 .metricType(IndexParam.MetricType.COSINE)
                 .build();
@@ -105,7 +117,6 @@ public class MilvusService {
                 .build());
     }
 
-    @Async
     public void InsertToSchema(String collectionName,String json){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
@@ -115,6 +126,18 @@ public class MilvusService {
         InsertReq insertReq = InsertReq.builder()
                 .collectionName(collectionName)
                 .data(data)
+                .build();
+        milvusClientV2.insert(insertReq);
+    }
+
+    public void InsertToSchema(String collectionName,List<JsonObject> records){
+        if (!getCollectionState("default_collection")){
+            throw new VectorDatabaseAccessException("不存在的集合");
+        }
+        Gson gson = new Gson();
+        InsertReq insertReq = InsertReq.builder()
+                .collectionName(collectionName)
+                .data(records)
                 .build();
         milvusClientV2.insert(insertReq);
     }

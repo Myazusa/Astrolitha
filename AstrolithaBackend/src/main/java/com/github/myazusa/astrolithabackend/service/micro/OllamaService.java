@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.service;
+package com.github.myazusa.astrolithabackend.service.micro;
 
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -43,9 +43,13 @@ public class OllamaService {
         return CompletableFuture.completedFuture(response.getResult().getOutput().getText());
     }
 
+    /**
+     * @param stringList 这里一定是分割好的切片string集合
+     * @return 获取结果是List<Embedding>，里面的每一个float[]都对应一个切片
+     */
     @Async
-    public CompletableFuture<Embedding> getEmbeddingAsync(List<String> stringList){
+    public CompletableFuture<List<Embedding>> getEmbeddingAsync(List<String> stringList){
         EmbeddingResponse embeddingResponse = ollamaEmbeddingModel.call(new EmbeddingRequest(stringList, OllamaOptions.builder().build()));
-        return CompletableFuture.completedFuture(embeddingResponse.getResult());
+        return CompletableFuture.completedFuture(embeddingResponse.getResults());
     }
 }

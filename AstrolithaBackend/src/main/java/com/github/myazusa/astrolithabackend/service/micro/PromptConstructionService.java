@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.service;
+package com.github.myazusa.astrolithabackend.service.micro;
 
 import org.springframework.stereotype.Service;
 

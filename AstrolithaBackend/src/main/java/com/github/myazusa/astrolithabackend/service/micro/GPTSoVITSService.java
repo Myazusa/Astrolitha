@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.service;
+package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;

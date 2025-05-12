@@ -2,7 +2,7 @@ package com.github.myazusa.astrolithabackend.controller;
 
 import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
-import com.github.myazusa.astrolithabackend.service.GPTSoVITSService;
+import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

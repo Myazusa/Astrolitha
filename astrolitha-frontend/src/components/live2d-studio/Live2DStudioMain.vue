@@ -11,6 +11,7 @@ const liveCanvas = ref()
 onMounted(async () => {
   await modelStore.init(liveCanvas.value, "./models/Ren/lian0.model3.json")
   modelStore.getModel()?.scale.set(0.5)
+  modelStore.getModel()?.position.set(220,0)
 })
 
 onBeforeUnmount(() => {
