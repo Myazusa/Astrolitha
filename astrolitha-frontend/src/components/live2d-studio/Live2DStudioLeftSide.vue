@@ -9,11 +9,39 @@ import {
   ChatDotRound
 } from '@element-plus/icons-vue'
 import {useModelStore} from "@/store/Live2DStudioStore";
+import {ref} from "vue";
 const modelStore = useModelStore();
 
+const isAddFocus =  ref(false);
+const isInitedModel = ref(false);
+
+const initialModel = async ()=> {
+  if (!isInitedModel.value) {
+    await modelStore.init("./models/D01/D01.model3.json")
+    modelStore.getModel()?.scale.set(0.3)
+    modelStore.getModel()?.position.set(350,-200)
+    isInitedModel.value = true
+  }else {
+    modelStore.destroy()
+    isInitedModel.value = false
+  }
+};
+
 const motion = () => {
-  //todo:修复这个
-  modelStore.getModel()?.expression("ParamEyeLSmile")
+   modelStore.getModel()?.expression("Hands")
+}
+
+function focusMouse(event: MouseEvent) {
+  modelStore.getModel()?.focus(event.clientX, event.clientY)
+}
+const addFocus = () => {
+  if (!isAddFocus.value) {
+    modelStore.getCanvas()?.addEventListener('pointermove', focusMouse)
+    isAddFocus.value = true
+  }else {
+    modelStore.getCanvas()?.removeEventListener('pointermove',focusMouse)
+    isAddFocus.value = false
+  }
 }
 </script>
 
@@ -29,13 +57,13 @@ const motion = () => {
       <el-button class="tool-btn">
         <el-icon><ChatDotRound /></el-icon>
       </el-button>
-      <el-button class="tool-btn">
+      <el-button class="tool-btn" @click="motion">
         <el-icon><Picture /></el-icon>
       </el-button>
-      <el-button class="tool-btn" @click="motion">
+      <el-button class="tool-btn" @click="initialModel">
         <el-icon><Refresh /></el-icon>
       </el-button>
-      <el-button class="tool-btn">
+      <el-button class="tool-btn" @click="addFocus">
         <el-icon><Setting /></el-icon>
       </el-button>
     </div>

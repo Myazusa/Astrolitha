@@ -1,21 +1,17 @@
 ﻿<script setup lang="ts">
-import * as PIXI from 'pixi.js';
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import { useModelStore } from '@/store/Live2DStudioStore';
-
-(window as any).Pixi = PIXI
 
 const modelStore = useModelStore()
 const liveCanvas = ref()
 
 onMounted(async () => {
-  await modelStore.init(liveCanvas.value, "./models/Ren/lian0.model3.json")
-  modelStore.getModel()?.scale.set(0.5)
-  modelStore.getModel()?.position.set(220,0)
+  modelStore.setCanvas(liveCanvas.value)
 })
 
 onBeforeUnmount(() => {
-  modelStore.destroy()
+  modelStore.setCanvas(null)
+
 })
 </script>
 
@@ -45,5 +41,6 @@ onBeforeUnmount(() => {
 }
 canvas{
   width: 100%;
+  display: flex;
 }
 </style>
