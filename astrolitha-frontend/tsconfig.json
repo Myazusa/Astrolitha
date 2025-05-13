@@ -1,5 +1,9 @@
 ﻿{
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue"
+  ],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "allowJs": true,
@@ -15,7 +19,8 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@l2dframework/*": ["./public/scripts/l2dframework/src/*"]
     }
   }
 }

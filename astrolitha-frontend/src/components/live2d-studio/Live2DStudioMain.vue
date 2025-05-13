@@ -5,13 +5,14 @@ import { useModelStore } from '@/store/Live2DStudioStore';
 const modelStore = useModelStore()
 const liveCanvas = ref()
 
+
 onMounted(async () => {
   modelStore.setCanvas(liveCanvas.value)
+
 })
 
 onBeforeUnmount(() => {
   modelStore.setCanvas(null)
-
 })
 </script>
 

@@ -9,10 +9,60 @@ import {
   ChatDotRound
 } from '@element-plus/icons-vue'
 import {useModelStore} from "@/store/Live2DStudioStore";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+
 const modelStore = useModelStore();
 
-const isAddFocus =  ref(false);
+/**
+ * 模型说话相关
+ */
+const audioFilePath:string = ''
+let audioContext: AudioContext;
+
+const openMouth = () => {
+  modelStore.getModel()?.internalModel.coreModel.setParameterValueById("ParamMouthOpenY",1)
+}
+
+async function fetchData() {
+  const response = await fetch(audioFilePath)
+  const audioData = await response.arrayBuffer()
+  const audioBuffer = await audioContext.decodeAudioData(audioData)
+  const source = audioContext.createBufferSource()
+  const analyser = audioContext.createAnalyser()
+  source.buffer = audioBuffer
+  analyser.connect(audioContext.destination)
+  source.connect(analyser)
+  source.start()
+  const updateMouth = () => {
+    const dataArray = new Uint8Array(analyser.frequencyBinCount)
+    analyser.getByteFrequencyData(dataArray)
+    const volume = dataArray.reduce((a, b) => a + b)/dataArray.length
+    const mouthOpen = Math.min(1,volume/10)
+    modelStore.getModel()?.internalModel.coreModel.setParameterValueById('ParamMouthOpenY',mouthOpen);
+    if(audioContext.state!=='closed'){
+      requestAnimationFrame(updateMouth)
+    }
+    updateMouth()
+  }
+}
+onMounted(()=>{
+  audioContext = new AudioContext()
+})
+
+const speak = ()=>{
+  fetchData()
+}
+
+/**
+ * 模型拖动相关
+ */
+function dragModel() {
+
+}
+
+/**
+ * 模型加载相关
+ */
 const isInitedModel = ref(false);
 
 const initialModel = async ()=> {
@@ -27,10 +77,17 @@ const initialModel = async ()=> {
   }
 };
 
+/**
+ * 模型变换动作、表情相关
+ */
 const motion = () => {
    modelStore.getModel()?.expression("Hands")
 }
 
+/**
+ * 模型眼睛聚焦相关
+ */
+const isAddFocus =  ref(false);
 function focusMouse(event: MouseEvent) {
   modelStore.getModel()?.focus(event.clientX, event.clientY)
 }
@@ -49,9 +106,9 @@ const addFocus = () => {
   <div class="left-toolbar">
     <div class="tool-group">
       <el-button class="tool-btn">
-        <el-icon><VideoCamera /></el-icon>
+        <el-icon><VideoCamera @click="openMouth"/></el-icon>
       </el-button>
-      <el-button class="tool-btn">
+      <el-button class="tool-btn" @click="speak">
         <el-icon><Microphone /></el-icon>
       </el-button>
       <el-button class="tool-btn">

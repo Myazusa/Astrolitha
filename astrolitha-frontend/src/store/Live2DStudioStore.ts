@@ -1,12 +1,11 @@
 import * as PIXI from 'pixi.js';
 import { ref } from 'vue'
-import { Live2DModel } from "pixi-live2d-display/cubism4";
+import {Cubism4InternalModel, Live2DModel} from "pixi-live2d-display/cubism4";
 import { defineStore } from 'pinia';
-import {DisplayObject} from "pixi.js";
 
 export const useModelStore = defineStore('ModelStore', () => {
     const app = ref<PIXI.Application | null>(null);
-    const model = ref<Live2DModel | null>(null);
+    const model = ref<Live2DModel<Cubism4InternalModel> | null>(null);
     const canvas = ref<HTMLCanvasElement | null>(null);
     const inited = ref(false);
     (window as any).Pixi = PIXI;
@@ -35,9 +34,11 @@ export const useModelStore = defineStore('ModelStore', () => {
             })
             Live2DModel.registerTicker(PIXI.Ticker);
         }
-        model.value = await Live2DModel.from(path)
+        const localModel:Live2DModel<Cubism4InternalModel> = await Live2DModel.from(path) as Live2DModel<Cubism4InternalModel>
+        model.value = localModel
         model.value.autoInteract = false
-        app.value.stage.addChild(model.value)
+
+        app.value.stage.addChild(localModel)
         inited.value = true
     }
 
