@@ -13,6 +13,7 @@ import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import io.milvus.v2.service.vector.request.DeleteReq;
 import io.milvus.v2.service.vector.request.InsertReq;
 import io.milvus.v2.service.vector.request.SearchReq;
+import io.milvus.v2.service.vector.request.data.BaseVector;
 import io.milvus.v2.service.vector.request.data.FloatVec;
 import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
@@ -160,6 +161,20 @@ public class MilvusService {
         SearchReq searchReq = SearchReq.builder()
                 .collectionName(collectionName)
                 .data(Collections.singletonList(queryVector))
+                .topK(5)
+                .build();
+        SearchResp searchResp = milvusClientV2.search(searchReq);
+        return CompletableFuture.completedFuture(searchResp.getSearchResults());
+    }
+
+    @Async
+    public CompletableFuture<List<List<SearchResp.SearchResult>>> ANNSelectSchema(String collectionName, List<BaseVector> queryVector){
+        if (!getCollectionState("default_collection")){
+            throw new VectorDatabaseAccessException("不存在的集合");
+        }
+        SearchReq searchReq = SearchReq.builder()
+                .collectionName(collectionName)
+                .data(queryVector)
                 .topK(5)
                 .build();
         SearchResp searchResp = milvusClientV2.search(searchReq);
