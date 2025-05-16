@@ -36,6 +36,9 @@ app:
         origin: "file:./uploads/rag/"
         mapping: "/uploads/rag/"
 
+
 microservice:
   gpt-sovits:
     url: http://localhost:9880
+  whisper:
+    url: http://localhost:10350

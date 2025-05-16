@@ -39,5 +39,10 @@
       "name": "microservice.gpt-sovits.url",
       "type": "java.lang.String",
       "description": "Description for micoservice.gpt-sovits.url."
+    },
+    {
+      "name": "microservice.whisper.url",
+      "type": "java.lang.String",
+      "description": "Description for microservice.whisper.url."
     }
   ] }
