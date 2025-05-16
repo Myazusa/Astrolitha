@@ -1,0 +1,16 @@
+﻿version: "3.9"
+services:
+  whisper:
+    build:
+      context: ./whisper-api
+    container_name: whisper-service
+    ports:
+      - "10350:10350"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
