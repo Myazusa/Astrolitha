@@ -121,13 +121,13 @@ input:focus,textarea:focus{
  * 定义主题色
  */
 :root{
-  --theme-color-hover: #d24d7c;
+  --theme-color-hover: #ff76a5;
   --theme-color-surface-container: #3a3939;
   --theme-color-primary: #17181a;
   --theme-color-on-primary: #dddfe1;
   --theme-color-secondary: #1e2022;
   --theme-color-on-secondary: #a1a6ad;
-  --theme-color-tertiary: #d24d7c;
+  --theme-color-tertiary: #ff76a5;
   --theme-color-on-tertiary: #dddfe1;
   --theme-color-error: #fb4e4e;
   --theme-color-on-error: #dddfe1;
@@ -140,4 +140,26 @@ input:focus,textarea:focus{
 :root{
   --theme-font: 'SetoFont';
   --theme-font-weight: normal;
+}
+
+/**
+ * 覆盖默认element-plus的dialog样式
+ */
+.el-dialog{
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+}
+.el-dialog__title{
+  color: white !important;
+  font-size: 1.5rem !important;
+
+}
+.el-dialog__header{
+  border-bottom: white 0.1rem solid;
+}
+.el-dialog__body{
+  color: white !important;
+}
+.el-dialog__close{
+  color: white !important;
 }

@@ -2,8 +2,18 @@
 
 import {ElMenu, ElMenuItem, ElScrollbar} from "element-plus";
 import {useUserCenterAsideStore} from "@/store/UserCenterStore";
+import {Document, Setting, SwitchButton, User} from "@element-plus/icons-vue";
+import {onMounted} from "vue";
 
 const userCenterAsideStore = useUserCenterAsideStore()
+
+const menuItems = [
+  { index: 'profile', icon: User },
+  { index: 'docs', icon: Document },
+  { index: 'settings', icon: Setting },
+  { index: 'logout', icon: SwitchButton },
+]
+
 </script>
 
 <template>
@@ -11,17 +21,17 @@ const userCenterAsideStore = useUserCenterAsideStore()
     <div v-if="userCenterAsideStore.sidebarVisible" class="sidebar-content">
       <el-scrollbar height="100%">
         <el-menu
-            :default-active="userCenterAsideStore.activeMenu"
+            :default-active="userCenterAsideStore.getActiveMenuRef().value"
             class="menu"
             background-color="var(--theme-color-secondary)"
             text-color="var(--theme-color-on-secondary)"
             active-text-color="var(--theme-color-hover)"
         >
           <el-menu-item
-              v-for="item in userCenterAsideStore.menuItems"
+              v-for="item in menuItems"
               :key="item.index"
               :index="item.index"
-              @click="userCenterAsideStore.activeMenu = item.index"
+              @click="userCenterAsideStore.getActiveMenuRef().value = item.index"
           >
             <component :is="item.icon" class="menu-icon" />
           </el-menu-item>

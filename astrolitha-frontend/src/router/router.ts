@@ -15,6 +15,23 @@ const routes: RouteRecordRaw[] = [
         path:'/uc',
         name: 'UserCenter',
         component: ()=>import("@/pages/UserCenter.vue"),
+        children: [
+            {
+              path: '',
+              name: 'UserCenterProfile',
+              component: () => import("@/components/user-center/UserCenterProfile.vue")
+            },
+            {
+                path: 'chat',
+                name: 'UserCenterChat',
+                component: () => import("@/components/user-center/UserCenterChat.vue"),
+            },
+            {
+                path: 'option',
+                name: 'UserCenterOption',
+                component: () => import("@/components/user-center/UserCenterOption.vue"),
+            }
+        ]
     },
     {
         path: '/l2d',
