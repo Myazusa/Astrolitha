@@ -127,12 +127,21 @@ input:focus,textarea:focus{
   --theme-color-on-primary: #dddfe1;
   --theme-color-secondary: #1e2022;
   --theme-color-on-secondary: #a1a6ad;
-  --theme-color-tertiary: #ff76a5;
+  --theme-color-tertiary: #9f3a5e;
   --theme-color-on-tertiary: #dddfe1;
   --theme-color-error: #fb4e4e;
   --theme-color-on-error: #dddfe1;
   --theme-color-outline: #79747e;
 
+  --theme-color-card-1-primary: rgba(66, 38, 33, 0.5);
+  --theme-color-card-1-on-primary: #a09fa7;
+  --theme-color-card-1-outline: rgba(145, 91, 25, 0.5);
+  --theme-color-card-1-hover: rgba(119, 62, 29, 0.5);
+
+  --theme-color-card-2-primary: rgba(49, 57, 80, 0.5);
+  --theme-color-card-2-on-primary: #a09fa7;
+  --theme-color-card-2-outline: rgba(77, 124, 181, 0.5);
+  --theme-color-card-2-hover: rgba(43, 89, 133, 0.5);
 }
 /**
  * 定義主題字體
@@ -162,4 +171,10 @@ input:focus,textarea:focus{
 }
 .el-dialog__close{
   color: white !important;
+}
+/**
+ * 覆盖默认element-plus的默认主题色
+ */
+:root{
+  --el-color-primary: var(--theme-color-hover) !important;
 }

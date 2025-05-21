@@ -2,22 +2,20 @@
 
 import {ElMenu, ElMenuItem, ElScrollbar} from "element-plus";
 import {useUserCenterAsideStore} from "@/store/UserCenterStore";
-import {Document, Setting, SwitchButton, User} from "@element-plus/icons-vue";
-import {onMounted} from "vue";
+import {User, Setting, Odometer, Files} from "@element-plus/icons-vue";
 
 const userCenterAsideStore = useUserCenterAsideStore()
 
 const menuItems = [
-  { index: 'profile', icon: User },
-  { index: 'docs', icon: Document },
-  { index: 'settings', icon: Setting },
-  { index: 'logout', icon: SwitchButton },
+  { index: 'profile', icon: Odometer },
+  { index: 'chat', icon: User },
+  { index: 'database', icon: Files },
+  { index: 'option', icon: Setting },
 ]
-
 </script>
 
 <template>
-  <transition name="sidebar-slide">
+  <transition name="sidebar-slide" style="height: 100vh">
     <div v-if="userCenterAsideStore.sidebarVisible" class="sidebar-content">
       <el-scrollbar height="100%">
         <el-menu

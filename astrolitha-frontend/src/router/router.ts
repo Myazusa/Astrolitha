@@ -27,6 +27,11 @@ const routes: RouteRecordRaw[] = [
                 component: () => import("@/components/user-center/UserCenterChat.vue"),
             },
             {
+                path: 'database',
+                name: 'UserCenterDatabase',
+                component: () => import("@/components/user-center/UserCenterDatabase.vue"),
+            },
+            {
                 path: 'option',
                 name: 'UserCenterOption',
                 component: () => import("@/components/user-center/UserCenterOption.vue"),

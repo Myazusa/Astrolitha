@@ -2,27 +2,23 @@
 import { ref, nextTick } from 'vue'
 import { ElAvatar, ElScrollbar, ElInput, ElButton, ElIcon } from 'element-plus'
 import { Promotion } from '@element-plus/icons-vue'
+import {useUserCenterChatStore} from "@/store/UserCenterStore";
 
-interface Message {
-  role: 'user' | 'assistant',
-  name: string,
-  content: string
-}
 
+/**
+ * 输入与信息气泡显示的逻辑
+ */
+const userCenterChatStore = useUserCenterChatStore();
 const input = ref('')
-const messages = ref<Message[]>([
-  { role: 'user', name: 'My',content: 'krita画日漫光照和光晕效果有什么技巧么？' },
-  { role: 'assistant',name: 'DeepSeek', content: `在 Krita 中绘制日漫风格的光照和光晕效果，主要涉及以下几个技巧和方法：<br><br>🌟 <b>一、整体思路</b><br>日漫光照强调分区明确的光影对比、干净的光斑/高光和柔和的光晕特效。典型场景如阳光洒在人物脸上、逆光边缘光等。Krita 提供了丰富的图层混合模式和笔刷，可以很好地实现这些效果。<br><br>🎨 <b>二、技巧与方法</b><br>1. <b>使用图层模式叠加光晕</b><br>新增加图层，图层模式设为"加亮（Additive）"或"滤色（Screen）"，用柔光笔刷画高光和光晕。` }
-])
 const scrollbarRef = ref()
 
 function handleSend() {
   if (!input.value.trim()) return
-  messages.value.push({ role: 'user',name: '我', content: input.value })
+  userCenterChatStore.addMessage({ role: 'user',name: '我', content: input.value })
   input.value = ''
-  // 模拟AI回复
+  // todo:获取ai回复
   setTimeout(() => {
-    messages.value.push({ role: 'assistant',name: 'Deepseek', content: '（AI回复内容示例）' })
+    userCenterChatStore.addMessage({ role: 'assistant',name: 'Deepseek', content: '（AI回复内容示例）' })
     nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
   }, 800)
   nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
@@ -39,7 +35,7 @@ function handleSend() {
       </div>
     </header>
     <el-scrollbar class="llm-chat-messages" ref="scrollbarRef">
-      <div v-for="(msg, idx) in messages" :key="idx" :class="['llm-chat-message', msg.role]">
+      <div v-for="(msg, idx) in userCenterChatStore.getMessagesRef().value" :key="idx" :class="['llm-chat-message', msg.role]">
         <div class="msg-bubble">
           <div class="msg-name">{{ msg.name }}</div>
           <div class="msg-content" v-html="msg.content"></div>

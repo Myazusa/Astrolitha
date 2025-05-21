@@ -26,8 +26,14 @@ watch(activeMenu,()=>{
     case 'profile':
       router.push({name:'UserCenterProfile'})
       break
-    case 'docs':
+    case 'chat':
       router.push({name:'UserCenterChat'})
+      break
+    case 'option':
+      router.push({name:'UserCenterOption'})
+      break
+    case 'database':
+      router.push({name:'UserCenterDatabase'})
       break
     default:
       break
@@ -42,13 +48,9 @@ watch(activeMenu,()=>{
         <UserCenterAside />
       </aside>
     </div>
-    <div style="width: 100vw;height: 100vh">
-      <main>
-        <div class="content">
-          <router-view />
-        </div>
-      </main>
-    </div>
+    <main>
+      <router-view />
+    </main>
     <button class="sidebar-toggle-btn" @click="toggleSidebar">
       <el-icon>
         <component :is="userCenterAsideStore.sidebarVisible ? ArrowLeftBold : ArrowRightBold" />
@@ -58,14 +60,15 @@ watch(activeMenu,()=>{
 </template>
 
 <style scoped>
-.content {
+main {
   background: var(--theme-color-primary);
   color: var(--theme-color-on-primary);
   overflow: auto;
+  width: 100vw
 }
 .user-center-layout {
   display: flex;
-  height: 100vh;
+  height: 100%;
   background: var(--theme-color-primary);
 }
 aside{
