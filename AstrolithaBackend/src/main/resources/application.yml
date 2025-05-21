@@ -33,8 +33,8 @@ app:
   resource:
     location:
       rag:
-        origin: "file:./uploads/rag/"
-        mapping: "/uploads/rag/"
+        origin: file:./uploads/rag/
+        mapping: /uploads/rag/**
 
 
 microservice:

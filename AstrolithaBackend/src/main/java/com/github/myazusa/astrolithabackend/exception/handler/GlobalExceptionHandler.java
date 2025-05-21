@@ -1,5 +1,6 @@
 package com.github.myazusa.astrolithabackend.exception.handler;
 
+import com.github.myazusa.astrolithabackend.exception.FileOperationException;
 import com.github.myazusa.astrolithabackend.exception.InvalidTokenException;
 import com.github.myazusa.astrolithabackend.exception.JsonConversionException;
 import com.github.myazusa.astrolithabackend.exception.VectorDatabaseAccessException;
@@ -55,5 +56,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleVectorDatabaseAccessException(Exception e){
         log.warn("向量数据库访问错误: {}",e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("向量数据库访问错误");
+    }
+    @ExceptionHandler(FileOperationException.class)
+    public ResponseEntity<String> handleFileOperationException(Exception e){
+        log.warn("文件操作错误: {}",e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("文件操作错误，"+e.getMessage());
     }
 }

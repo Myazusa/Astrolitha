@@ -4,30 +4,36 @@ import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
+import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
+import com.github.myazusa.astrolithabackend.service.micro.RAGFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 @RequestMapping("/api")
 public class ApiController {
     private final GPTSoVITSService gptSoVITSService;
     private final FasterWhisperService fasterWhisperService;
+    private final RAGFileService ragFileService;
+    private final OllamaService ollamaService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, RAGFileService ragFileService, OllamaService ollamaService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
+        this.ragFileService = ragFileService;
+        this.ollamaService = ollamaService;
     }
 
     /**
@@ -49,8 +55,12 @@ public class ApiController {
             }
             switch (modelInterfaceEnums) {
                 case ollama -> {
-                    // todo:调用ollama
-                    return ResponseEntity.status(HttpStatus.OK).body("指定了ollama");
+                    CompletableFuture<String> future = ollamaService.getAnswerAsync(questionRequestDTO.getQuestion());
+                    try {
+                        ResponseEntity.status(HttpStatus.OK).body(future.get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).body("ollama异步调用异常");
+                    }
                 }
                 case python -> {
                     // todo:调用python
@@ -90,5 +100,35 @@ public class ApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("网络错误: " + e.getMessage());
         }
+    }
+
+    /**
+     * 上传文件接口
+     * @param file 单个文件，任意扩展名
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
+        ragFileService.saveFile(file);
+        return ResponseEntity.ok("文件已保存:");
+    }
+
+    /**
+     * 重命名文件接口
+     * @param oldName 要重命名的文件名
+     * @param newName 新名字
+     */
+    @PostMapping("/rename_file")
+    public ResponseEntity<String> renameFile(@RequestParam String oldName, @RequestParam String newName) {
+        ragFileService.renameFile(oldName, newName);
+        return ResponseEntity.ok("重命名成功");
+    }
+
+    /**
+     * 获取所有文件名
+     * @return 文件名的List
+     */
+    @GetMapping("/get_files")
+    public List<String> listFiles(){
+        return ragFileService.listAllFiles();
     }
 }

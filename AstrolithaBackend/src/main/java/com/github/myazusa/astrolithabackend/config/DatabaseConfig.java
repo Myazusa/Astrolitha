@@ -21,11 +21,13 @@ public class DatabaseConfig {
                 .build();
         MilvusClientV2 milvusClientV2 = new MilvusClientV2(config);
         try {
+            // 创建该数据库，只用一次
+//            milvusClientV2.createDatabase(CreateDatabaseReq.builder()
+//                    .databaseName("user_vector_database")
+//                    .build());
             milvusClientV2.useDatabase("user_vector_database");
         } catch (InterruptedException e) {
-            milvusClientV2.createDatabase(CreateDatabaseReq.builder()
-                    .databaseName("user_vector_database")
-                    .build());
+
             try {
                 milvusClientV2.useDatabase("user_vector_database");
             } catch (InterruptedException interruptedException) {
