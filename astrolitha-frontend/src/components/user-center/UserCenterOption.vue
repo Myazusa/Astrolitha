@@ -1,28 +1,26 @@
 ﻿<script setup lang="ts">
-import { ref } from 'vue'
+import {useUserCenterOption} from "@/store/UserCenterStore";
 
-// todo:把变量设置到store里
-// 系统设置
-const virtualNetwork = ref(false)
-const systemProxy = ref(true)
-const autoStart = ref(true)
-const silentStart = ref(true)
+const userCenterOption = useUserCenterOption();
 
-// 应用设置
-const clusterMode = ref(false)
-const ttsMode = ref(false)
-const arsMode = ref(false)
-const vdbMode = ref(false)
-const unifiedExit = ref(true)
-const logLevel = ref('info')
-
-// 基础设置
-const language = ref('zh')
-const themeMode = ref('dark')
-const trayClickEvent = ref('showMain')
-const envType = ref('PowerShell')
-const startupPage = ref('proxy')
-const startupScript = ref('')
+// 获取所有需要的响应式引用
+const backendHost = userCenterOption.getBackendHostRef()
+const backendPort = userCenterOption.getBackendPortRef()
+const ttsLocalMode = userCenterOption.getTtsLocalModeRef()
+const arsLocalMode = userCenterOption.getArsLocalModeRef()
+const vdbLocalMode = userCenterOption.getVdbLocalModeRef()
+const rdbLocalMode = userCenterOption.getRdbLocalModeRef()
+const clusterMode = userCenterOption.getClusterModeRef()
+const ttsMode = userCenterOption.getTtsModeRef()
+const ttsHost = userCenterOption.getTtsHostRef()
+const ttsPort = userCenterOption.getTtsPortRef()
+const arsMode = userCenterOption.getArsModeRef()
+const arsHost = userCenterOption.getArsHostRef()
+const arsPort = userCenterOption.getArsPortRef()
+const vdbMode = userCenterOption.getVdbModeRef()
+const vdbHost = userCenterOption.getVdbHostRef()
+const vdbPort = userCenterOption.getVdbPortRef()
+const language = userCenterOption.getLanguageRef()
 </script>
 
 <template>
@@ -32,22 +30,22 @@ const startupScript = ref('')
         <div class="section-title">Astrolitha設置</div>
         <el-form label-width="7rem" class="form">
           <el-form-item label="後端IP地址">
-            <el-input v-model="startupScript" placeholder="127.0.0.1" style="width: 12rem" />
+            <el-input v-model="backendHost" placeholder="127.0.0.1" style="width: 12rem" />
           </el-form-item>
           <el-form-item label="後端端口">
-            <el-input v-model="startupScript" placeholder="80" style="width: 5rem" />
+            <el-input v-model="backendPort" placeholder="80" style="width: 5rem" />
           </el-form-item>
           <el-form-item label="本地化TTS">
-            <el-switch v-model="systemProxy" />
+            <el-switch v-model="ttsLocalMode" />
           </el-form-item>
           <el-form-item label="本地化ARS">
-            <el-switch v-model="autoStart" />
+            <el-switch v-model="arsLocalMode" />
           </el-form-item>
           <el-form-item label="本地化VDB">
-            <el-switch v-model="silentStart" />
+            <el-switch v-model="vdbLocalMode" />
           </el-form-item>
           <el-form-item label="本地化RDB">
-            <el-switch v-model="silentStart" />
+            <el-switch v-model="rdbLocalMode" />
           </el-form-item>
         </el-form>
       </el-card>
@@ -63,10 +61,10 @@ const startupScript = ref('')
             </el-form-item>
             <div v-if="ttsMode === true">
               <el-form-item label="TTS服務IP地址">
-                <el-input v-model="startupScript" placeholder="127.0.0.1" style="width: 12rem" />
+                <el-input v-model="ttsHost" placeholder="127.0.0.1" style="width: 12rem" />
               </el-form-item>
               <el-form-item label="TTS服務端口號">
-                <el-input v-model="startupScript" placeholder="10350" style="width: 5rem" />
+                <el-input v-model="ttsPort" placeholder="10350" style="width: 5rem" />
               </el-form-item>
             </div>
             <el-form-item label="ARS集群化">
@@ -74,21 +72,21 @@ const startupScript = ref('')
             </el-form-item>
             <div v-if="arsMode === true">
               <el-form-item label="ARS服務IP地址">
-                <el-input v-model="startupScript" placeholder="127.0.0.1" style="width: 12rem" />
+                <el-input v-model="arsHost" placeholder="127.0.0.1" style="width: 12rem" />
               </el-form-item>
               <el-form-item label="ARS服務端口號">
-                <el-input v-model="startupScript" placeholder="10500" style="width: 5rem" />
+                <el-input v-model="arsPort" placeholder="10500" style="width: 5rem" />
               </el-form-item>
             </div>
             <el-form-item label="VDB集群化">
               <el-switch v-model="vdbMode" />
             </el-form-item>
             <div v-if="vdbMode === true">
-              <el-form-item label="ARS服務IP地址">
-                <el-input v-model="startupScript" placeholder="127.0.0.1" style="width: 12rem" />
+              <el-form-item label="VDB服務IP地址">
+                <el-input v-model="vdbHost" placeholder="127.0.0.1" style="width: 12rem" />
               </el-form-item>
-              <el-form-item label="ARS服務端口號">
-                <el-input v-model="startupScript" placeholder="10500" style="width: 5rem" />
+              <el-form-item label="VDB服務端口號">
+                <el-input v-model="vdbPort" placeholder="9091" style="width: 5rem" />
               </el-form-item>
             </div>
           </div>
