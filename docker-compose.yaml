@@ -37,17 +37,27 @@ services:
 
 # tts的容器
   gpt-sovits:
-    image: breakstring/gpt-sovits:latest
+    image: breakstring/gpt-sovits:v4
     container_name: gpt-sovits
     environment:
       - is_half=False
       - is_share=False
     volumes:
+      - ./volumes/sovits/GPT_weights:/workspace/GPT_weights
+      - ./volumes/sovits/GPT_weights_v2:/workspace/GPT_weights_v2
+      - ./volumes/sovits/GPT_weights_v3:/workspace/GPT_weights_v3
+      - ./volumes/sovits/GPT_weights_v4:/workspace/GPT_weights_v4
       - ./volumes/sovits/output:/workspace/output
       - ./volumes/sovits/logs:/workspace/logs
       - ./volumes/sovits/SoVITS_weights:/workspace/SoVITS_weights
+      - ./volumes/sovits/SoVITS_weights_v2:/workspace/SoVITS_weights_v2
+      - ./volumes/sovits/SoVITS_weights_v3:/workspace/SoVITS_weights_v3
+      - ./volumes/sovits/SoVITS_weights_v4:/workspace/SoVITS_weights_v4
       - ./volumes/sovits/reference:/workspace/reference
+      - ./volumes/sovits/GPT_SoVITS/pretrained_models:/workspace/GPT_SoVITS/pretrained_models
     working_dir: /workspace
+    command: ["python", "api_v2.py","-a","0.0.0.0","-p","9880","-c","GPT_SoVITS/configs/tts_infer.yaml"]
+    #command: ["python", "api.py"]
     ports:
       - "9880:9880"
       - "9871:9871"
@@ -76,9 +86,13 @@ services:
       - ETCD_AUTO_COMPACTION_RETENTION=1000
       - ETCD_QUOTA_BACKEND_BYTES=4294967296
       - ETCD_SNAPSHOT_COUNT=50000
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_DATA_DIR=/etcd
+      - ALLOW_NONE_AUTHENTICATION=yes
     volumes:
       - ./volumes/miluvs/etcd:/etcd
-    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    #command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck:
       test: [ "CMD", "etcdctl", "endpoint", "health" ]
       interval: 30s
