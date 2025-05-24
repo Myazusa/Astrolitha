@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,13 +32,13 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @SpringBootTest
 public class MicroserviceTests {
-    //@Autowired
+    @Autowired
     private FasterWhisperService fasterWhisperService;
 
-    //@Autowired
+    @Autowired
     private GPTSoVITSService gpsSoVITSService;
 
-    //@Autowired
+    @Autowired
     private RAGFileService ragFileService;
 
     @Autowired
@@ -50,6 +51,7 @@ public class MicroserviceTests {
     private MilvusService milvusService;
 
 
+    // 测试从语音识别文本。成功
     @Test
     void testWhisperService(){
         Path filePath = Paths.get("uploads", "rag", "test.wav");
@@ -67,7 +69,8 @@ public class MicroserviceTests {
                     "audio/wav",                            // Content-Type
                     resource.getInputStream()               // 文件内容
             );
-            fasterWhisperService.transcribeWavFile(multipartFile);
+            String string = fasterWhisperService.transcribeWavFile(multipartFile);
+            log.info("读取到的文本是：{}",string);
         } catch (IOException e) {
             throw new RuntimeException("读取 test.wav 失败",e);
         }
@@ -75,7 +78,7 @@ public class MicroserviceTests {
 
     @Test
     void testGPTSoVitsService(){
-        gpsSoVITSService.synthesizeSpeechAsyncStream(new GPTSoVITSRequestDTO().setText("当然可以"));
+        Mono<byte[]> mono = gpsSoVITSService.synthesizeSpeechAsyncStream(new GPTSoVITSRequestDTO().setText("当然可以"));
     }
 
     // 列出路径文件。成功
@@ -170,9 +173,9 @@ public class MicroserviceTests {
                         entities.add((String)result.getEntity().get("content"));
                     }
                 }
-//                entities.forEach(entity -> {
-//                    log.info("搜索到相关文本内容为：{}", entity);
-//                });
+                entities.forEach(entity -> {
+                    log.info("搜索到相关文本内容为：{}", entity);
+                });
             } catch (InterruptedException | ExecutionException e) {
                 log.error("未能获取到miluvs的响应");
             }
