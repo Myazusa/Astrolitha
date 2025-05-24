@@ -3,6 +3,11 @@ import { ref, nextTick } from 'vue'
 import { ElAvatar, ElScrollbar, ElInput, ElButton, ElIcon } from 'element-plus'
 import { Promotion } from '@element-plus/icons-vue'
 import {useUserCenterChatStore} from "@/store/UserCenterStore";
+import axios from "axios";
+import {QuestionRequestDTO} from "@/interface/QuestionRequestDTO";
+import {useApiStore} from "@/store/ApiStore";
+
+const apiStore = useApiStore();
 
 
 /**
@@ -15,13 +20,26 @@ const scrollbarRef = ref()
 function handleSend() {
   if (!input.value.trim()) return
   userCenterChatStore.addMessage({ role: 'user',name: '我', content: input.value })
-  input.value = ''
-  // todo:获取ai回复
-  setTimeout(() => {
-    userCenterChatStore.addMessage({ role: 'assistant',name: 'Deepseek', content: '（AI回复内容示例）' })
-    nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
-  }, 800)
-  nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
+  const questionRequestDTO = ref<QuestionRequestDTO>({
+    modelInterface:'ollama',
+    question: input.value
+  });
+  // todo:实现给用户手动让ollama拉模型功能
+  axios.post(apiStore.getAskQuestionApi(),questionRequestDTO)
+    .then(response => {
+      setTimeout(() => {
+        userCenterChatStore.addMessage({ role: 'assistant',name: 'Deepseek', content: response.data })
+        nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
+      }, 800)
+      nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
+    })
+    .catch((err) => {
+      console.log(err)
+      input.value = ''
+    })
+    .finally(()=>{
+      input.value = ''
+    })
 }
 
 </script>

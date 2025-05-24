@@ -1,0 +1,178 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import {ElMessage, UploadProps, UploadFile, UploadRawFile} from 'element-plus'
+import axios from 'axios'
+import {Upload} from '@element-plus/icons-vue'
+
+const dialogVisible = ref(false)
+const uploadRef = ref()
+const fileList = ref<UploadFile[]>([])
+
+/**
+ * 主动关闭上传窗口逻辑
+ */
+const handleClose = () => {
+  dialogVisible.value = false
+  handleClear()
+}
+
+const handleClear = () =>{
+  fileList.value = []
+}
+
+/**
+ * 检测重复文件逻辑
+ */
+const isFileDuplicate = (newFile: UploadFile): boolean => {
+  return fileList.value.some(file =>
+    file.name === newFile.name &&
+    file.size === newFile.size
+  )
+}
+
+const removeDuplicateFile = (file: UploadFile): void => {
+  const index = fileList.value.findIndex(f => 
+    f.name === file.name && 
+    f.size === file.size
+  )
+  if (index !== -1) {
+    fileList.value.splice(index, 1)
+  }
+}
+
+/**
+ * 监听文件列表变化，处理重复文件
+ */
+const handleOnChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
+  if(isFileDuplicate(uploadFile)){
+    ElMessage.warning(`文件 "${uploadFile.name}" 已存在，請勿重複上傳`)
+    removeDuplicateFile(uploadFile)
+    return
+  }
+}
+
+/**
+ * 上传到服务器的逻辑
+ */
+const handleUpload = async () => {
+  if (fileList.value.length === 0) {
+    ElMessage.warning('請選擇要上傳的文件')
+    return
+  }
+
+  const formData = new FormData()
+  fileList.value.forEach(file => {
+    formData.append('files', file.raw as File)
+  })
+
+  try {
+    await axios.post('YOUR_UPLOAD_URL', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    ElMessage.success('上傳成功')
+    handleClose()
+  } catch (error) {
+    ElMessage.error('上傳失敗')
+    console.error('Upload error:', error)
+  }
+}
+
+const handleFileRemove = (file: UploadFile) => {
+  const index = fileList.value.indexOf(file)
+  if (index !== -1) {
+    fileList.value.splice(index, 1)
+  }
+}
+
+defineExpose({
+  dialogVisible
+})
+</script>
+
+<template>
+  <el-dialog
+    v-model="dialogVisible"
+    title="上傳數據庫"
+    width="30rem"
+    :close-on-click-modal="false"
+  >
+    <el-upload
+      ref="uploadRef"
+      class="upload-area"
+      drag
+      action="#"
+      :auto-upload="false"
+      :on-remove="handleFileRemove"
+      :on-change="handleOnChange"
+      multiple
+      v-model:file-list="fileList"
+    >
+      <el-icon class="el-icon--upload"><Upload /></el-icon>
+      <div class="el-upload__text">
+        拖拽文件到此处或 <em>點擊上傳</em>
+      </div>
+      <template #tip>
+        <div class="el-upload__tip">
+          可以上傳多個文件
+        </div>
+      </template>
+    </el-upload>
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="handleClear">清空</el-button>
+        <el-button type="primary" @click="handleUpload">
+          確定上傳
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
+
+<style scoped>
+.upload-area {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+:deep(.el-upload-dragger) {
+  width: 100%;
+  height: 15rem;
+  background-color: var(--theme-color-surface-container);
+  border: 0.1rem dashed var(--theme-color-outline);
+}
+
+:deep(.el-upload-dragger:hover) {
+  border-color: var(--theme-color-hover);
+}
+
+:deep(.el-icon--upload) {
+  font-size: 3rem;
+  color: var(--theme-color-on-primary);
+  margin-bottom: 1rem;
+}
+
+:deep(.el-upload__text) {
+  color: var(--theme-color-on-primary);
+  font-size: 1rem;
+}
+
+:deep(.el-upload__text em) {
+  color: var(--theme-color-hover);
+  font-style: normal;
+}
+
+:deep(.el-upload__tip) {
+  color: var(--theme-color-on-primary);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+</style> 

@@ -2,6 +2,7 @@
 import { User, Setting, Document, SwitchButton } from '@element-plus/icons-vue'
 import {defineStore} from "pinia";
 import {Message} from "@/interface/Message";
+import {DatabaseFile} from "@/interface/DatabaseFile";
 
 export const useUserCenterAsideStore = defineStore('UserCenterAsideStore', ()=>{
     // 侧边栏是否可见
@@ -135,5 +136,39 @@ export const useUserCenterChatStore = defineStore('UserCenterChatStore', ()=>{
     return {
         addMessage,
         getMessagesRef
+    }
+})
+
+export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',()=>{
+    const files = ref<DatabaseFile[]>([
+        { id: 1, fileName: 'example1.txt', isParsed: true },
+        { id: 2, fileName: 'example2.doc', isParsed: false },
+        { id: 3, fileName: 'example3.docx', isParsed: false },
+        { id: 4, fileName: 'example4.csv', isParsed: false },
+    ])
+
+    const addFiles = ()=>{
+        files.value.push({ id: 5, fileName: 'example5.jpg', isParsed: true })
+    }
+
+    const getFilesRef = () => {
+        return files
+    }
+
+    const parseFile = (file: DatabaseFile) => {
+        file.isParsed = true
+        // todo:记得修改服务端
+    }
+
+    const renameFile = (file: DatabaseFile, newName: string) => {
+        file.fileName = newName
+        // todo:记得修改服务端
+    }
+
+    return {
+        getFilesRef,
+        parseFile,
+        renameFile,
+        addFiles
     }
 })

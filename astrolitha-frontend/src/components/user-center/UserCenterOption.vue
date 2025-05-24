@@ -26,7 +26,7 @@ const language = userCenterOption.getLanguageRef()
 <template>
   <div class="option-root">
     <div class="card-grid">
-      <el-card class="card" shadow="hover">
+      <el-card class="card" shadow="never">
         <div class="section-title">Astrolitha設置</div>
         <el-form label-width="7rem" class="form">
           <el-form-item label="後端IP地址">
@@ -49,7 +49,7 @@ const language = userCenterOption.getLanguageRef()
           </el-form-item>
         </el-form>
       </el-card>
-      <el-card class="card" shadow="hover">
+      <el-card class="card" shadow="never">
         <div class="section-title" style="margin-top:2rem;">集群設置</div>
         <el-form label-width="7rem" class="form">
           <el-form-item label="集群模式">
@@ -92,7 +92,7 @@ const language = userCenterOption.getLanguageRef()
           </div>
         </el-form>
       </el-card>
-      <el-card class="card" shadow="hover">
+      <el-card class="card" shadow="never">
         <div class="section-title">其他設置</div>
         <el-form label-width="10rem" class="form">
           <el-form-item label="語言設置">

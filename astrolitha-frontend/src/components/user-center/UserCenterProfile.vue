@@ -8,7 +8,7 @@ const userCenterProfile = useUserCenterProfile();
 <template>
   <div class="profile-root">
     <div class="profile-title">儀表盤</div>
-    <el-card class="profile-container">
+    <el-card class="profile-container" shadow="never">
       <template #header>
         <div class="card-header">
           <span>系統概況</span>
@@ -45,7 +45,7 @@ const userCenterProfile = useUserCenterProfile();
         </el-card>
       </div>
     </el-card>
-    <el-card class="profile-container">
+    <el-card class="profile-container" shadow="never">
       <template #header>
         <div class="card-header">
           <span>用戶信息</span>
