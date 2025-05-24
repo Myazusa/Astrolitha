@@ -182,4 +182,7 @@ const handleRenameCancel = () => {
 :deep(.el-input__inner) {
   color: var(--theme-color-on-primary);
 }
+:deep(.cell){
+  font-family: 'ResourceHanRoundedCN', sans-serif;
+}
 </style> 
