@@ -3,7 +3,9 @@ package com.github.myazusa.astrolithabackend.service.micro;
 import com.github.myazusa.astrolithabackend.exception.VectorDatabaseAccessException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import io.milvus.orm.iterator.QueryIterator;
 import io.milvus.v2.client.MilvusClientV2;
+import io.milvus.v2.common.ConsistencyLevel;
 import io.milvus.v2.common.DataType;
 import io.milvus.v2.common.IndexParam;
 import io.milvus.v2.service.collection.request.AddFieldReq;
@@ -12,9 +14,11 @@ import io.milvus.v2.service.collection.request.GetLoadStateReq;
 import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import io.milvus.v2.service.vector.request.DeleteReq;
 import io.milvus.v2.service.vector.request.InsertReq;
+import io.milvus.v2.service.vector.request.QueryIteratorReq;
 import io.milvus.v2.service.vector.request.SearchReq;
 import io.milvus.v2.service.vector.request.data.BaseVector;
 import io.milvus.v2.service.vector.request.data.FloatVec;
+import io.milvus.v2.service.vector.response.InsertResp;
 import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -81,6 +85,11 @@ public class MilvusService {
                 .maxLength(800) // 这里是因为进行chunking时，默认chunk尺寸为800
                 .build());
         schema.addField(AddFieldReq.builder()
+                .fieldName("name")
+                .dataType(DataType.VarChar)
+                .maxLength(512)
+                .build());
+        schema.addField(AddFieldReq.builder()
                 .fieldName("meta")
                 .dataType(DataType.VarChar)
                 .maxLength(512)
@@ -118,6 +127,7 @@ public class MilvusService {
                 .build());
     }
 
+    @Deprecated
     public void InsertToSchema(String collectionName,String json){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
@@ -131,16 +141,21 @@ public class MilvusService {
         milvusClientV2.insert(insertReq);
     }
 
+    /**
+     * 插入记录方法
+     * @param collectionName 插入哪个表
+     * @param records 要插入的记录，请使用项目中JsonUtils来构造记录
+     */
     public void InsertToSchema(String collectionName,List<JsonObject> records){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
-        Gson gson = new Gson();
         InsertReq insertReq = InsertReq.builder()
                 .collectionName(collectionName)
                 .data(records)
                 .build();
-        milvusClientV2.insert(insertReq);
+        InsertResp insertResp = milvusClientV2.insert(insertReq);
+        log.info("插入成功：{}",insertResp.toString());
     }
 
     public void DeleteSchemaEntity(String collectionName,String metaData){
@@ -161,10 +176,26 @@ public class MilvusService {
         SearchReq searchReq = SearchReq.builder()
                 .collectionName(collectionName)
                 .data(Collections.singletonList(queryVector))
+                .outputFields(Collections.singletonList("name"))
+                .outputFields(Collections.singletonList("content"))
                 .topK(5)
                 .build();
         SearchResp searchResp = milvusClientV2.search(searchReq);
         return CompletableFuture.completedFuture(searchResp.getSearchResults());
+    }
+
+    @Async
+    public CompletableFuture<QueryIterator> PagingSelectSchema(String collectionName){
+        if (!getCollectionState("default_collection")){
+            throw new VectorDatabaseAccessException("不存在的集合");
+        }
+        QueryIteratorReq queryIteratorReq = QueryIteratorReq.builder()
+                .collectionName(collectionName)
+                .batchSize(50L)
+                .outputFields(Collections.singletonList("name"))
+                .consistencyLevel(ConsistencyLevel.BOUNDED)
+                .build();
+        return CompletableFuture.completedFuture(milvusClientV2.queryIterator(queryIteratorReq));
     }
 
     @Async

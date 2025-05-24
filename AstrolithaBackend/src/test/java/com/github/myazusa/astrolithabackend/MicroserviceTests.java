@@ -1,0 +1,204 @@
+package com.github.myazusa.astrolithabackend;
+
+import com.github.myazusa.astrolithabackend.common.util.JsonUtils;
+import com.github.myazusa.astrolithabackend.common.util.TextParsingUtils;
+import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
+import com.github.myazusa.astrolithabackend.service.micro.*;
+import com.google.gson.JsonObject;
+import io.milvus.orm.iterator.QueryIterator;
+import io.milvus.response.QueryResultsWrapper;
+import io.milvus.v2.service.vector.request.data.FloatVec;
+import io.milvus.v2.service.vector.response.SearchResp;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.ai.embedding.Embedding;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+@Slf4j
+@SpringBootTest
+public class MicroserviceTests {
+    //@Autowired
+    private FasterWhisperService fasterWhisperService;
+
+    //@Autowired
+    private GPTSoVITSService gpsSoVITSService;
+
+    //@Autowired
+    private RAGFileService ragFileService;
+
+    @Autowired
+    private TextChunkingService textChunkingService;
+
+    @Autowired
+    private OllamaService ollamaService;
+
+    @Autowired
+    private MilvusService milvusService;
+
+
+    @Test
+    void testWhisperService(){
+        Path filePath = Paths.get("uploads", "rag", "test.wav");
+
+        FileSystemResource resource = new FileSystemResource(filePath);
+
+        if (!resource.exists()) {
+            throw new RuntimeException("文件不存在: " + resource.getPath());
+        }
+
+        try {
+            MultipartFile multipartFile = new MockMultipartFile(
+                    "file",                                 // 表单字段名
+                    resource.getFilename(),                 // 文件名
+                    "audio/wav",                            // Content-Type
+                    resource.getInputStream()               // 文件内容
+            );
+            fasterWhisperService.transcribeWavFile(multipartFile);
+        } catch (IOException e) {
+            throw new RuntimeException("读取 test.wav 失败",e);
+        }
+    }
+
+    @Test
+    void testGPTSoVitsService(){
+        gpsSoVITSService.synthesizeSpeechAsyncStream(new GPTSoVITSRequestDTO().setText("当然可以"));
+    }
+
+    // 列出路径文件。成功
+    @Test
+    void testRAGFileService(){
+        for (String file : ragFileService.listAllFiles()) {
+            log.info("文件：{}", file);
+        }
+    }
+
+    // 解析文件。成功
+    @Test
+    void testTextParsingUtils(){
+        String s = TextParsingUtils.ParsingAll("./uploads/rag/公务员录用体检考生须知.doc");
+        log.info("解析后的字符串：{}", s);
+    }
+
+    // 分割文件。成功
+    @Test
+    void testTextChunkingService(){
+        List<String> strings = textChunkingService.TextChunking("./uploads/rag/公务员录用体检考生须知.doc");
+        strings.forEach(log::info);
+    }
+
+    // 转换文件为向量。成功
+    @Test
+    void testEmbedding(){
+        List<String> strings = textChunkingService.TextChunking("./uploads/rag/公务员录用体检考生须知.doc");
+        CompletableFuture<List<Embedding>> future = ollamaService.getEmbeddingAsync(strings);
+        try {
+            List<Embedding> embeddings = future.get();
+            embeddings.forEach(embedding -> {log.info(Arrays.toString(embedding.getOutput()));});
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("ollama服务访问失败", e);
+        }
+    }
+
+    // 测试把向量存入数据库。成功
+    @Test
+    void testSaveToMilvus(){
+        String path = "./uploads/rag/公务员录用体检考生须知.doc";
+        List<String> chunks = textChunkingService.TextChunking(path);
+        CompletableFuture<List<Embedding>> future = ollamaService.getEmbeddingAsync(chunks);
+        List<Embedding> embeddings = new ArrayList<>();
+        try {
+            embeddings = future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("ollama服务访问失败", e);
+        }
+
+        if (embeddings.isEmpty()) {
+            log.error("文件转换失败，向量组为空");
+            return;
+        }
+
+        // 无论什么操作前，都得先初始化表，因为里面包含检测表存不存在，存在就不初始化，不存在才初始化
+        if (milvusService.InitCollectionSchema()) {
+            // 选择此表
+            milvusService.SelectDatabase("user_vector_database");
+            List<JsonObject> records = JsonUtils.getJsonObjectList(embeddings, chunks, new File(path).getName(),"");
+            milvusService.InsertToSchema("default_collection",records);
+        }
+    }
+
+    // 查询相似向量。成功
+    @Test
+    void testQueryRecords(){
+        List<String> strings = new ArrayList<>();
+        strings.add("考生应在规定的时间内到达指定地点集中，统一前往体检医院进行体检。不按规定时间、地点集中参加体检者，视为自动放弃体检资格。");
+        CompletableFuture<List<Embedding>> future = ollamaService.getEmbeddingAsync(strings);
+        List<Embedding> embeddings = new ArrayList<>();
+        try {
+            embeddings = future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("ollama服务访问失败", e);
+        }
+
+        if (embeddings.isEmpty()) {
+            log.error("文件转换失败，向量组为空");
+            return;
+        }
+
+        if (milvusService.InitCollectionSchema()){
+            milvusService.SelectDatabase("user_vector_database");
+            CompletableFuture<List<List<SearchResp.SearchResult>>> future2 = milvusService.ANNSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
+            List<String> entities = new ArrayList<>();
+            try {
+                List<List<SearchResp.SearchResult>> lists = future2.get();
+                for (List<SearchResp.SearchResult> results : lists) {
+                    log.info("搜索到相关文本内容为：{}", results);
+                    for (SearchResp.SearchResult result : results) {
+                        entities.add((String)result.getEntity().get("content"));
+                    }
+                }
+//                entities.forEach(entity -> {
+//                    log.info("搜索到相关文本内容为：{}", entity);
+//                });
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("未能获取到miluvs的响应");
+            }
+        }
+    }
+
+    // 列出所有记录。成功
+    @Test
+    void testPagingQuery(){
+        milvusService.SelectDatabase("user_vector_database");
+        CompletableFuture<QueryIterator> future = milvusService.PagingSelectSchema("default_collection");
+        try {
+            while (true) {
+                QueryIterator queryIterator = future.get();
+                List<QueryResultsWrapper.RowRecord> res = queryIterator.next();
+                if (res.isEmpty()) {
+                    queryIterator.close();
+                    break;
+                }
+
+                for (QueryResultsWrapper.RowRecord record : res) {
+                    System.out.println(record.getFieldValues().values());
+                }
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

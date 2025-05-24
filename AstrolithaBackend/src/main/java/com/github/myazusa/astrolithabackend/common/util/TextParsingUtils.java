@@ -17,6 +17,7 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.apache.tika.sax.BodyContentHandler;
+import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -25,32 +26,50 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
+@Component
 public class TextParsingUtils {
     private final static Tika tika = new Tika();
     private final static AutoDetectParser parser = new AutoDetectParser();
     private final static TesseractOCRConfig ocrConfig = new TesseractOCRConfig();
     private final static ParseContext parseContext = new ParseContext();
-    private static boolean ocrConfigInited = false;
+    private static AtomicBoolean ocrConfigInited = new AtomicBoolean(false);
 
+    /**
+     * 解析文件
+     * @param path 文件路径，一般是在./uploads/rag
+     * @return 返回纯文本
+     */
     public static String ParsingAll(String path){
-        if (!ocrConfigInited){
-            ocrConfig.setLanguage("chi_sim");
-            parseContext.set(TesseractOCRConfig.class,ocrConfig);
-            ocrConfigInited = true;
+        Path filePath = Paths.get(path);
+        initOCRConfigIfNecessary();
+
+        if (!Files.exists(filePath)) {
+            log.error("文件不存在: {}", filePath);
+            return "";
         }
-        File file = new File(path);
-        try (InputStream input = new FileInputStream(file)) {
+
+        try (InputStream input = Files.newInputStream(filePath)) {
             BodyContentHandler handler = new BodyContentHandler(-1);
             Metadata metadata = new Metadata();
 
             parser.parse(input, handler, metadata, parseContext);
             return handler.toString();
+
         } catch (TikaException | SAXException | IOException e) {
-            log.error("解析文件出现错误：" + e.getMessage());
+            log.error("解析文件时发生错误: {}", e.getMessage(), e);
             return "";
+        }
+    }
+
+    private static void initOCRConfigIfNecessary() {
+        if (ocrConfigInited.compareAndSet(false, true)) {
+            ocrConfig.setLanguage("chi_sim"); // 简体中文识别
+            parseContext.set(TesseractOCRConfig.class, ocrConfig);
         }
     }
 

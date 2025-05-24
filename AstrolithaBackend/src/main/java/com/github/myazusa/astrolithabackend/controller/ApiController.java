@@ -1,6 +1,7 @@
 package com.github.myazusa.astrolithabackend.controller;
 
 import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
+import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
@@ -75,13 +76,14 @@ public class ApiController {
 
     /**
      * 语音接口，传入想要AI读的文本，以及对该文本的提示词
-     * @param text 要读出来的文本
-     * @param prompt 提示词
      * @return wav格式的音频文件
      */
     @PostMapping(value = "/speak", produces = "audio/wav")
-    public Mono<ResponseEntity<byte[]>> speak(@RequestBody String text, String prompt) {
-        return gptSoVITSService.synthesizeSpeechAsyncStream(text,prompt)
+    public Mono<ResponseEntity<byte[]>> speak(@RequestBody GPTSoVITSRequestDTO gptSoVITSRequestDTO) {
+        if (gptSoVITSRequestDTO == null) {
+            return Mono.empty();
+        }
+        return gptSoVITSService.synthesizeSpeechAsyncStream(gptSoVITSRequestDTO)
                 .map(audio -> ResponseEntity.ok()
                         .contentType(MediaType.valueOf("audio/wav"))
                         .body(audio));

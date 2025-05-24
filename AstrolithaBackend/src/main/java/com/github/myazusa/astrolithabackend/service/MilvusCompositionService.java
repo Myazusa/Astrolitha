@@ -11,6 +11,7 @@ import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.embedding.Embedding;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
+@Service
 public class MilvusCompositionService {
     private final MilvusService milvusService;
     private final TextChunkingService textChunkingService;
@@ -41,11 +43,10 @@ public class MilvusCompositionService {
                 // 等待ollama返回embedding
                 List<Embedding> embeddings = embeddingFuture.get();
                 // 使用Gson构造要插入的entity（要每条数据作为一个jsonobject）
-                List<JsonObject> records = JsonUtils.getJsonObjectList(embeddings, chunks, new File(path).getName());
+                List<JsonObject> records = JsonUtils.getJsonObjectList(embeddings, chunks, new File(path).getName(),"");
                 milvusService.InsertToSchema("default_collection",records);
             } catch (InterruptedException | ExecutionException e) {
                 log.error("未能获取到ollama的响应");
-                e.printStackTrace();
             }
         }
     }
@@ -70,7 +71,6 @@ public class MilvusCompositionService {
                 return entities;
             } catch (InterruptedException | ExecutionException e) {
                 log.error("未能获取到ollama的响应");
-                e.printStackTrace();
                 return null;
             }
         }
@@ -101,7 +101,6 @@ public class MilvusCompositionService {
                 return entities;
             } catch (InterruptedException | ExecutionException e) {
                 log.error("未能获取到ollama的响应");
-                e.printStackTrace();
                 return null;
             }
         }

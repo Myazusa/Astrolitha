@@ -8,16 +8,21 @@ import javax.validation.constraints.NotNull;
 @Data
 @Accessors(chain = true)
 public class GPTSoVITSRequestDTO {
-    // 返回的音频文件名
+    // 提示语音的路径
     @NotNull
-    private String refer_wav_path;
+    private String ref_audio_path;
 
-    // 提示词
+    @NotNull
+    // 提示语音对应的文本
     private String prompt_text;
 
-    // 语言
     @NotNull
-    private String prompt_language;
+    // 文本的语言
+    private String text_lang;
+
+    // 提示语音的语言
+    @NotNull
+    private String prompt_lang;
 
     // 要读的文本
     @NotNull

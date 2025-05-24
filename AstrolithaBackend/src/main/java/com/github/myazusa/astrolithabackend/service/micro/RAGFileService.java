@@ -2,12 +2,15 @@ package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.exception.FileOperationException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RAGFileService {
@@ -23,6 +26,13 @@ public class RAGFileService {
      * 获取rag目录下的所有文件名
      */
     public List<String> listAllFiles(){
+        if (!Files.exists(ragDir)) {
+            throw new FileOperationException("文件目录不存在");
+        }
+        if (!Files.isDirectory(ragDir)) {
+            throw new FileOperationException("配置的路径不是一个目录");
+        }
+
         List<String> filenames = new ArrayList<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(ragDir)) {
             for (Path entry : stream) {
@@ -30,9 +40,12 @@ public class RAGFileService {
                     filenames.add(entry.getFileName().toString());
                 }
             }
-        }catch (IOException e){
-            throw new FileOperationException("没有访问目录权限或目录不存在");
+        } catch (AccessDeniedException e) {
+            throw new FileOperationException("没有访问目录的权限：" + e.getMessage());
+        } catch (IOException e) {
+            throw new FileOperationException("读取目录失败："+ e.getMessage());
         }
+
         return filenames;
     }
 
@@ -42,15 +55,29 @@ public class RAGFileService {
      * @param newName 新名称
      */
     public void renameFile(String oldName, String newName) {
-        Path oldPath = ragDir.resolve(oldName);
-        Path newPath = ragDir.resolve(newName);
+        // 清理文件名，防止路径穿越攻击
+        String safeOldName = StringUtils.cleanPath(oldName);
+        String safeNewName = StringUtils.cleanPath(newName);
 
-        if (Files.exists(oldPath) && !Files.exists(newPath)) {
-            try {
-                Files.move(oldPath, newPath);
-            } catch (IOException e) {
-                throw new FileOperationException("已存在同名文件或旧文件不存在");
-            }
+        if (safeOldName.contains("..") || safeNewName.contains("..")) {
+            throw new FileOperationException("非法的文件名，禁止包含路径穿越符号");
+        }
+
+        Path oldPath = ragDir.resolve(safeOldName).normalize();
+        Path newPath = ragDir.resolve(safeNewName).normalize();
+
+        if (!Files.exists(oldPath)) {
+            throw new FileOperationException("原文件不存在，无法重命名");
+        }
+
+        if (Files.exists(newPath)) {
+            throw new FileOperationException("目标文件已存在，无法覆盖");
+        }
+
+        try {
+            Files.move(oldPath, newPath);
+        } catch (IOException e) {
+            throw new FileOperationException("重命名文件失败: " + e.getMessage());
         }
     }
 
@@ -62,12 +89,24 @@ public class RAGFileService {
             throw new FileOperationException("上传文件为空");
         }
 
-        Path targetLocation = ragDir.resolve(file.getOriginalFilename());
-
         try {
-            Files.copy(file.getInputStream(), targetLocation);
+            // 确保目录存在
+            if (!Files.exists(ragDir)) {
+                Files.createDirectories(ragDir);
+            }
+
+            // 清理文件名，防止路径穿越攻击
+            String fileName = StringUtils.cleanPath(Optional.ofNullable(file.getOriginalFilename()).isPresent() ? file.getOriginalFilename() : "");
+            if (fileName.contains("..")) {
+                throw new FileOperationException("非法的文件名：" + fileName);
+            }
+
+            // 使用 transferTo 简化保存
+            File targetFile = ragDir.resolve(fileName).toFile();
+            file.transferTo(targetFile);
+
         } catch (IOException e) {
-            throw new FileOperationException("保存文件时失败，无权限写入");
+            throw new FileOperationException("保存文件失败：" + e.getMessage());
         }
     }
 
@@ -75,7 +114,13 @@ public class RAGFileService {
      * 判断文件是否存在
      */
     public boolean fileExists(String filename) {
-        Path filePath = ragDir.resolve(filename);
-        return Files.exists(filePath);
+        // 防止路径穿越攻击
+        String cleanFilename = StringUtils.cleanPath(Optional.ofNullable(filename).orElse(""));
+        if (cleanFilename.contains("..")) {
+            throw new FileOperationException("非法的文件名：" + cleanFilename);
+        }
+
+        Path filePath = ragDir.resolve(cleanFilename).normalize();
+        return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
 }

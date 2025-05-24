@@ -24,6 +24,9 @@ public class OllamaService {
     @Value("${spring.ai.ollama.chat.model}")
     private String modelName;
 
+    @Value("${spring.ai.ollama.embedding.model}")
+    private String embeddingModelName;
+
     @Autowired
     public OllamaService(OllamaChatModel ollamaChatModel, OllamaEmbeddingModel ollamaEmbeddingModel) {
         this.ollamaChatModel = ollamaChatModel;
@@ -49,7 +52,14 @@ public class OllamaService {
      */
     @Async
     public CompletableFuture<List<Embedding>> getEmbeddingAsync(List<String> stringList){
-        EmbeddingResponse embeddingResponse = ollamaEmbeddingModel.call(new EmbeddingRequest(stringList, OllamaOptions.builder().build()));
+        EmbeddingResponse embeddingResponse = ollamaEmbeddingModel.call(
+                new EmbeddingRequest(
+                        stringList,
+                        OllamaOptions
+                                .builder()
+                                .model(embeddingModelName)
+                                .build()
+                ));
         return CompletableFuture.completedFuture(embeddingResponse.getResults());
     }
 }
