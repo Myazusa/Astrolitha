@@ -2,7 +2,7 @@
 import { ElButton, ElIcon } from 'element-plus'
 import {
   Refresh,
-  Setting,
+  Aim,
   Microphone
 } from '@element-plus/icons-vue'
 import {useModelStateStore, useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
@@ -21,9 +21,10 @@ const modelStateStore = useModelStateStore();
 const audioFilePath:string = ''
 let audioContext: AudioContext;
 
-// const openMouth = () => {
-//   modelStore.getModel()?.internalModel.coreModel.setParameterValueById("ParamMouthOpenY",1)
-// }
+const controlMouth = (param:number) => {
+  if (param>1||param<0) return
+  modelStore.getModel()?.internalModel.coreModel.setParameterValueById("ParamMouthOpenY",param)
+}
 
 async function fetchData() {
   const response = await fetch(audioFilePath)
@@ -51,8 +52,16 @@ onMounted(()=>{
   audioContext = new AudioContext()
 })
 
+const isOpen = ref(false)
 const speak = ()=>{
-  fetchData()
+  //fetchData()
+  if(isOpen.value){
+    controlMouth(1)
+    isOpen.value = !isOpen.value
+  }else {
+    controlMouth(0)
+    isOpen.value = !isOpen.value
+  }
 }
 
 /**
@@ -80,7 +89,6 @@ const handleMouseDown = (event: MouseEvent) => {
   isDragging = true;
   startX = event.clientX;
   startY = event.clientY;
-  console.log("Mouse down at:", startX, startY);
 };
 
 // 鼠标移动事件
@@ -177,11 +185,11 @@ const addFocus = () => {
           </svg>
         </el-icon>
       </el-button>
+      <el-button class="tool-btn" @click="addFocus">
+        <el-icon><Aim /></el-icon>
+      </el-button>
       <el-button class="tool-btn" @click="initialModel">
         <el-icon><Refresh /></el-icon>
-      </el-button>
-      <el-button class="tool-btn" @click="addFocus">
-        <el-icon><Setting /></el-icon>
       </el-button>
     </div>
   </div>
@@ -223,20 +231,20 @@ const addFocus = () => {
 
 .tool-btn:hover {
   background: rgba(0, 0, 0, 0.4);
-  color: var(--theme-color-tertiary);
+  color: var(--theme-color-hover);
 }
 
 .tool-btn:hover .el-icon svg{
-  fill: var(--theme-color-tertiary);
+  fill: var(--theme-color-hover);
 }
 
 .tool-btn.active {
   background: rgba(0, 0, 0, 0.4);
-  color: var(--theme-color-tertiary);
+  color: var(--theme-color-hover);
 }
 
 .tool-btn.active .el-icon svg {
-  fill: var(--theme-color-tertiary);
+  fill: var(--theme-color-hover);
 }
 
 .tool-btn :deep(.el-icon) {
