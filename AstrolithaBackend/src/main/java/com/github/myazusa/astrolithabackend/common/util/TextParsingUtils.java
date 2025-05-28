@@ -1,5 +1,6 @@
 package com.github.myazusa.astrolithabackend.common.util;
 
+import com.github.myazusa.astrolithabackend.exception.UnknownException;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.TextCollectingVisitor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class TextParsingUtils {
 
         if (!Files.exists(filePath)) {
             log.error("文件不存在: {}", filePath);
-            return "";
+            throw new UnknownException("文件不存在");
         }
 
         try (InputStream input = Files.newInputStream(filePath)) {
@@ -62,7 +63,7 @@ public class TextParsingUtils {
 
         } catch (TikaException | SAXException | IOException e) {
             log.error("解析文件时发生错误: {}", e.getMessage(), e);
-            return "";
+            throw new UnknownException("解析文件时发生错误");
         }
     }
 

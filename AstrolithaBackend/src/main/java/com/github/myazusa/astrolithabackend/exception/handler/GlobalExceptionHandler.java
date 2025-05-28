@@ -1,9 +1,6 @@
 package com.github.myazusa.astrolithabackend.exception.handler;
 
-import com.github.myazusa.astrolithabackend.exception.FileOperationException;
-import com.github.myazusa.astrolithabackend.exception.InvalidTokenException;
-import com.github.myazusa.astrolithabackend.exception.JsonConversionException;
-import com.github.myazusa.astrolithabackend.exception.VectorDatabaseAccessException;
+import com.github.myazusa.astrolithabackend.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -61,5 +58,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleFileOperationException(Exception e){
         log.warn("文件操作错误: {}",e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body("文件操作错误，"+e.getMessage());
+    }
+    @ExceptionHandler(RemoteServiceException.class)
+    public ResponseEntity<String> handleRemoteServiceException(Exception e){
+        log.error("远端服务错误: {}",e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("远端服务错误，"+e.getMessage());
+    }
+    @ExceptionHandler(UnknownException.class)
+    public ResponseEntity<String> handleUnknownException(Exception e){
+        log.error("未知错误: {}",e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误，"+e.getMessage());
     }
 }

@@ -84,29 +84,32 @@ public class RAGFileService {
     /**
      * 保存上传文件
      */
-    public void saveFile(MultipartFile file) {
-        if (file.isEmpty()) {
+    public void saveFile(List<MultipartFile> files) {
+        if (files.isEmpty()) {
             throw new FileOperationException("上传文件为空");
         }
-
-        try {
-            // 确保目录存在
-            if (!Files.exists(ragDir)) {
+        // 确保目录存在
+        if (!Files.exists(ragDir)) {
+            try {
                 Files.createDirectories(ragDir);
+            } catch (IOException e) {
+                throw new FileOperationException("创建目录失败");
             }
+        }
+        try {
+            for (MultipartFile file : files) {
+                // 清理文件名，防止路径穿越攻击
+                String fileName = StringUtils.cleanPath(Optional.ofNullable(file.getOriginalFilename()).isPresent() ? file.getOriginalFilename() : "");
+                if (fileName.contains("..")) {
+                    throw new FileOperationException("非法的文件名：" + fileName);
+                }
 
-            // 清理文件名，防止路径穿越攻击
-            String fileName = StringUtils.cleanPath(Optional.ofNullable(file.getOriginalFilename()).isPresent() ? file.getOriginalFilename() : "");
-            if (fileName.contains("..")) {
-                throw new FileOperationException("非法的文件名：" + fileName);
+                // 使用 transferTo 简化保存
+                File targetFile = ragDir.resolve(fileName).toFile();
+                file.transferTo(targetFile);
             }
-
-            // 使用 transferTo 简化保存
-            File targetFile = ragDir.resolve(fileName).toFile();
-            file.transferTo(targetFile);
-
         } catch (IOException e) {
-            throw new FileOperationException("保存文件失败：" + e.getMessage());
+            throw new FileOperationException("保存文件失败");
         }
     }
 

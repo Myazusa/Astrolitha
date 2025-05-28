@@ -2,10 +2,12 @@ package com.github.myazusa.astrolithabackend.controller;
 
 import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
+import com.github.myazusa.astrolithabackend.dto.ParsingFileRequestDTO;
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
+import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionService;
+import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
-import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
 import com.github.myazusa.astrolithabackend.service.micro.RAGFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Controller
 @RequestMapping("/api")
@@ -27,14 +27,16 @@ public class ApiController {
     private final GPTSoVITSService gptSoVITSService;
     private final FasterWhisperService fasterWhisperService;
     private final RAGFileService ragFileService;
-    private final OllamaService ollamaService;
+    private final AskQuestionCompositionService askQuestionCompositionService;
+    private final ParsingFileCompositionService parsingFileCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, RAGFileService ragFileService, OllamaService ollamaService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, RAGFileService ragFileService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
         this.ragFileService = ragFileService;
-        this.ollamaService = ollamaService;
+        this.askQuestionCompositionService = askQuestionCompositionService;
+        this.parsingFileCompositionService = parsingFileCompositionService;
     }
 
     /**
@@ -56,12 +58,8 @@ public class ApiController {
             }
             switch (modelInterfaceEnums) {
                 case ollama -> {
-                    CompletableFuture<String> future = ollamaService.getAnswerAsync(questionRequestDTO.getQuestion());
-                    try {
-                        ResponseEntity.status(HttpStatus.OK).body(future.get());
-                    } catch (InterruptedException | ExecutionException e) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).body("ollama异步调用异常");
-                    }
+                    String answer = askQuestionCompositionService.askQuestionWithRAG(questionRequestDTO.getQuestion());
+                    ResponseEntity.status(HttpStatus.OK).body(answer);
                 }
                 case python -> {
                     // todo:调用python
@@ -94,6 +92,7 @@ public class ApiController {
      * @param file 录音好的.wav音频文件
      * @return 读取音频得到的文本
      */
+    @PostMapping("/transcribe")
     public ResponseEntity<String> transcribe(@RequestParam("file") MultipartFile file){
         try {
             String result = fasterWhisperService.transcribeWavFile(file);
@@ -106,11 +105,11 @@ public class ApiController {
 
     /**
      * 上传文件接口
-     * @param file 单个文件，任意扩展名
+     * @param files 任意多个文件，任意扩展名
      */
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
-        ragFileService.saveFile(file);
+    public ResponseEntity<String> uploadFile(@RequestParam("file") List<MultipartFile> files){
+        ragFileService.saveFile(files);
         return ResponseEntity.ok("文件已保存:");
     }
 
@@ -132,5 +131,16 @@ public class ApiController {
     @GetMapping("/get_files")
     public List<String> listFiles(){
         return ragFileService.listAllFiles();
+    }
+
+    /**
+     * 解析文件为向量
+     * @param parsingFileRequestDTO 文件名对象
+     * @return 200为成功
+     */
+    @PostMapping("/parsing")
+    public ResponseEntity<String> Parsing(@RequestBody ParsingFileRequestDTO parsingFileRequestDTO){
+        parsingFileCompositionService.ParsingFile(parsingFileRequestDTO.getFileName());
+        return ResponseEntity.ok("解析成功");
     }
 }

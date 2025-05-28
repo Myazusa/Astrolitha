@@ -34,10 +34,10 @@ public class OllamaService {
     }
 
     @Async
-    public CompletableFuture<String> getAnswerAsync(String prompt){
+    public CompletableFuture<String> getAnswerAsync(String constructText){
         ChatResponse response = ollamaChatModel.call(
                 new Prompt(
-                        prompt,
+                        constructText,
                         OllamaOptions.builder()
                                 .model(modelName)
                                 .temperature(0.4)
