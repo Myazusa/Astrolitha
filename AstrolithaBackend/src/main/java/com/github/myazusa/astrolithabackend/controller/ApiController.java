@@ -38,7 +38,7 @@ public class ApiController {
         this.askQuestionCompositionService = askQuestionCompositionService;
         this.parsingFileCompositionService = parsingFileCompositionService;
     }
-
+    // todo: 要从前端传来有什么emotion，使用prompt去构造，让llm回答里面带上表情命令符
     /**
      * 提问接口
      * @param questionRequestDTO 一个构造好的“问题”请求对象，包含提问内容，模型设置的参数（参数现在只能是ollama）
