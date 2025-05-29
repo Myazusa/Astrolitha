@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElButton, ElIcon } from 'element-plus'
+import {ElButton, ElIcon, ElMessage} from 'element-plus'
 import {
   Refresh,
   Aim,
@@ -18,7 +18,7 @@ const modelStateStore = useModelStateStore();
 /**
  * 模型说话相关
  */
-const audioFilePath:string = ''
+const audioFilePath:string = '/audio/test.wav';
 let audioContext: AudioContext;
 
 const controlMouth = (param:number) => {
@@ -40,28 +40,24 @@ async function fetchData() {
     const dataArray = new Uint8Array(analyser.frequencyBinCount)
     analyser.getByteFrequencyData(dataArray)
     const volume = dataArray.reduce((a, b) => a + b)/dataArray.length
-    const mouthOpen = Math.min(1,volume/10)
+    const mouthOpen = Math.min(1,volume/200)
     modelStore.getModel()?.internalModel.coreModel.setParameterValueById('ParamMouthOpenY',mouthOpen);
     if(audioContext.state!=='closed'){
       requestAnimationFrame(updateMouth)
     }
-    updateMouth()
   }
+  updateMouth()
 }
 onMounted(()=>{
   audioContext = new AudioContext()
 })
 
-const isOpen = ref(false)
 const speak = ()=>{
-  //fetchData()
-  if(isOpen.value){
-    controlMouth(1)
-    isOpen.value = !isOpen.value
-  }else {
-    controlMouth(0)
-    isOpen.value = !isOpen.value
+  if(!modelStore.getModel()) {
+    ElMessage.warning("模型未加載")
+    return
   }
+  fetchData()
 }
 
 /**
@@ -70,7 +66,10 @@ const speak = ()=>{
 const isActiveMoveMode = ref(false);
 
 const moveModel = () => {
-  if(!modelStore.getModel()) return
+  if(!modelStore.getModel()) {
+    ElMessage.warning("模型未加載")
+    return
+  }
   if (isActiveMoveMode.value) {
     document.body.style.cursor = 'default';
     dragModel(false)
@@ -149,6 +148,10 @@ function focusMouse(event: MouseEvent) {
   modelStore.getModel()?.focus(event.clientX, event.clientY)
 }
 const addFocus = () => {
+  if(!modelStore.getModel()) {
+    ElMessage.warning("模型未加載")
+    return
+  }
   if (!isAddFocus.value) {
     modelStore.getCanvas()?.addEventListener('pointermove', focusMouse)
     isAddFocus.value = true

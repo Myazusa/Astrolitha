@@ -2,15 +2,26 @@ import * as PIXI from 'pixi.js';
 import { ref } from 'vue'
 import {Cubism4InternalModel, Live2DModel} from "pixi-live2d-display/cubism4";
 import { defineStore } from 'pinia';
+import {ElMessage} from "element-plus";
 
 export const useModelStore = defineStore('ModelStore', () => {
     const app = ref<PIXI.Application | null>(null);
     const model = ref<Live2DModel<Cubism4InternalModel> | null>(null);
     const canvas = ref<HTMLCanvasElement | null>(null);
     const inited = ref(false);
-    (window as any).Pixi = PIXI;
-    
+    const motionButtonList = ref<string[]>([]);
 
+    (window as any).Pixi = PIXI;
+
+    const initMotionButtonList = () => {
+        motionButtonList.value = []
+        model.value?.internalModel.motionManager.settings.expressions?.forEach((element) => {
+            motionButtonList.value.push(element.Name)
+        });
+    }
+    const getMotionButtonListRef = () => {
+        return motionButtonList;
+    }
 
     const getModel = () => model.value
 
@@ -41,7 +52,7 @@ export const useModelStore = defineStore('ModelStore', () => {
         model.value.autoInteract = false
         model.value.position.set(useModelStateStore().getModelPosition().x,useModelStateStore().getModelPosition().y)
         model.value.scale.set(useModelStateStore().getModelScale())
-
+        initMotionButtonList()
         app.value.stage.addChild(localModel)
         inited.value = true
     }
@@ -58,19 +69,38 @@ export const useModelStore = defineStore('ModelStore', () => {
         getModel,
         getCanvas,
         init,
-        destroy
+        destroy,
+        initMotionButtonList,
+        getMotionButtonListRef
     }
 })
 
 export const useSideButtonStateStore = defineStore('SideButtonStateStore', () => {
     const actionDialogVisible = ref<boolean>(false)
+    const radioDialogVisible = ref<boolean>(false)
+
+    const getRadioDialogVisibleRef = () => {
+        return radioDialogVisible
+    }
     const getActionDialogVisibleRef = () => {
         return actionDialogVisible;
     }
+    const setRadioDialogVisible = (visible:boolean) => {
+        if(!useModelStore().getModel()) {
+            ElMessage.warning("模型未加載")
+            return
+        }
+        radioDialogVisible.value = visible
+    }
     const setActionDialogVisible = (visible:boolean) =>{
+        var model = useModelStore().getModel();
+        if(!useModelStore().getModel()) {
+            ElMessage.warning("模型未加載")
+            return
+        }
         actionDialogVisible.value = visible
     }
-    return {getActionDialogVisibleRef,setActionDialogVisible}
+    return {getActionDialogVisibleRef,setActionDialogVisible,getRadioDialogVisibleRef,setRadioDialogVisible}
 })
 
 export const useModelStateStore = defineStore('ModelStateStore', () => {
@@ -79,12 +109,20 @@ export const useModelStateStore = defineStore('ModelStateStore', () => {
     const modelScale = ref<number>(0.3)
 
     const setModelPosition = (x:number,y:number) =>{
+        if(!useModelStore().getModel()) {
+            ElMessage.warning("模型未加載")
+            return
+        }
         modelPositionX.value = x
         modelPositionY.value = y
         useModelStore().getModel()?.position.set(x,y)
     }
 
     const setModelScale = (scale:number)=>{
+        if(!useModelStore().getModel()) {
+            ElMessage.warning("模型未加載")
+            return
+        }
         modelScale.value = scale
     }
 

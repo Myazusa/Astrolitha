@@ -4,7 +4,7 @@ import { ElAvatar, ElScrollbar, ElInput, ElButton, ElIcon } from 'element-plus'
 import { Promotion } from '@element-plus/icons-vue'
 import {useUserCenterChatStore} from "@/store/UserCenterStore";
 import axios from "axios";
-import {QuestionRequestDTO} from "@/interface/QuestionRequestDTO";
+import {Question} from "@/interface/Question";
 import {useApiStore} from "@/store/ApiStore";
 
 const apiStore = useApiStore();
@@ -20,7 +20,7 @@ const scrollbarRef = ref()
 function handleSend() {
   if (!input.value.trim()) return
   userCenterChatStore.addMessage({ role: 'user',name: '我', content: input.value })
-  const questionRequestDTO = ref<QuestionRequestDTO>({
+  const questionRequestDTO = ref<Question>({
     modelInterface:'ollama',
     question: input.value
   });

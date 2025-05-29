@@ -7,7 +7,19 @@ export const useApiStore = defineStore('ApiStore',()=>{
     const speakApi:string = '/speak'
     const uploadFileApi:string = '/upload'
     const listFilesApi:string = '/get_files'
+    const transcribeApi:string = '/transcribe'
+    const renameFileApi:string = '/rename_file'
+    const parsingApi:string = '/parsing'
 
+    const getParsingApi = () => {
+        return baseAddress + apiUrl + parsingApi
+    }
+    const getRenameFileApi = () => {
+        return baseAddress + apiUrl + renameFileApi
+    }
+    const getTranscribeApi = () => {
+        return baseAddress + apiUrl + transcribeApi
+    }
     const getListFilesApi = () => {
         return baseAddress + apiUrl + listFilesApi
     }
@@ -21,6 +33,6 @@ export const useApiStore = defineStore('ApiStore',()=>{
         return baseAddress + apiUrl +uploadFileApi
     }
     return {
-        getListFilesApi,getAskQuestionApi,getSpeakApi,getUploadFileApi
+        getListFilesApi,getAskQuestionApi,getSpeakApi,getUploadFileApi,getParsingApi,getRenameFileApi,getTranscribeApi
     }
 })

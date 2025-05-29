@@ -1,4 +1,4 @@
-﻿export interface QuestionRequestDTO {
+﻿export interface Question {
     modelInterface:string,
     question:string
 }

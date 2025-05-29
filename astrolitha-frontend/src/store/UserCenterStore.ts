@@ -2,7 +2,7 @@
 import { User, Setting, Document, SwitchButton } from '@element-plus/icons-vue'
 import {defineStore} from "pinia";
 import {Message} from "@/interface/Message";
-import {DatabaseFile} from "@/interface/DatabaseFile";
+import {RAGFile} from "@/interface/RAGFile";
 
 export const useUserCenterAsideStore = defineStore('UserCenterAsideStore', ()=>{
     // 侧边栏是否可见
@@ -140,7 +140,7 @@ export const useUserCenterChatStore = defineStore('UserCenterChatStore', ()=>{
 })
 
 export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',()=>{
-    const files = ref<DatabaseFile[]>([
+    const files = ref<RAGFile[]>([
         { id: 1, fileName: 'example1.txt', isParsed: true },
         { id: 2, fileName: 'example2.doc', isParsed: false },
         { id: 3, fileName: 'example3.docx', isParsed: false },
@@ -155,12 +155,12 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
         return files
     }
 
-    const parseFile = (file: DatabaseFile) => {
+    const parseFile = (file: RAGFile) => {
         file.isParsed = true
         // todo:记得修改服务端
     }
 
-    const renameFile = (file: DatabaseFile, newName: string) => {
+    const renameFile = (file: RAGFile, newName: string) => {
         file.fileName = newName
         // todo:记得修改服务端
     }

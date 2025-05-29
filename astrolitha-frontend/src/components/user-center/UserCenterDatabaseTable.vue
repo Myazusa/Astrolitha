@@ -2,16 +2,16 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserCenterDatabaseStore } from '@/store/UserCenterStore'
-import type { DatabaseFile } from '@/interface/DatabaseFile'
+import type { RAGFile } from '@/interface/RAGFile'
 
 const store = useUserCenterDatabaseStore()
 const files = store.getFilesRef()
 
 const renameDialogVisible = ref(false)
-const currentFile = ref<DatabaseFile | null>(null)
+const currentFile = ref<RAGFile | null>(null)
 const newFileName = ref('')
 
-const handleRename = (file: DatabaseFile) => {
+const handleRename = (file: RAGFile) => {
   currentFile.value = file
   newFileName.value = file.fileName
   renameDialogVisible.value = true

@@ -1,17 +1,21 @@
 ﻿<script setup lang="ts">
 
 import {useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
-import {ref} from "vue";
 import {ElMessage} from "element-plus";
+import {ref} from "vue";
 const sideButtonStateStore = useSideButtonStateStore();
 const modelStore = useModelStore();
 
 /**
  * 模型变换动作、表情相关
  */
-const motionButtonList = ref<string[]>(['Hands','Black Face','Dark Circle','HighLight Style'])
+let currentButtonName = '';
 const handleButtonClick = (buttonName: string) => {
+  if (currentButtonName === buttonName) {
+    modelStore.getModel()?.internalModel.motionManager.expressionManager?.resetExpression()
+  }
   if(modelStore.getModel()){
+    currentButtonName = buttonName
     modelStore.getModel()?.expression(buttonName)
   }else {
     ElMessage.error("還沒有模型被加載哦")
@@ -34,12 +38,11 @@ const handleButtonClick = (buttonName: string) => {
         <div class="dialog-content">
           <div class="dialog-content-title">動作列表</div>
           <div class="dialog-content-container">
-            <el-button v-for="(name,index) in motionButtonList" :key="index" class="dialog-content-element" color="transparent" round @click="handleButtonClick(name)">{{name}}</el-button>
+            <el-button v-for="(name,index) in modelStore.getMotionButtonListRef().value" :key="index" class="dialog-content-element" color="transparent" round @click="handleButtonClick(name)">{{name}}</el-button>
           </div>
         </div>
       </el-col>
     </el-row>
-
   </el-dialog>
 </template>
 
