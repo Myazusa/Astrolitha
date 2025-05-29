@@ -3,7 +3,8 @@ import {ElButton, ElIcon, ElMessage} from 'element-plus'
 import {
   Refresh,
   Aim,
-  Microphone
+  Microphone,
+    Setting,
 } from '@element-plus/icons-vue'
 import {useModelStateStore, useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
 import {onMounted, ref} from "vue";
@@ -15,50 +16,6 @@ const modelStore = useModelStore();
 const sideButtonStateStore = useSideButtonStateStore();
 const modelStateStore = useModelStateStore();
 
-/**
- * 模型说话相关
- */
-const audioFilePath:string = '/audio/test.wav';
-let audioContext: AudioContext;
-
-const controlMouth = (param:number) => {
-  if (param>1||param<0) return
-  modelStore.getModel()?.internalModel.coreModel.setParameterValueById("ParamMouthOpenY",param)
-}
-
-async function fetchData() {
-  const response = await fetch(audioFilePath)
-  const audioData = await response.arrayBuffer()
-  const audioBuffer = await audioContext.decodeAudioData(audioData)
-  const source = audioContext.createBufferSource()
-  const analyser = audioContext.createAnalyser()
-  source.buffer = audioBuffer
-  analyser.connect(audioContext.destination)
-  source.connect(analyser)
-  source.start()
-  const updateMouth = () => {
-    const dataArray = new Uint8Array(analyser.frequencyBinCount)
-    analyser.getByteFrequencyData(dataArray)
-    const volume = dataArray.reduce((a, b) => a + b)/dataArray.length
-    const mouthOpen = Math.min(1,volume/200)
-    modelStore.getModel()?.internalModel.coreModel.setParameterValueById('ParamMouthOpenY',mouthOpen);
-    if(audioContext.state!=='closed'){
-      requestAnimationFrame(updateMouth)
-    }
-  }
-  updateMouth()
-}
-onMounted(()=>{
-  audioContext = new AudioContext()
-})
-
-const speak = ()=>{
-  if(!modelStore.getModel()) {
-    ElMessage.warning("模型未加載")
-    return
-  }
-  fetchData()
-}
 
 /**
  * 模型拖动相关
@@ -160,6 +117,7 @@ const addFocus = () => {
     isAddFocus.value = false
   }
 }
+
 </script>
 
 <template>
@@ -175,7 +133,7 @@ const addFocus = () => {
           </svg>
         </el-icon>
       </el-button>
-      <el-button class="tool-btn" @click="speak">
+      <el-button class="tool-btn" @click="sideButtonStateStore.setRadioDialogVisible(true)">
         <el-icon><Microphone /></el-icon>
       </el-button>
       <el-button class="tool-btn" :class="{ active: isActiveMoveMode }" @click="moveModel">
@@ -193,6 +151,9 @@ const addFocus = () => {
       </el-button>
       <el-button class="tool-btn" @click="initialModel">
         <el-icon><Refresh /></el-icon>
+      </el-button>
+      <el-button class="tool-btn" @click="sideButtonStateStore.setOptionDialogVisible(true)">
+        <el-icon><Setting /></el-icon>
       </el-button>
     </div>
   </div>

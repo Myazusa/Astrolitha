@@ -1,10 +1,25 @@
 ﻿<script setup lang="ts">
 
-import {useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
-import {ElMessage} from "element-plus";
-import {ref} from "vue";
+import {useModelStateStore, useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
+import {ElIcon, ElMessage, ElSlider} from "element-plus";
+import {ZoomIn} from "@element-plus/icons-vue";
+import {watch} from "vue";
+
 const sideButtonStateStore = useSideButtonStateStore();
 const modelStore = useModelStore();
+const modelStateStore = useModelStateStore();
+
+/**
+ * 模型大小控制
+ */
+const scale = modelStateStore.getModelScaleRef()
+watch(scale, (value) => {
+  if(!useModelStore().getModel()) {
+    ElMessage.warning("模型未加載")
+    return
+  }
+  modelStore.getModel()?.scale.set(value)
+})
 
 /**
  * 模型变换动作、表情相关
@@ -27,28 +42,49 @@ const handleButtonClick = (buttonName: string) => {
 <template>
   <el-dialog
       v-model="sideButtonStateStore.getActionDialogVisibleRef().value"
-      title="模型控制"
+      title="模型設置"
       width="60vw"
       align-center
       :modal="false"
       overflow
   >
-    <el-row>
-      <el-col>
+    <div class="dialog-layout">
         <div class="dialog-content">
           <div class="dialog-content-title">動作列表</div>
           <div class="dialog-content-container">
             <el-button v-for="(name,index) in modelStore.getMotionButtonListRef().value" :key="index" class="dialog-content-element" color="transparent" round @click="handleButtonClick(name)">{{name}}</el-button>
           </div>
         </div>
-      </el-col>
-    </el-row>
+        <div class="dialog-content">
+          <div class="dialog-content-title">模型大小</div>
+          <div class="dialog-content-container">
+            <div class="scale-control">
+              <el-icon><ZoomIn /></el-icon>
+              <el-slider
+                  v-model="scale"
+                  :min="0.1"
+                  :max="2"
+                  :step="0.1"
+                  class="scale-slider"
+              />
+            </div>
+          </div>
+        </div>
+    </div>
   </el-dialog>
 </template>
 
 <style scoped>
+.dialog-layout{
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.35rem;
+  gap: 1.35rem;
+}
 .dialog-content{
-  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   padding: 0 1rem;
 }
 .dialog-content-title{
@@ -70,5 +106,43 @@ const handleButtonClick = (buttonName: string) => {
 }
 .dialog-content-element{
   width: fit-content;
+}
+.control-btn :deep(.el-icon) {
+  font-size: 3.5vw;
+}
+:deep(.el-icon){
+  font-size: 2.75vw;
+  color: var(--theme-color-on-primary);
+}
+.scale-slider {
+  justify-items: center;
+  height: 3.2rem;
+  width: 90%;
+}
+.scale-control{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+.scale-control :deep(.el-icon svg){
+  font-size: 2.22vw;
+}
+.scale-slider{
+  justify-items: center;
+  height: 3.2rem;
+  width: 90%;
+}
+:deep(.el-slider__runway) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:deep(.el-slider__bar) {
+  background-color: var(--theme-color-hover);
+}
+
+:deep(.el-slider__button) {
+  border-color: var(--theme-color-hover);
 }
 </style>

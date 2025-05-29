@@ -1,9 +1,10 @@
 ﻿<script setup lang="ts">
 import { ref } from 'vue'
 import Live2DStudioLeftSide from '@/components/live2d-studio/Live2DStudioLeftSide.vue'
-import Live2DStudioRightSide from '@/components/live2d-studio/Live2DStudioRightSide.vue'
 import Live2DStudioMain from "@/components/live2d-studio/Live2DStudioMain.vue";
 import Live2DStudioActionDialog from "@/components/live2d-studio/Live2DStudioActionDialog.vue";
+import Live2DStudioOptionDialog from "@/components/live2d-studio/Live2DStudioOptionDialog.vue";
+import Live2DStudioRadioDialog from "@/components/live2d-studio/Live2DStudioRadioDialog.vue";
 
 const brightness = ref(100)
 </script>
@@ -12,8 +13,9 @@ const brightness = ref(100)
   <div class="l2d-studio" :style="{ filter: `brightness(${brightness}%)` }">
     <Live2DStudioMain class="main-content" />
     <Live2DStudioLeftSide class="overlay left-overlay" />
-    <Live2DStudioRightSide class="overlay right-overlay" v-model:brightness="brightness" />
     <Live2DStudioActionDialog />
+    <Live2DStudioOptionDialog />
+    <Live2DStudioRadioDialog />
   </div>
 </template>
 

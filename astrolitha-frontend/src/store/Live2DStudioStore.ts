@@ -51,7 +51,7 @@ export const useModelStore = defineStore('ModelStore', () => {
         model.value = localModel
         model.value.autoInteract = false
         model.value.position.set(useModelStateStore().getModelPosition().x,useModelStateStore().getModelPosition().y)
-        model.value.scale.set(useModelStateStore().getModelScale())
+        model.value.scale.set(useModelStateStore().getModelScaleRef().value)
         initMotionButtonList()
         app.value.stage.addChild(localModel)
         inited.value = true
@@ -78,12 +78,19 @@ export const useModelStore = defineStore('ModelStore', () => {
 export const useSideButtonStateStore = defineStore('SideButtonStateStore', () => {
     const actionDialogVisible = ref<boolean>(false)
     const radioDialogVisible = ref<boolean>(false)
+    const optionDialogVisible = ref<boolean>(false)
 
     const getRadioDialogVisibleRef = () => {
         return radioDialogVisible
     }
     const getActionDialogVisibleRef = () => {
         return actionDialogVisible;
+    }
+    const getOptionDialogVisibleRef = () => {
+        return optionDialogVisible;
+    }
+    const setOptionDialogVisible = (visible:boolean) => {
+        optionDialogVisible.value = visible
     }
     const setRadioDialogVisible = (visible:boolean) => {
         if(!useModelStore().getModel()) {
@@ -100,7 +107,7 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
         }
         actionDialogVisible.value = visible
     }
-    return {getActionDialogVisibleRef,setActionDialogVisible,getRadioDialogVisibleRef,setRadioDialogVisible}
+    return {getActionDialogVisibleRef,setActionDialogVisible,getRadioDialogVisibleRef,setRadioDialogVisible,setOptionDialogVisible,getOptionDialogVisibleRef}
 })
 
 export const useModelStateStore = defineStore('ModelStateStore', () => {
@@ -118,16 +125,9 @@ export const useModelStateStore = defineStore('ModelStateStore', () => {
         useModelStore().getModel()?.position.set(x,y)
     }
 
-    const setModelScale = (scale:number)=>{
-        if(!useModelStore().getModel()) {
-            ElMessage.warning("模型未加載")
-            return
-        }
-        modelScale.value = scale
-    }
 
-    const getModelScale = ():number =>{
-        return modelScale.value
+    const getModelScaleRef = () =>{
+        return modelScale
     }
 
     const getModelPosition = ()=>{
@@ -136,7 +136,18 @@ export const useModelStateStore = defineStore('ModelStateStore', () => {
             y: modelPositionY.value
         }
     }
-    return{setModelPosition,getModelPosition,setModelScale,getModelScale}
+    return{setModelPosition,getModelPosition,getModelScaleRef}
 },{
     persist: true
+})
+
+export const useCommonStateStore = defineStore('CommonStateStore', () => {
+    const volume = ref<number>(0)
+
+    const getVolumeRef = () => {
+        return volume
+    }
+    return{
+        getVolumeRef,
+    }
 })
