@@ -1,5 +1,6 @@
 package com.github.myazusa.astrolithabackend.service;
 
+import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.service.micro.RagFileExplorerService;
 import com.github.myazusa.astrolithabackend.service.micro.RagSqlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UploadFilesCompositionService {
+public class RagFilesOperationalCompositionService {
     private final RagSqlService ragSqlService;
     private final RagFileExplorerService ragFileExplorerService;
 
     @Autowired
-    public UploadFilesCompositionService(RagSqlService ragSqlService, RagFileExplorerService ragFileExplorerService) {
+    public RagFilesOperationalCompositionService(RagSqlService ragSqlService, RagFileExplorerService ragFileExplorerService) {
         this.ragSqlService = ragSqlService;
         this.ragFileExplorerService = ragFileExplorerService;
     }
@@ -27,6 +28,18 @@ public class UploadFilesCompositionService {
                 .map(MultipartFile::getOriginalFilename)
                 .collect(Collectors.toList());
         ragSqlService.addNewFiles(fileNames,"20eb190b-f8c3-4dfc-812e-c784dd58bdae");
+        // 这个顺序不要反，先尝试操作数据库
         ragFileExplorerService.saveFile(files);
+    }
+
+    @Transactional
+    public void renameFile(String oldName, String newName) {
+        ragSqlService.updateFileName(oldName, newName);
+        // 这个顺序不要反，先尝试操作数据库
+        ragFileExplorerService.renameFile(oldName, newName);
+    }
+
+    public List<RagFile> getFiles(){
+        return ragSqlService.queryAllFile();
     }
 }

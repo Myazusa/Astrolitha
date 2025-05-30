@@ -20,16 +20,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
         log.error("未知异常: {}", e.getMessage(), e);
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("非预期的系统异常，请稍后再试");
     }
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<String> handleDataAccessException(Exception e) {
         log.error("数据库访问异常: {}", e.getMessage(), e);
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("数据库操作失败");
     }
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<String> handleDuplicateKeyException(Exception e) {
         log.error("数据库发生键冲突: {}", e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("数据已存在，不能重复插入");
     }
     @ExceptionHandler(BadCredentialsException.class)

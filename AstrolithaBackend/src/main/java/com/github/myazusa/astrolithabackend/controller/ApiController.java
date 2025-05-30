@@ -4,11 +4,12 @@ import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
 import com.github.myazusa.astrolithabackend.dto.ParsingFileRequestDTO;
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
+import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionService;
 import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
+import com.github.myazusa.astrolithabackend.service.RagFilesOperationalCompositionService;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
-import com.github.myazusa.astrolithabackend.service.micro.RagFileExplorerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,17 +27,17 @@ import java.util.Optional;
 public class ApiController {
     private final GPTSoVITSService gptSoVITSService;
     private final FasterWhisperService fasterWhisperService;
-    private final RagFileExplorerService ragFileExplorerService;
     private final AskQuestionCompositionService askQuestionCompositionService;
     private final ParsingFileCompositionService parsingFileCompositionService;
+    private final RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, RagFileExplorerService ragFileExplorerService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
-        this.ragFileExplorerService = ragFileExplorerService;
         this.askQuestionCompositionService = askQuestionCompositionService;
         this.parsingFileCompositionService = parsingFileCompositionService;
+        this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
     }
     // todo: 要从前端传来有什么emotion，使用prompt去构造，让llm回答里面带上表情命令符
     /**
@@ -109,7 +110,7 @@ public class ApiController {
      */
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") List<MultipartFile> files){
-        ragFileExplorerService.saveFile(files);
+        ragFilesOperationalCompositionService.uploadFiles(files);
         return ResponseEntity.ok("文件已保存:");
     }
 
@@ -120,7 +121,7 @@ public class ApiController {
      */
     @PostMapping("/rename_file")
     public ResponseEntity<String> renameFile(@RequestParam String oldName, @RequestParam String newName) {
-        ragFileExplorerService.renameFile(oldName, newName);
+        ragFilesOperationalCompositionService.renameFile(oldName, newName);
         return ResponseEntity.ok("重命名成功");
     }
 
@@ -129,9 +130,9 @@ public class ApiController {
      * @return 文件名的List
      */
     @GetMapping("/get_files")
-    public List<String> listFiles(){
+    public List<RagFile> listFiles(){
         //todo:接口返回的對象和前端的對不上
-        return ragFileExplorerService.listAllFiles();
+        return ragFilesOperationalCompositionService.getFiles();
     }
 
     /**

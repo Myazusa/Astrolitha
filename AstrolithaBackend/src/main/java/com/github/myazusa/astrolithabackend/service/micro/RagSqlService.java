@@ -1,6 +1,8 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.myazusa.astrolithabackend.mapper.RagFileMapper;
 import com.github.myazusa.astrolithabackend.model.RagFile;
@@ -78,5 +80,18 @@ public class RagSqlService extends ServiceImpl<RagFileMapper, RagFile> {
     public Boolean fileNameExist(String fileName) {
         return this.count(new LambdaQueryWrapper<RagFile>()
                 .eq(RagFile::getFileName, fileName)) > 0;
+    }
+
+    public Boolean updateFileName(String oldFileName, String newFileName) {
+        if (!fileNameExist(oldFileName)) {
+            return false;
+        }
+        RagFile updateObj = new RagFile();
+        updateObj.setFileName(newFileName);
+
+        LambdaUpdateWrapper<RagFile> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(RagFile::getFileName, oldFileName);
+
+        return this.update(updateObj, updateWrapper);
     }
 }

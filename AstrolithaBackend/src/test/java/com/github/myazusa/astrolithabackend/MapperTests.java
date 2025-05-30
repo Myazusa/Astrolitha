@@ -53,4 +53,11 @@ public class MapperTests {
         Boolean state = ragSqlService.addNewFiles(fileNames, "20eb190b-f8c3-4dfc-812e-c784dd58bdae");
         log.info("是否插入成功{}",state);
     }
+
+    // 成功
+    @Test
+    void testUpdateFileName(){
+        Boolean state = ragSqlService.updateFileName("aaa.doc", "bbb.doc");
+        log.info("是否修改成功{}",state);
+    }
 }
