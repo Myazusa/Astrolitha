@@ -4,6 +4,7 @@ import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
 import com.github.myazusa.astrolithabackend.dto.ParsingFileRequestDTO;
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
+import com.github.myazusa.astrolithabackend.dto.RenameRequestDTO;
 import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionService;
 import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
@@ -116,12 +117,11 @@ public class ApiController {
 
     /**
      * 重命名文件接口
-     * @param oldName 要重命名的文件名
-     * @param newName 新名字
+     * @param renameRequestDTO 对象
      */
     @PostMapping("/rename_file")
-    public ResponseEntity<String> renameFile(@RequestParam String oldName, @RequestParam String newName) {
-        ragFilesOperationalCompositionService.renameFile(oldName, newName);
+    public ResponseEntity<String> renameFile(@RequestBody RenameRequestDTO renameRequestDTO) {
+        ragFilesOperationalCompositionService.renameFile(renameRequestDTO.getOldName(), renameRequestDTO.getNewName());
         return ResponseEntity.ok("重命名成功");
     }
 
@@ -131,7 +131,6 @@ public class ApiController {
      */
     @GetMapping("/get_files")
     public List<RagFile> listFiles(){
-        //todo:接口返回的對象和前端的對不上
         return ragFilesOperationalCompositionService.getFiles();
     }
 

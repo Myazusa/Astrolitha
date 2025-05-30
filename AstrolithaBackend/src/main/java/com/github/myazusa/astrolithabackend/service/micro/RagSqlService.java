@@ -2,7 +2,6 @@ package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.myazusa.astrolithabackend.mapper.RagFileMapper;
 import com.github.myazusa.astrolithabackend.model.RagFile;
@@ -15,11 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class RagSqlService extends ServiceImpl<RagFileMapper, RagFile> {
 
-    public Boolean queryParsingStatus(String fileName) {
+    public Boolean queryParsedStatus(String fileName) {
         LambdaQueryWrapper<RagFile> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(RagFile::getFileName, fileName);
         RagFile file = this.getOne(wrapper, false);
-        return file != null ? file.getIsParsing() : null;
+        return file != null ? file.getIsParsed() : null;
     }
 
     public Boolean addNewFile(String fileName, String userUUID) {

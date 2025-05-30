@@ -18,7 +18,7 @@ public class MapperTests {
     // 成功
     @Test
     void testQueryParsingStatus(){
-        Boolean parsingStatus = ragSqlService.queryParsingStatus("公务员录用体检考生须知.doc");
+        Boolean parsingStatus = ragSqlService.queryParsedStatus("公务员录用体检考生须知.doc");
         log.info("解析状态是：{}",parsingStatus);
     }
 

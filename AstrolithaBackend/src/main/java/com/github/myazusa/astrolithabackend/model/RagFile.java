@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 @Data
 @TableName("rag_file")
 public class RagFile {
+    private Integer id;
     private String fileName;
     private String fileUuid;
     private String uploadUserUuid;
     @TableField(insertStrategy = FieldStrategy.NOT_NULL)
-    private Boolean isParsing;
+    private Boolean isParsed;
     @TableField(insertStrategy = FieldStrategy.NOT_NULL)
     private LocalDateTime uploadDate;
 }
