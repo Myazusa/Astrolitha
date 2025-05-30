@@ -3,11 +3,12 @@ import { ref, watch } from 'vue'
 import {ElMessage, UploadProps, UploadFile, UploadRawFile} from 'element-plus'
 import axios from 'axios'
 import {Upload} from '@element-plus/icons-vue'
+import {useApiStore} from "@/store/ApiStore";
 
 const dialogVisible = ref(false)
 const uploadRef = ref()
 const fileList = ref<UploadFile[]>([])
-
+const apiStore = useApiStore();
 /**
  * 主动关闭上传窗口逻辑
  */
@@ -66,7 +67,7 @@ const handleUpload = async () => {
   })
 
   try {
-    await axios.post('YOUR_UPLOAD_URL', formData, {
+    await axios.post(apiStore.getUploadFileApi(), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

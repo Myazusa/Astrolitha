@@ -17,6 +17,7 @@ export const useApiStore = defineStore('ApiStore',()=>{
     const getRenameFileApi = () => {
         return baseAddress + apiUrl + renameFileApi
     }
+    // todo:没有用法
     const getTranscribeApi = () => {
         return baseAddress + apiUrl + transcribeApi
     }
@@ -26,6 +27,7 @@ export const useApiStore = defineStore('ApiStore',()=>{
     const getAskQuestionApi = () => {
         return baseAddress + apiUrl + askQuestionApi
     }
+    // todo:没有用法
     const getSpeakApi = () => {
         return baseAddress + apiUrl + speakApi
     }

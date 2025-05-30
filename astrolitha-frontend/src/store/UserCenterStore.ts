@@ -2,7 +2,10 @@
 import { User, Setting, Document, SwitchButton } from '@element-plus/icons-vue'
 import {defineStore} from "pinia";
 import {Message} from "@/interface/Message";
-import {RAGFile} from "@/interface/RAGFile";
+import {RagFile} from "@/interface/RagFile";
+import axios from "axios";
+import {useApiStore} from "@/store/ApiStore";
+import {ElMessage} from "element-plus";
 
 export const useUserCenterAsideStore = defineStore('UserCenterAsideStore', ()=>{
     // 侧边栏是否可见
@@ -140,35 +143,72 @@ export const useUserCenterChatStore = defineStore('UserCenterChatStore', ()=>{
 })
 
 export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',()=>{
-    const files = ref<RAGFile[]>([
-        { id: 1, fileName: 'example1.txt', isParsed: true },
-        { id: 2, fileName: 'example2.doc', isParsed: false },
-        { id: 3, fileName: 'example3.docx', isParsed: false },
-        { id: 4, fileName: 'example4.csv', isParsed: false },
+    const files = ref<RagFile[]>([
+        { id: 1, fileName: 'example1.txt', isParsed: true,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
+        { id: 2, fileName: 'example2.doc', isParsed: false,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
+        { id: 3, fileName: 'example3.docx', isParsed: false,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
+        { id: 4, fileName: 'example4.csv', isParsed: false,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
     ])
+    const initTable = async () => {
+        const apiStore = useApiStore();
+        await axios.get<RagFile[]>(apiStore.getListFilesApi())
+            .then(res => {
+                files.value = res.data
+            })
+            .catch(err => {
+                console.log(err)
+                ElMessage.error("刷新失败：" + err)
+            })
+    }
 
     const addFiles = ()=>{
-        files.value.push({ id: 5, fileName: 'example5.jpg', isParsed: true })
+        files.value.push({ id: 5, fileName: 'example5.jpg', isParsed: true,uploadDate:'',uploadUserUuid:'',fileUuid:'' })
     }
 
     const getFilesRef = () => {
         return files
     }
 
-    const parseFile = (file: RAGFile) => {
-        file.isParsed = true
-        // todo:记得修改服务端
+    const parseFile = (file: RagFile) => {
+        const apiStore = useApiStore();
+        let data = {fileName:file.fileName}
+        axios.post(apiStore.getParsingApi(), data)
+            .then(res => {
+                if(res.status === 200){
+                    ElMessage.success("解析完成")
+                    file.isParsed = true
+                }
+                ElMessage.error("解析失败" + res.status)
+            })
+            .catch(err => {
+                ElMessage.error("解析失败" + err)
+            })
     }
 
-    const renameFile = (file: RAGFile, newName: string) => {
+    const renameFile = (file: RagFile | null, newName: string) => {
+        if (!file){
+            return
+        }
+        let data = {oldName: file.fileName, newName: newName}
+        axios.post(useApiStore().getRenameFileApi(),data)
+            .then(res => {
+                if (res.status === 200) {
+                    ElMessage.success('修改成功')
+
+                }
+                ElMessage.error('修改失败'+res.status)
+            })
+            .catch(err => {
+                ElMessage.error("修改失败：" + err)
+            })
         file.fileName = newName
-        // todo:记得修改服务端
     }
 
     return {
         getFilesRef,
         parseFile,
         renameFile,
-        addFiles
+        addFiles,
+        initTable
     }
 })

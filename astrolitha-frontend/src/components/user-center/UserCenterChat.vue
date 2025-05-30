@@ -17,7 +17,7 @@ const userCenterChatStore = useUserCenterChatStore();
 const input = ref('')
 const scrollbarRef = ref()
 
-function handleSend() {
+const handleSend = () => {
   if (!input.value.trim()) return
   userCenterChatStore.addMessage({ role: 'user',name: '我', content: input.value })
   const questionRequestDTO = ref<Question>({

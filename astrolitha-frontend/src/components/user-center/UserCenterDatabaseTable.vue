@@ -1,32 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserCenterDatabaseStore } from '@/store/UserCenterStore'
-import type { RAGFile } from '@/interface/RAGFile'
+import type { RagFile } from '@/interface/RagFile'
+import axios from "axios";
+import {useApiStore} from "@/store/ApiStore";
 
-const store = useUserCenterDatabaseStore()
-const files = store.getFilesRef()
-
+const userCenterDatabaseStore = useUserCenterDatabaseStore()
+const files = userCenterDatabaseStore.getFilesRef()
+const apiStore = useApiStore();
+/**
+ * 表格内容顯示相關
+ */
+onMounted(async () => {
+  await userCenterDatabaseStore.initTable()
+})
+/**
+ * 重命名相關
+ */
 const renameDialogVisible = ref(false)
-const currentFile = ref<RAGFile | null>(null)
+const currentFile = ref<RagFile | null>(null)
 const newFileName = ref('')
-
-const handleRename = (file: RAGFile) => {
+const handleRename = (file: RagFile) => {
   currentFile.value = file
   newFileName.value = file.fileName
   renameDialogVisible.value = true
 }
-
 const handleRenameConfirm = () => {
   if (!currentFile.value) return
   if (!newFileName.value.trim()) {
     ElMessage.warning('文件名不能為空')
     return
   }
-  store.renameFile(currentFile.value, newFileName.value.trim())
+  userCenterDatabaseStore.renameFile(currentFile.value, newFileName.value)
   renameDialogVisible.value = false
 }
-
 const handleRenameCancel = () => {
   renameDialogVisible.value = false
   currentFile.value = null
@@ -65,7 +73,7 @@ const handleRenameCancel = () => {
           type="primary"
           size="small"
           :disabled="row.isParsed"
-          @click="store.parseFile(row)"
+          @click="userCenterDatabaseStore.parseFile(row)"
           round
         >
           解析
