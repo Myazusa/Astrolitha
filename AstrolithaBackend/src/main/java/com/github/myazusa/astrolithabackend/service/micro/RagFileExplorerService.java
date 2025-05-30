@@ -1,6 +1,6 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
-import com.github.myazusa.astrolithabackend.exception.FileOperationException;
+import com.github.myazusa.astrolithabackend.common.exception.FileOperationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.config;
+package com.github.myazusa.astrolithabackend.common.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.ai.ollama.OllamaChatModel;

@@ -1,9 +1,8 @@
-package com.github.myazusa.astrolithabackend.config;
+package com.github.myazusa.astrolithabackend.common.config;
 
-import com.github.myazusa.astrolithabackend.exception.VectorDatabaseAccessException;
+import com.github.myazusa.astrolithabackend.common.exception.VectorDatabaseAccessException;
 import io.milvus.v2.client.ConnectConfig;
 import io.milvus.v2.client.MilvusClientV2;
-import io.milvus.v2.service.database.request.CreateDatabaseReq;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

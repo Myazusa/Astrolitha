@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.config;
+package com.github.myazusa.astrolithabackend.common.config;
 
 import com.github.myazusa.astrolithabackend.common.filter.JwtAuthenticationFilter;
 import com.github.myazusa.astrolithabackend.common.provider.UserAuthenticationProvider;

@@ -1,7 +1,7 @@
 package com.github.myazusa.astrolithabackend.service;
 
-import com.github.myazusa.astrolithabackend.exception.RemoteServiceException;
-import com.github.myazusa.astrolithabackend.exception.UnknownException;
+import com.github.myazusa.astrolithabackend.common.exception.RemoteServiceException;
+import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
 import com.github.myazusa.astrolithabackend.service.micro.MilvusService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
 import com.github.myazusa.astrolithabackend.common.builder.PromptConstructionBuilder;

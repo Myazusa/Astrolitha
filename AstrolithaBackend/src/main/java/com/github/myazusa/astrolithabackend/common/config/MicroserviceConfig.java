@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.config;
+package com.github.myazusa.astrolithabackend.common.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

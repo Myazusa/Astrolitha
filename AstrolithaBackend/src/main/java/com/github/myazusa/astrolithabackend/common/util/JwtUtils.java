@@ -1,6 +1,6 @@
 package com.github.myazusa.astrolithabackend.common.util;
 
-import com.github.myazusa.astrolithabackend.exception.InvalidTokenException;
+import com.github.myazusa.astrolithabackend.common.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

@@ -1,4 +1,4 @@
-package com.github.myazusa.astrolithabackend.exception;
+package com.github.myazusa.astrolithabackend.common.exception;
 
 public class VectorDatabaseAccessException extends RuntimeException{
     public VectorDatabaseAccessException(String message) {

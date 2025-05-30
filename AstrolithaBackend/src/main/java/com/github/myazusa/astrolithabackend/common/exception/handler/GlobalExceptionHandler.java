@@ -1,5 +1,6 @@
-package com.github.myazusa.astrolithabackend.exception.handler;
+package com.github.myazusa.astrolithabackend.common.exception.handler;
 
+import com.github.myazusa.astrolithabackend.common.exception.*;
 import com.github.myazusa.astrolithabackend.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;

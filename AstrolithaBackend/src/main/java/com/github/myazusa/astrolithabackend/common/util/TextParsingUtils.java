@@ -1,6 +1,6 @@
 package com.github.myazusa.astrolithabackend.common.util;
 
-import com.github.myazusa.astrolithabackend.exception.UnknownException;
+import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.TextCollectingVisitor;
 import lombok.extern.slf4j.Slf4j;

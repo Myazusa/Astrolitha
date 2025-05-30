@@ -1,6 +1,6 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
-import com.github.myazusa.astrolithabackend.exception.VectorDatabaseAccessException;
+import com.github.myazusa.astrolithabackend.common.exception.VectorDatabaseAccessException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.milvus.orm.iterator.QueryIterator;
@@ -21,8 +21,6 @@ import io.milvus.v2.service.vector.request.data.FloatVec;
 import io.milvus.v2.service.vector.response.InsertResp;
 import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
