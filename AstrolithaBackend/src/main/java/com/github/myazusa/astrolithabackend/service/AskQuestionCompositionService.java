@@ -4,7 +4,7 @@ import com.github.myazusa.astrolithabackend.exception.RemoteServiceException;
 import com.github.myazusa.astrolithabackend.exception.UnknownException;
 import com.github.myazusa.astrolithabackend.service.micro.MilvusService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
-import com.github.myazusa.astrolithabackend.service.micro.PromptConstructionService;
+import com.github.myazusa.astrolithabackend.common.builder.PromptConstructionBuilder;
 import io.milvus.v2.service.vector.request.data.FloatVec;
 import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +22,13 @@ import java.util.concurrent.ExecutionException;
 public class AskQuestionCompositionService {
     private final MilvusService milvusService;
     private final OllamaService ollamaService;
-    private final PromptConstructionService promptConstructionService;
+    private final PromptConstructionBuilder promptConstructionBuilder;
 
     @Autowired
-    public AskQuestionCompositionService(MilvusService milvusService, OllamaService ollamaService, PromptConstructionService promptConstructionService) {
+    public AskQuestionCompositionService(MilvusService milvusService, OllamaService ollamaService, PromptConstructionBuilder promptConstructionBuilder) {
         this.milvusService = milvusService;
         this.ollamaService = ollamaService;
-        this.promptConstructionService = promptConstructionService;
+        this.promptConstructionBuilder = promptConstructionBuilder;
     }
 
     /**
@@ -84,7 +84,7 @@ public class AskQuestionCompositionService {
         for (String s : queryVDB(question)) {
             prompt.append(s);
         }
-        String constructText = promptConstructionService.constructPromptWithText(prompt.toString(), question);
+        String constructText = promptConstructionBuilder.withRag(prompt.toString()).withBanLanguage().build(question);
         CompletableFuture<String> future = ollamaService.getAnswerAsync(constructText);
         try {
             return future.get();
