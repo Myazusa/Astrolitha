@@ -7,6 +7,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -57,6 +59,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileOperationException.class)
     public ResponseEntity<String> handleFileOperationException(Exception e){
         log.warn("文件操作错误: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("文件操作错误，"+e.getMessage());
     }
     @ExceptionHandler(RemoteServiceException.class)

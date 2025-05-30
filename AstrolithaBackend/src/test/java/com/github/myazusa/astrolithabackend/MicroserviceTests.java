@@ -39,7 +39,7 @@ public class MicroserviceTests {
     private GPTSoVITSService gpsSoVITSService;
 
     @Autowired
-    private RAGFileService ragFileService;
+    private RagFileExplorerService ragFileExplorerService;
 
     @Autowired
     private TextChunkingService textChunkingService;
@@ -84,7 +84,7 @@ public class MicroserviceTests {
     // 列出路径文件。成功
     @Test
     void testRAGFileService(){
-        for (String file : ragFileService.listAllFiles()) {
+        for (String file : ragFileExplorerService.listAllFiles()) {
             log.info("文件：{}", file);
         }
     }

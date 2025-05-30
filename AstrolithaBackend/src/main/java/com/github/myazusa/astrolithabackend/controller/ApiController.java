@@ -8,7 +8,7 @@ import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionServic
 import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
-import com.github.myazusa.astrolithabackend.service.micro.RAGFileService;
+import com.github.myazusa.astrolithabackend.service.micro.RagFileExplorerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,15 +26,15 @@ import java.util.Optional;
 public class ApiController {
     private final GPTSoVITSService gptSoVITSService;
     private final FasterWhisperService fasterWhisperService;
-    private final RAGFileService ragFileService;
+    private final RagFileExplorerService ragFileExplorerService;
     private final AskQuestionCompositionService askQuestionCompositionService;
     private final ParsingFileCompositionService parsingFileCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, RAGFileService ragFileService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, RagFileExplorerService ragFileExplorerService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
-        this.ragFileService = ragFileService;
+        this.ragFileExplorerService = ragFileExplorerService;
         this.askQuestionCompositionService = askQuestionCompositionService;
         this.parsingFileCompositionService = parsingFileCompositionService;
     }
@@ -109,7 +109,7 @@ public class ApiController {
      */
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") List<MultipartFile> files){
-        ragFileService.saveFile(files);
+        ragFileExplorerService.saveFile(files);
         return ResponseEntity.ok("文件已保存:");
     }
 
@@ -120,7 +120,7 @@ public class ApiController {
      */
     @PostMapping("/rename_file")
     public ResponseEntity<String> renameFile(@RequestParam String oldName, @RequestParam String newName) {
-        ragFileService.renameFile(oldName, newName);
+        ragFileExplorerService.renameFile(oldName, newName);
         return ResponseEntity.ok("重命名成功");
     }
 
@@ -130,7 +130,8 @@ public class ApiController {
      */
     @GetMapping("/get_files")
     public List<String> listFiles(){
-        return ragFileService.listAllFiles();
+        //todo:接口返回的對象和前端的對不上
+        return ragFileExplorerService.listAllFiles();
     }
 
     /**

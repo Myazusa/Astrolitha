@@ -5,7 +5,7 @@ import com.github.myazusa.astrolithabackend.exception.RemoteServiceException;
 import com.github.myazusa.astrolithabackend.exception.UnknownException;
 import com.github.myazusa.astrolithabackend.service.micro.MilvusService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
-import com.github.myazusa.astrolithabackend.service.micro.RAGFileService;
+import com.github.myazusa.astrolithabackend.service.micro.RagFileExplorerService;
 import com.github.myazusa.astrolithabackend.service.micro.TextChunkingService;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,6 @@ import org.springframework.ai.embedding.Embedding;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -25,15 +23,15 @@ public class ParsingFileCompositionService {
     private final TextChunkingService textChunkingService;
     private final OllamaService ollamaService;
     private final MilvusService milvusService;
-    private final RAGFileService ragFileService;
+    private final RagFileExplorerService ragFileExplorerService;
 
     private final StringBuilder pathStringBuilder = new StringBuilder("./uploads/rag/");
 
-    public ParsingFileCompositionService(TextChunkingService textChunkingService, OllamaService ollamaService, MilvusService milvusService, RAGFileService ragFileService) {
+    public ParsingFileCompositionService(TextChunkingService textChunkingService, OllamaService ollamaService, MilvusService milvusService, RagFileExplorerService ragFileExplorerService) {
         this.textChunkingService = textChunkingService;
         this.ollamaService = ollamaService;
         this.milvusService = milvusService;
-        this.ragFileService = ragFileService;
+        this.ragFileExplorerService = ragFileExplorerService;
     }
 
     /**
@@ -42,7 +40,7 @@ public class ParsingFileCompositionService {
      */
     public void ParsingFile(String fileName){
         String path = pathStringBuilder.append(fileName).toString();
-        if(!ragFileService.fileExists(path)) {
+        if(!ragFileExplorerService.fileExists(path)) {
             throw new UnknownException("文件不存在");
         }
         List<String> chunks = textChunkingService.TextChunking(path);

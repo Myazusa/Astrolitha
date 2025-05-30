@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RAGFileService {
+public class RagFileExplorerService {
     private final Path ragDir = Paths.get("./uploads/rag").toAbsolutePath().normalize();
 
-    public RAGFileService() throws IOException {
+    public RagFileExplorerService() throws IOException {
         if (!Files.exists(ragDir)) {
             Files.createDirectories(ragDir);
         }
