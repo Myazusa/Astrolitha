@@ -18,6 +18,8 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.apache.tika.sax.BodyContentHandler;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
@@ -27,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -45,16 +46,16 @@ public class TextParsingUtils {
      * @param path 文件路径，一般是在./uploads/rag
      * @return 返回纯文本
      */
-    public static String ParsingAll(String path){
-        Path filePath = Paths.get(path);
+    public static String ParsingAll(String path, ResourceLoader resourceLoader){
         initOCRConfigIfNecessary();
+        Resource resource = resourceLoader.getResource("file:" + path);
 
-        if (!Files.exists(filePath)) {
-            log.error("文件不存在: {}", filePath);
-            throw new UnknownException("文件不存在");
-        }
+        try (InputStream input = resource.getInputStream()) {
+            if (!resource.exists()) {
+                log.error("文件不存在: {}", path);
+                throw new UnknownException("文件不存在");
+            }
 
-        try (InputStream input = Files.newInputStream(filePath)) {
             BodyContentHandler handler = new BodyContentHandler(-1);
             Metadata metadata = new Metadata();
 

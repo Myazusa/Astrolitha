@@ -15,6 +15,7 @@ import org.springframework.ai.embedding.Embedding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
@@ -49,6 +50,9 @@ public class MicroserviceTests {
 
     @Autowired
     private MilvusService milvusService;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
 
     // 测试从语音识别文本。成功
@@ -92,7 +96,7 @@ public class MicroserviceTests {
     // 解析文件。成功
     @Test
     void testTextParsingUtils(){
-        String s = TextParsingUtils.ParsingAll("./uploads/rag/公务员录用体检考生须知.doc");
+        String s = TextParsingUtils.ParsingAll("./uploads/rag/公务员录用体检考生须知.doc",resourceLoader);
         log.info("解析后的字符串：{}", s);
     }
 

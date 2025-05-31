@@ -1,5 +1,9 @@
 # spring框架的配置，包含AI的部分
 spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 500MB
   application:
     name: AstrolithaBackend
   datasource:

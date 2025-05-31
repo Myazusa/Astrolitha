@@ -39,36 +39,38 @@ public class ApiController {
     }
     // todo: 要从前端传来有什么emotion，使用prompt去构造，让llm回答里面带上表情命令符
     /**
+     * 测试成功
      * 提问接口
      * @param questionRequestDTO 一个构造好的“问题”请求对象，包含提问内容，模型设置的参数（参数现在只能是ollama）
      * @return markdown文本，前端需要用markdown解析
      */
     @PostMapping("/ask")
     public ResponseEntity<String> askQuestion(@RequestBody QuestionRequestDTO questionRequestDTO){
-        if (Optional.ofNullable(questionRequestDTO).isPresent()){
-            ModelInterfaceEnums modelInterfaceEnums = null;
-            try{
-                modelInterfaceEnums = ModelInterfaceEnums.getFromString(questionRequestDTO.getModelInterface());
-            } catch (Exception e) {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("modelInterface参数不正确");
+        ModelInterfaceEnums modelInterfaceEnums = null;
+        try{
+            modelInterfaceEnums = ModelInterfaceEnums.getFromString(questionRequestDTO.getModelInterface());
+        } catch (Exception e) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{message:\"modelInterface参数不正确\"}");
+        }
+        if (Optional.ofNullable(modelInterfaceEnums).isEmpty()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{message:\"modelInterface参数转换失败\"}");
+        }
+        switch (modelInterfaceEnums) {
+            case ollama -> {
+                // todo:有问题，rag结合的不对
+                // String answer = askQuestionCompositionService.askQuestionWithRAG(questionRequestDTO.getQuestion());
+
+                String answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
+                return ResponseEntity.status(HttpStatus.OK).body(answer);
             }
-            if (Optional.ofNullable(modelInterfaceEnums).isEmpty()){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("modelInterface参数转换失败");
+            case python -> {
+                // todo:调用python
+                return ResponseEntity.status(HttpStatus.OK).body("{message:指定了python，但该部分微服务暂未实现}");
             }
-            switch (modelInterfaceEnums) {
-                case ollama -> {
-                    String answer = askQuestionCompositionService.askQuestionWithRAG(questionRequestDTO.getQuestion());
-                    ResponseEntity.status(HttpStatus.OK).body(answer);
-                }
-                case python -> {
-                    // todo:调用python
-                    return ResponseEntity.status(HttpStatus.OK).body("指定了python，但该部分微服务暂未实现");
-                }
-                default -> {
-                }
+            default -> {
             }
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未收到请求体");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{message:未收到请求体}");
     }
 
     /**
@@ -87,6 +89,7 @@ public class ApiController {
     }
 
     /**
+     * 测试成功
      * 文字接口，传入语音文件，转换为文字
      * @param file 录音好的.wav音频文件
      * @return 读取音频得到的文本
@@ -105,35 +108,39 @@ public class ApiController {
     }
 
     /**
+     * 测试成功
      * 上传文件接口
      * @param files 任意多个文件，任意扩展名
      */
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") List<MultipartFile> files){
+    public ResponseEntity<String> uploadFile(@RequestParam("files") List<MultipartFile> files){
         ragFilesOperationalCompositionService.uploadFiles(files);
-        return ResponseEntity.ok("文件已保存:");
+        return ResponseEntity.ok("{message:文件已保存}");
     }
 
     /**
+     * 测试成功
      * 重命名文件接口
      * @param renameRequestDTO 对象
      */
     @PostMapping("/rename_file")
     public ResponseEntity<String> renameFile(@RequestBody RenameRequestDTO renameRequestDTO) {
         ragFilesOperationalCompositionService.renameFile(renameRequestDTO.getOldName(), renameRequestDTO.getNewName());
-        return ResponseEntity.ok("重命名成功");
+        return ResponseEntity.ok("{message:重命名成功}");
     }
 
     /**
+     * 测试成功
      * 获取所有文件名
      * @return 文件名的List
      */
     @GetMapping("/get_files")
-    public List<RagFile> listFiles(){
-        return ragFilesOperationalCompositionService.getFiles();
+    public ResponseEntity<List<RagFile>> listFiles(){
+        return ResponseEntity.status(HttpStatus.OK).body(ragFilesOperationalCompositionService.getFiles());
     }
 
     /**
+     * 测试成功
      * 解析文件为向量
      * @param parsingFileRequestDTO 文件名对象
      * @return 200为成功
@@ -141,6 +148,6 @@ public class ApiController {
     @PostMapping("/parsing")
     public ResponseEntity<String> Parsing(@RequestBody ParsingFileRequestDTO parsingFileRequestDTO){
         parsingFileCompositionService.ParsingFile(parsingFileRequestDTO.getFileName());
-        return ResponseEntity.ok("解析成功");
+        return ResponseEntity.ok("{message:解析成功}");
     }
 }

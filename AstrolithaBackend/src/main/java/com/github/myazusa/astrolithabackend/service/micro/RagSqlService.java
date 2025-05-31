@@ -93,4 +93,17 @@ public class RagSqlService extends ServiceImpl<RagFileMapper, RagFile> {
 
         return this.update(updateObj, updateWrapper);
     }
+
+    public Boolean updateParsedStatus(String fileName) {
+        if (!fileNameExist(fileName)) {
+            return false;
+        }
+        RagFile updateObj = new RagFile();
+        updateObj.setIsParsed(true);
+
+        LambdaUpdateWrapper<RagFile> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(RagFile::getFileName, fileName);
+
+        return this.update(updateObj, updateWrapper);
+    }
 }

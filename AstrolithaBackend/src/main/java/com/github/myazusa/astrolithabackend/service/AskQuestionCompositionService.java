@@ -82,7 +82,17 @@ public class AskQuestionCompositionService {
         for (String s : queryVDB(question)) {
             prompt.append(s);
         }
-        String constructText = new PromptConstructionBuilder().withRag(prompt.toString()).withBanLanguage().build(question);
+        String constructText = new PromptConstructionBuilder().withRag(prompt.toString()).withLanguage("zh").withBanLanguage().build(question);
+        CompletableFuture<String> future = ollamaService.getAnswerAsync(constructText);
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("ollama服务访问失败", e);
+            throw new RemoteServiceException("ollama服务访问失败");
+        }
+    }
+    public String askQuestion(String question){
+        String constructText = new PromptConstructionBuilder().withLanguage("zh").withBanLanguage().build(question);
         CompletableFuture<String> future = ollamaService.getAnswerAsync(constructText);
         try {
             return future.get();

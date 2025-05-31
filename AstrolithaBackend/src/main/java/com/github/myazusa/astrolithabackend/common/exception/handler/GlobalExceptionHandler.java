@@ -44,6 +44,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentialsException(Exception e){
         log.error("用户凭证无效: {}", e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("密码错误或手机号未注册");
     }
     @ExceptionHandler(NoResourceFoundException.class)
@@ -53,16 +56,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JsonConversionException.class)
     public ResponseEntity<String> handleJsonConversionException(Exception e){
         log.warn("Json文件实例化对象失败: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("服务器在转换json文件时出错");
     }
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<String> handleInvalidTokenException(Exception e){
         log.warn("无效令牌: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("令牌无效，禁止访问");
     }
     @ExceptionHandler(VectorDatabaseAccessException.class)
     public ResponseEntity<String> handleVectorDatabaseAccessException(Exception e){
         log.warn("向量数据库访问错误: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("向量数据库访问错误");
     }
     @ExceptionHandler(FileOperationException.class)
@@ -76,11 +88,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RemoteServiceException.class)
     public ResponseEntity<String> handleRemoteServiceException(Exception e){
         log.error("远端服务错误: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("远端服务错误，"+e.getMessage());
     }
     @ExceptionHandler(UnknownException.class)
     public ResponseEntity<String> handleUnknownException(Exception e){
         log.error("未知错误: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("未知错误，"+e.getMessage());
     }
 }
