@@ -1,14 +1,29 @@
 ﻿<script setup lang="ts">
-import {useCommonStateStore, useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
-import {onMounted} from "vue";
+import {useCommonStateStore, useModelStore, useRecorderStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
+import {onMounted, ref, watch} from "vue";
 import {ElIcon, ElMessage, ElSlider} from "element-plus";
 import {Headset} from "@element-plus/icons-vue";
+import {VoiceRecorder} from "@/assets/script/VoiceRecorder";
 
 const sideButtonStateStore = useSideButtonStateStore();
 const modelStore = useModelStore();
 const commonStateStore = useCommonStateStore();
-
+const recorderStore = useRecorderStore();
 const volume = commonStateStore.getVolumeRef();
+
+/**
+ * 模型監聽相關
+ */
+const { startRecording,stopRecording } = VoiceRecorder()
+watch(() => recorderStore.isRecording, async (val) => {
+      if (val) {
+        await startRecording()
+      } else {
+        stopRecording()
+      }
+    }
+)
+const recordState = ref<string>('開啓')
 /**
  * 模型说话相关
  */
@@ -67,9 +82,19 @@ const speak = ()=>{
   >
     <div class="dialog-layout">
       <div class="dialog-content">
-        <div class="dialog-content-title">音頻測試</div>
+        <div class="dialog-content-title">監聽説話</div>
         <div class="dialog-content-container">
-          <el-button color="transparent" round>點擊播放默認音頻進行測試</el-button>
+          <el-switch
+              v-model="recorderStore.isRecording"
+              rounded="rounded"
+              :active-text="recordState"
+          />
+        </div>
+      </div>
+      <div class="dialog-content">
+        <div class="dialog-content-title">模型音頻測試</div>
+        <div class="dialog-content-container">
+          <el-button color="transparent" round @click="speak">點擊播放默認音頻進行測試</el-button>
         </div>
       </div>
       <div class="dialog-content">

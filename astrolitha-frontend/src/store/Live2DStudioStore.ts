@@ -151,3 +151,12 @@ export const useCommonStateStore = defineStore('CommonStateStore', () => {
         getVolumeRef,
     }
 })
+
+export const useRecorderStore = defineStore('RecorderStore', () => {
+    const isRecording = ref<boolean>(false)
+    const waitingResponse = ref<boolean>(false)
+
+    return {
+        isRecording,waitingResponse,
+    }
+})
