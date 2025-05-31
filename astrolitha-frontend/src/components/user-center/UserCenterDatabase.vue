@@ -17,7 +17,7 @@ const handleUploadClick = () => {
   <header>
     <div class="header-title">向量數據庫</div>
     <div>
-      <el-button class="reflash-button" size="large" round @click="userCenterDatabaseStore.addFiles()">刷新</el-button>
+      <el-button class="reflash-button" size="large" round @click="userCenterDatabaseStore.initTable()">刷新</el-button>
       <el-button class="upload-button" size="large" round @click="handleUploadClick">點我上傳</el-button>
     </div>
   </header>

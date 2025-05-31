@@ -113,10 +113,7 @@ export const useUserCenterOption = defineStore('UserCenterOption', ()=>{
 })
 
 export const useUserCenterChatStore = defineStore('UserCenterChatStore', ()=>{
-    const messages = ref<Message[]>([
-        { role: 'user', name: 'My',content: 'krita画日漫光照和光晕效果有什么技巧么？' },
-        { role: 'assistant',name: 'DeepSeek', content: `在 Krita 中绘制日漫风格的光照和光晕效果，主要涉及以下几个技巧和方法：<br><br>🌟 <b>一、整体思路</b><br>日漫光照强调分区明确的光影对比、干净的光斑/高光和柔和的光晕特效。典型场景如阳光洒在人物脸上、逆光边缘光等。Krita 提供了丰富的图层混合模式和笔刷，可以很好地实现这些效果。<br><br>🎨 <b>二、技巧与方法</b><br>1. <b>使用图层模式叠加光晕</b><br>新增加图层，图层模式设为"加亮（Additive）"或"滤色（Screen）"，用柔光笔刷画高光和光晕。` }
-    ])
+    const messages = ref<Message[]>([])
     // todo:记得补完初始化
     const initChatHistory = ()=>{}
     const addMessage = (message:Message) => {
@@ -143,12 +140,7 @@ export const useUserCenterChatStore = defineStore('UserCenterChatStore', ()=>{
 })
 
 export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',()=>{
-    const files = ref<RagFile[]>([
-        { id: 1, fileName: 'example1.txt', isParsed: true,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
-        { id: 2, fileName: 'example2.doc', isParsed: false,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
-        { id: 3, fileName: 'example3.docx', isParsed: false,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
-        { id: 4, fileName: 'example4.csv', isParsed: false,uploadDate:'',uploadUserUuid:'',fileUuid:'' },
-    ])
+    const files = ref<RagFile[]>([])
     const initTable = async () => {
         const apiStore = useApiStore();
         await axios.get<RagFile[]>(apiStore.getListFilesApi())
@@ -177,11 +169,16 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
                 if(res.status === 200){
                     ElMessage.success("解析完成")
                     file.isParsed = true
+                }else {
+                    ElMessage.error("暫不支持該種文件" + res.status)
                 }
-                ElMessage.error("解析失败" + res.status)
             })
             .catch(err => {
-                ElMessage.error("解析失败" + err)
+                if(err.response.status === 500){
+                    ElMessage.error("解析失敗，不支持的文件")
+                }else {
+                    ElMessage.error("解析失敗，網絡錯誤")
+                }
             })
     }
 
@@ -195,8 +192,9 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
                 if (res.status === 200) {
                     ElMessage.success('修改成功')
 
+                }else {
+                    ElMessage.error('修改失败'+res.status)
                 }
-                ElMessage.error('修改失败'+res.status)
             })
             .catch(err => {
                 ElMessage.error("修改失败：" + err)
@@ -208,7 +206,6 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
         getFilesRef,
         parseFile,
         renameFile,
-        addFiles,
         initTable
     }
 })

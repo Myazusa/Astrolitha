@@ -17,18 +17,20 @@ const userCenterChatStore = useUserCenterChatStore();
 const input = ref('')
 const scrollbarRef = ref()
 
-const handleSend = () => {
+const handleSend = async () => {
   if (!input.value.trim()) return
   userCenterChatStore.addMessage({ role: 'user',name: '我', content: input.value })
-  const questionRequestDTO = ref<Question>({
+  const questionRequestDTO = {
     modelInterface:'ollama',
     question: input.value
-  });
-  // todo:实现给用户手动让ollama拉模型功能
-  axios.post(apiStore.getAskQuestionApi(),questionRequestDTO)
+  };
+  input.value = ''
+  await axios.post(apiStore.getAskQuestionApi(),questionRequestDTO)
     .then(response => {
+      input.value = ''
+      const cleaned = response.data.replace(/<think>.*?<\/think>/gs, '')
       setTimeout(() => {
-        userCenterChatStore.addMessage({ role: 'assistant',name: 'Deepseek', content: response.data })
+        userCenterChatStore.addMessage({ role: 'assistant',name: 'Deepseek', content: cleaned })
         nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
       }, 800)
       nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
