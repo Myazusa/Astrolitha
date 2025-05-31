@@ -1,10 +1,7 @@
 package com.github.myazusa.astrolithabackend.controller;
 
 import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
-import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
-import com.github.myazusa.astrolithabackend.dto.ParsingFileRequestDTO;
-import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
-import com.github.myazusa.astrolithabackend.dto.RenameRequestDTO;
+import com.github.myazusa.astrolithabackend.dto.*;
 import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionService;
 import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
@@ -95,13 +92,15 @@ public class ApiController {
      * @return 读取音频得到的文本
      */
     @PostMapping("/transcribe")
-    public ResponseEntity<String> transcribe(@RequestParam("file") MultipartFile file){
+    public ResponseEntity<TranscribeResponseDTO> transcribe(@RequestParam("file") MultipartFile file){
         try {
             String result = fasterWhisperService.transcribeWavFile(file);
-            return ResponseEntity.ok(result);
+            TranscribeResponseDTO transcribeResponseDTO = new TranscribeResponseDTO();
+            transcribeResponseDTO.setText(result);
+            return ResponseEntity.status(HttpStatus.OK).body(transcribeResponseDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("网络错误: " + e.getMessage());
+                    .build();
         }
     }
 

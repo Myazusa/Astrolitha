@@ -22,13 +22,11 @@ import java.util.concurrent.ExecutionException;
 public class AskQuestionCompositionService {
     private final MilvusService milvusService;
     private final OllamaService ollamaService;
-    private final PromptConstructionBuilder promptConstructionBuilder;
 
     @Autowired
-    public AskQuestionCompositionService(MilvusService milvusService, OllamaService ollamaService, PromptConstructionBuilder promptConstructionBuilder) {
+    public AskQuestionCompositionService(MilvusService milvusService, OllamaService ollamaService) {
         this.milvusService = milvusService;
         this.ollamaService = ollamaService;
-        this.promptConstructionBuilder = promptConstructionBuilder;
     }
 
     /**
@@ -84,7 +82,7 @@ public class AskQuestionCompositionService {
         for (String s : queryVDB(question)) {
             prompt.append(s);
         }
-        String constructText = promptConstructionBuilder.withRag(prompt.toString()).withBanLanguage().build(question);
+        String constructText = new PromptConstructionBuilder().withRag(prompt.toString()).withBanLanguage().build(question);
         CompletableFuture<String> future = ollamaService.getAnswerAsync(constructText);
         try {
             return future.get();

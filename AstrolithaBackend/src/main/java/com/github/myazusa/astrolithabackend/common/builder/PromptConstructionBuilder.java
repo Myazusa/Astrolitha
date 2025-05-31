@@ -1,5 +1,6 @@
 package com.github.myazusa.astrolithabackend.common.builder;
 
+
 public class PromptConstructionBuilder {
     private final StringBuilder questionText = new StringBuilder();
 
