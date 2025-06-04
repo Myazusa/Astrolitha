@@ -13,9 +13,26 @@ services:
       - ./volumes/mysql:/var/lib/mysql
 
 # llm的容器
-  ollama:
+  ollama-embedding:
     image: ollama/ollama:latest
-    container_name: ollama
+    container_name: ollama-embedding
+    ports:
+      - "11435:11434"
+    volumes:
+      - ./volumes/ollama_embedding:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+
+  ollama-chat:
+    image: ollama/ollama:latest
+    container_name: ollama-chat
     ports:
       - "11434:11434"
     volumes:
@@ -26,7 +43,7 @@ services:
           devices:
             - driver: nvidia
               count: all
-              capabilities: [gpu]
+              capabilities: [ gpu ]
     environment:
       NVIDIA_VISIBLE_DEVICES: all
 
