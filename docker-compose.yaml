@@ -20,6 +20,15 @@ services:
       - "11434:11434"
     volumes:
       - ./volumes/ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
 
 # asr的容器，这个容器是docker上没有镜像的，在本项目FastWhisperService下自己制作镜像
   whisper:
