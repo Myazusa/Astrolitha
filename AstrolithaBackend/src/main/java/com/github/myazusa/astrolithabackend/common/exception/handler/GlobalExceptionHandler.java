@@ -93,6 +93,14 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("远端服务错误，"+e.getMessage());
     }
+    @ExceptionHandler(InvalidAgentException.class)
+    public ResponseEntity<String> handlerInvalidAgentException(Exception e){
+        log.error("无效Agent: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("无效Agent，"+e.getMessage());
+    }
     @ExceptionHandler(UnknownException.class)
     public ResponseEntity<String> handleUnknownException(Exception e){
         log.error("未知错误: {}",e.getMessage());

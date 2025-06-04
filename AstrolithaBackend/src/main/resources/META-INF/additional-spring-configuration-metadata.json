@@ -31,9 +31,9 @@
       "description": "Description for app.ollama.api-url."
     },
     {
-      "name": "app.ollama.embedding.model",
+      "name": "spring.ai.ollama.agent.model",
       "type": "java.lang.String",
-      "description": "Description for app.ollama.embedding.model."
+      "description": "Description for spring.ai.ollama.agent.model."
     },
     {
       "name": "microservice.gpt-sovits.url",

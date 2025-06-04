@@ -39,7 +39,7 @@ public class ApiController {
     }
     // todo: 要从前端传来有什么emotion，使用prompt去构造，让llm回答里面带上表情命令符
     /**
-     * 测试成功
+     * 测试成功但延时过高
      * 提问接口
      * @param questionRequestDTO 一个构造好的“问题”请求对象，包含提问内容，模型设置的参数（参数现在只能是ollama）
      * @return markdown文本，前端需要用markdown解析
@@ -57,10 +57,8 @@ public class ApiController {
         }
         switch (modelInterfaceEnums) {
             case ollama -> {
-                // todo:有问题，rag结合的不对
-                // String answer = askQuestionCompositionService.askQuestionWithRAG(questionRequestDTO.getQuestion());
-
-                String answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
+                //String answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
+                String answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion());
                 return ResponseEntity.status(HttpStatus.OK).body(answer);
             }
             case python -> {

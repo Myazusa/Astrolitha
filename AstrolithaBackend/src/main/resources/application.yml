@@ -14,8 +14,11 @@ spring:
   ai:
     ollama:
       base-url: http://localhost:11434
+      sub-url: http://localhost:11435
       chat:
-        model: deepseek-r1:1.5b
+        model: deepseek-r1:7b
+      agent:
+        model: llama3.1:8b
       embedding:
         model: bge-m3:latest
 
@@ -40,6 +43,14 @@ app:
         origin: file:./uploads/rag/
         mapping: /uploads/rag/**
 
+ollama:
+  warmup:
+    - name: llama3.1:8b
+      url: http://localhost:11434/api/generate
+      prompt: ping
+    - name: bge-m3:latest
+      url: http://localhost:11435/api/embeddings
+      prompt: ping
 
 microservice:
   gpt-sovits:

@@ -1,6 +1,7 @@
 package com.github.myazusa.astrolithabackend.common.config;
 
 import io.micrometer.observation.ObservationRegistry;
+import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.ollama.OllamaEmbeddingModel;
 import org.springframework.ai.ollama.api.OllamaApi;
@@ -15,17 +16,24 @@ public class ModelConfig {
     @Value("${spring.ai.ollama.base-url}")
     private String ollamaApiUrl;
 
+    @Value("${spring.ai.ollama.sub-url}")
+    private String ollamaSubUrl;
+
     @Value("${spring.ai.ollama.embedding.model}")
     private String ollamaModelName;
 
     @Bean
     public OllamaChatModel ollamaChatModel() {
-        return OllamaChatModel.builder().ollamaApi(OllamaApi.builder().baseUrl(ollamaApiUrl).build()).build();
+        return OllamaChatModel.builder()
+                .ollamaApi(OllamaApi.builder()
+                        .baseUrl(ollamaApiUrl)
+                        .build()
+                ).build();
     }
 
     @Bean
     public OllamaEmbeddingModel ollamaEmbeddingModel(){
-        return new OllamaEmbeddingModel(OllamaApi.builder().baseUrl(ollamaApiUrl).build(),
+        return new OllamaEmbeddingModel(OllamaApi.builder().baseUrl(ollamaSubUrl).build(),
                 OllamaOptions.builder()
                         .model(ollamaModelName)
                         .build(),
