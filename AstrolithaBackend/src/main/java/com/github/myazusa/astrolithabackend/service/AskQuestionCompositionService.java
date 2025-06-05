@@ -57,6 +57,11 @@ public class AskQuestionCompositionService {
         }
     }
 
+    /**
+     * 不启用agent时调用这个方法
+     * @param question
+     * @return
+     */
     public String askQuestion(String question){
         String constructedPrompt = new PromptConstructionBuilder()
                 .withLanguage()
@@ -71,6 +76,11 @@ public class AskQuestionCompositionService {
         }
     }
 
+    /**
+     * 启用了agent功能，才调用这个方法
+     * @param question
+     * @return
+     */
     public String askQuestionWithAgent(String question){
         String constructedPrompt = new PromptConstructionBuilder()
                 .withLanguage()

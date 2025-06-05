@@ -37,7 +37,8 @@ public class ApiController {
         this.parsingFileCompositionService = parsingFileCompositionService;
         this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
     }
-    // todo: 要从前端传来有什么emotion，使用prompt去构造，让llm回答里面带上表情命令符
+
+
     /**
      * 测试成功但延时过高
      * 提问接口
@@ -46,6 +47,7 @@ public class ApiController {
      */
     @PostMapping("/ask")
     public ResponseEntity<String> askQuestion(@RequestBody QuestionRequestDTO questionRequestDTO){
+        // todo:改为策略加责任链模式
         ModelInterfaceEnums modelInterfaceEnums = null;
         try{
             modelInterfaceEnums = ModelInterfaceEnums.getFromString(questionRequestDTO.getModelInterface());
@@ -57,8 +59,12 @@ public class ApiController {
         }
         switch (modelInterfaceEnums) {
             case ollama -> {
-                //String answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
-                String answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion());
+                String answer;
+                if (questionRequestDTO.getEnableAgent()) {
+                    answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion());
+                }else {
+                    answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(answer);
             }
             case python -> {
