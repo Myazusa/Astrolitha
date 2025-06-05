@@ -1,16 +1,13 @@
 package com.github.myazusa.astrolithabackend.common.builder;
 
 
+import java.util.List;
+
 public class PromptConstructionBuilder {
     private final StringBuilder questionText = new StringBuilder();
 
     public PromptConstructionBuilder() {
         clear();
-    }
-    @Deprecated
-    public PromptConstructionBuilder withRag(String prompt) {
-        questionText.append("相关的文档内容有：").append(prompt).append("。");
-        return this;
     }
 
     public PromptConstructionBuilder withEmotion(String prompt) {
@@ -23,7 +20,18 @@ public class PromptConstructionBuilder {
      * @return
      */
     public PromptConstructionBuilder withBanLanguage() {
-        questionText.append("回答中不可以包含除简体中文外的语言。");
+        questionText.append("回答中不可以包含除简体中文外的文字。");
+        return this;
+    }
+
+    public PromptConstructionBuilder withEmotions(List<String> emotions) {
+        questionText.append("请在回答的每一句后，穿插你当前的心情，使用以下json数组内表情指令：[");
+        for (String emotion : emotions) {
+            questionText.append("\"{#e");
+            questionText.append(emotion);
+            questionText.append("}\",");
+        }
+        questionText.append("]");
         return this;
     }
 
@@ -32,7 +40,6 @@ public class PromptConstructionBuilder {
      * @param language 只支持zh和en
      * @return
      */
-
     public PromptConstructionBuilder withLanguage(String language) {
         switch (language) {
             case "zh" -> questionText.append("请使用繁体中文回答。");

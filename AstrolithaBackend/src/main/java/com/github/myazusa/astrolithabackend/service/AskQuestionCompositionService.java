@@ -21,6 +21,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -34,27 +35,6 @@ public class AskQuestionCompositionService {
     public AskQuestionCompositionService(OllamaService ollamaService, QueryVDBCompositionService queryVDBCompositionService) {
         this.ollamaService = ollamaService;
         this.queryVDBCompositionService = queryVDBCompositionService;
-    }
-
-    /**
-     * 查询VDB后回答用户问题
-     * @param question 用户的提问
-     * @return llm回答的文本
-     */
-    @Deprecated
-    public String askQuestionWithRAG(String question){
-        StringBuilder prompt = new StringBuilder();
-        for (String s : queryVDBCompositionService.queryVDB(question)) {
-            prompt.append(s);
-        }
-        String constructedPrompt = new PromptConstructionBuilder().withRag(prompt.toString()).withLanguage().build();
-        CompletableFuture<String> future = ollamaService.getAnswerAsync(constructedPrompt,question);
-        try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("ollama服务访问失败", e);
-            throw new RemoteServiceException("ollama服务访问失败");
-        }
     }
 
     /**
@@ -81,12 +61,22 @@ public class AskQuestionCompositionService {
      * @param question
      * @return
      */
-    public String askQuestionWithAgent(String question){
-        String constructedPrompt = new PromptConstructionBuilder()
-                .withLanguage()
-                .withSimplify()
-                .withLimitToolUse()
-                .build();
+    public String askQuestionWithAgent(String question, List<String> emotions){
+        String constructedPrompt;
+        if (emotions.isEmpty()){
+            constructedPrompt = new PromptConstructionBuilder()
+                    .withLanguage()
+                    .withSimplify()
+                    .withLimitToolUse()
+                    .build();
+        }else {
+            constructedPrompt = new PromptConstructionBuilder()
+                    .withLanguage()
+                    .withSimplify()
+                    .withLimitToolUse()
+                    .withEmotions(emotions)
+                    .build();
+        }
 
         ToolCallback[] toolCallbacks = ToolCallbacks.from(new KnowledgeBaseAgent(queryVDBCompositionService));
         CompletableFuture<String> future = ollamaService.getAnswerAsync(constructedPrompt,question, toolCallbacks);

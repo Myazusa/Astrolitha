@@ -61,7 +61,7 @@ public class ApiController {
             case ollama -> {
                 String answer;
                 if (questionRequestDTO.getEnableAgent()) {
-                    answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion());
+                    answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion(),questionRequestDTO.getEmotions());
                 }else {
                     answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
                 }
