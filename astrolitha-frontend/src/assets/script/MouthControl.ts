@@ -16,7 +16,7 @@ export async function mouthControl(audio:Blob ,audioContext:AudioContext,result:
         const mouthOpen = Math.min(1,volume/200)
         useModelStore().getModel()?.internalModel.coreModel.setParameterValueById('ParamMouthOpenY',mouthOpen);
         if(audioContext.state!=='closed'){
-            useTalkBubbleStore().showBubble(result,audioBuffer.duration)
+            useTalkBubbleStore().showBubble(result,audioBuffer.duration * 1000)
             requestAnimationFrame(updateMouth)
         }
     }
