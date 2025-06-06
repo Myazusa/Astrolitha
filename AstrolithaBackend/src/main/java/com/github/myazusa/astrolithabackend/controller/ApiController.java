@@ -45,16 +45,16 @@ public class ApiController {
      * @return markdown文本，前端需要用markdown解析
      */
     @PostMapping("/ask")
-    public ResponseEntity<String> askQuestion(@RequestBody QuestionRequestDTO questionRequestDTO){
+    public ResponseEntity<InformationResponseDTO> askQuestion(@RequestBody QuestionRequestDTO questionRequestDTO){
         // todo:改为策略加责任链模式
         ModelInterfaceEnums modelInterfaceEnums = null;
         try{
             modelInterfaceEnums = ModelInterfaceEnums.getFromString(questionRequestDTO.getModelInterface());
         } catch (Exception e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{message:\"modelInterface参数不正确\"}");
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new InformationResponseDTO().setState("error").setMessage("modelInterface参数不正确"));
         }
         if (Optional.ofNullable(modelInterfaceEnums).isEmpty()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("{message:\"modelInterface参数转换失败\"}");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new InformationResponseDTO().setState("error").setMessage("modelInterface枚举化失败"));
         }
         switch (modelInterfaceEnums) {
             case ollama -> {
@@ -64,16 +64,17 @@ public class ApiController {
                 }else {
                     answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(answer);
+                //
+                return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(answer));
             }
             case python -> {
                 // todo:调用python，为集群模式暂不实现
-                return ResponseEntity.status(HttpStatus.OK).body("{message:指定了python，但该部分微服务暂未实现}");
+                return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("error").setMessage("该部分微服务暂未实现"));
             }
             default -> {
             }
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{message:未收到请求体}");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new InformationResponseDTO().setState("error").setMessage("未收到请求体"));
     }
 
     /**
@@ -98,15 +99,12 @@ public class ApiController {
      * @return 读取音频得到的文本
      */
     @PostMapping("/transcribe")
-    public ResponseEntity<TranscribeResponseDTO> transcribe(@RequestParam("file") MultipartFile file){
+    public ResponseEntity<InformationResponseDTO> transcribe(@RequestParam("file") MultipartFile file){
         try {
             String result = fasterWhisperService.transcribeWavFile(file);
-            TranscribeResponseDTO transcribeResponseDTO = new TranscribeResponseDTO();
-            transcribeResponseDTO.setText(result);
-            return ResponseEntity.status(HttpStatus.OK).body(transcribeResponseDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(result));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InformationResponseDTO().setState("error").setMessage("服务器内部错误"));
         }
     }
 
@@ -114,22 +112,24 @@ public class ApiController {
      * 测试成功
      * 上传文件接口
      * @param files 任意多个文件，任意扩展名
+     * @return 200为成功
      */
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("files") List<MultipartFile> files){
+    public ResponseEntity<InformationResponseDTO> uploadFile(@RequestParam("files") List<MultipartFile> files){
         ragFilesOperationalCompositionService.uploadFiles(files);
-        return ResponseEntity.ok("{message:文件已保存}");
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("文件已保存"));
     }
 
     /**
      * 测试成功
      * 重命名文件接口
      * @param renameRequestDTO 对象
+     * @return 200为成功
      */
     @PostMapping("/rename_file")
-    public ResponseEntity<String> renameFile(@RequestBody RenameRequestDTO renameRequestDTO) {
+    public ResponseEntity<InformationResponseDTO> renameFile(@RequestBody RenameRequestDTO renameRequestDTO) {
         ragFilesOperationalCompositionService.renameFile(renameRequestDTO.getOldName(), renameRequestDTO.getNewName());
-        return ResponseEntity.ok("{message:重命名成功}");
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("重命名成功"));
     }
 
     /**
@@ -149,8 +149,8 @@ public class ApiController {
      * @return 200为成功
      */
     @PostMapping("/parsing")
-    public ResponseEntity<String> Parsing(@RequestBody ParsingFileRequestDTO parsingFileRequestDTO){
+    public ResponseEntity<InformationResponseDTO> Parsing(@RequestBody ParsingFileRequestDTO parsingFileRequestDTO){
         parsingFileCompositionService.ParsingFile(parsingFileRequestDTO.getFileName());
-        return ResponseEntity.ok("{message:解析成功}");
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("解析成功"));
     }
 }
