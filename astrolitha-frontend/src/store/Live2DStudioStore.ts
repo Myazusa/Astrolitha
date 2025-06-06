@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import {Cubism4InternalModel, Live2DModel} from "pixi-live2d-display/cubism4";
 import { defineStore } from 'pinia';
 import {ElMessage} from "element-plus";
+import Live2DStudioTalkBubble from "@/components/live2d-studio/Live2DStudioTalkBubble.vue";
 
 export const useModelStore = defineStore('ModelStore', () => {
     const app = ref<PIXI.Application | null>(null);
@@ -156,6 +157,37 @@ export const useModelStateStore = defineStore('ModelStateStore', () => {
     return{setModelPosition,getModelPosition,getModelScaleRef}
 },{
     persist: true
+})
+
+export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
+    const message = ref('')
+    const visible = ref(false)
+
+    const bubbleRef = ref<InstanceType<typeof Live2DStudioTalkBubble>>()
+
+    const showBubble = (newMessage:string) =>{
+        visible.value = false
+
+        setTimeout(() => {
+            message.value = newMessage
+            visible.value = true
+
+            setTimeout(() => {
+                visible.value = false
+            }, 2500)
+        }, 300)
+    }
+    const getBubbleRef = ()=>{
+        return bubbleRef
+    }
+
+    const getMessageRef = () => {
+        return message
+    }
+    const getVisibleRef = () => {
+        return visible
+    }
+    return {getVisibleRef,getMessageRef,getBubbleRef,showBubble}
 })
 
 export const useCommonStateStore = defineStore('CommonStateStore', () => {

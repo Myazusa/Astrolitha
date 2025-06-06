@@ -1,9 +1,10 @@
 ﻿<script setup lang="ts">
-import {Hide} from '@element-plus/icons-vue'
+import {Hide,ChatDotRound} from '@element-plus/icons-vue'
 import {ElButton} from "element-plus";
-import {useSideButtonStateStore} from "@/store/Live2DStudioStore";
+import {useSideButtonStateStore, useTalkBubbleStore} from "@/store/Live2DStudioStore";
 
 const sideButtonStateStore = useSideButtonStateStore();
+const talkBubbleStore = useTalkBubbleStore();
 
 const hideRightSide = () =>{
   if(sideButtonStateStore.getLeftSideVisibleRef().value){
@@ -11,13 +12,19 @@ const hideRightSide = () =>{
   }else{
     sideButtonStateStore.setLeftSideVisible(true)
   }
+}
 
+const sayHello = () => {
+  talkBubbleStore.showBubble('你好，这是一个渐入渐出的气泡！')
 }
 </script>
 
 <template>
   <div class="right-top-toolbar">
-    <el-button class="tool-btn" @click="hideRightSide"><el-icon><Hide /></el-icon></el-button>
+    <div class="tool-group">
+      <el-button class="tool-btn" @click="hideRightSide"><el-icon><Hide /></el-icon></el-button>
+      <el-button class="tool-btn" @click="sayHello"><el-icon><ChatDotRound /></el-icon></el-button>
+    </div>
   </div>
 </template>
 
@@ -32,6 +39,12 @@ const hideRightSide = () =>{
   padding: 1rem 0;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
+.tool-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
 .tool-btn {
   width: 40%;
   height: 40%;
@@ -43,5 +56,8 @@ const hideRightSide = () =>{
   color: var(--theme-color-on-primary);
   transition: all 0.3s ease;
   border: 0.1rem solid rgba(255, 255, 255, 0.1);
+}
+:deep(.el-button){
+  margin: 0;
 }
 </style>
