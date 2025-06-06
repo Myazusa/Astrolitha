@@ -40,7 +40,6 @@ public class ApiController {
 
 
     /**
-     * 测试成功但延时过高
      * 提问接口
      * @param questionRequestDTO 一个构造好的“问题”请求对象，包含提问内容，模型设置的参数（参数现在只能是ollama）
      * @return markdown文本，前端需要用markdown解析
@@ -68,7 +67,7 @@ public class ApiController {
                 return ResponseEntity.status(HttpStatus.OK).body(answer);
             }
             case python -> {
-                // todo:调用python
+                // todo:调用python，为集群模式暂不实现
                 return ResponseEntity.status(HttpStatus.OK).body("{message:指定了python，但该部分微服务暂未实现}");
             }
             default -> {
