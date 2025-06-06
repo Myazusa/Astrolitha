@@ -1,6 +1,6 @@
-﻿import {useModelStore} from "@/store/Live2DStudioStore";
+﻿import {useModelStore, useTalkBubbleStore} from "@/store/Live2DStudioStore";
 
-export async function mouthControl(audio:Blob ,audioContext:AudioContext) {
+export async function mouthControl(audio:Blob ,audioContext:AudioContext,result:string) {
     const audioData = await audio.arrayBuffer()
     const audioBuffer = await audioContext.decodeAudioData(audioData)
     const source = audioContext.createBufferSource()
@@ -16,6 +16,7 @@ export async function mouthControl(audio:Blob ,audioContext:AudioContext) {
         const mouthOpen = Math.min(1,volume/200)
         useModelStore().getModel()?.internalModel.coreModel.setParameterValueById('ParamMouthOpenY',mouthOpen);
         if(audioContext.state!=='closed'){
+            useTalkBubbleStore().showBubble(result,audioBuffer.duration)
             requestAnimationFrame(updateMouth)
         }
     }

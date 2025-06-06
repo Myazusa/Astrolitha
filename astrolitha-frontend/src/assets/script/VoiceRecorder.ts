@@ -105,20 +105,21 @@ export function VoiceRecorder() {
                 // 文字调用LLM，不可以使用异步
                 const answer = sendQuestion(res.data);
                 if (answer.length > 0) {
-                    // 处理回答中的英文和控制符
+                    // 处理回答中的控制符
                     const result = extractAndRemoveEPlaceholders(answer);
 
                     if (result.placeholders.length > 0) {
                         // 设置表情
                         useModelStore().getModel()?.expression(result.placeholders[0])
                     }
+                    // 处理回答中的英文
                     let filteredAnswer = removeEnglishCharacters(result.cleaned);
 
                     // 文字转语音
                     const blob = voiceGenerator(filteredAnswer);
 
                     // 控制模型嘴部
-                    mouthControl(blob,returnAudioContext)
+                    mouthControl(blob,returnAudioContext,result.cleaned)
                 }else {
                     ElMessage.error('LLM的回复为空');
                 }

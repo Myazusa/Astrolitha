@@ -165,7 +165,7 @@ export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
 
     const bubbleRef = ref<InstanceType<typeof Live2DStudioTalkBubble>>()
 
-    const showBubble = (newMessage:string) =>{
+    const showBubble = (newMessage:string,time:number) =>{
         visible.value = false
 
         setTimeout(() => {
@@ -174,7 +174,7 @@ export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
 
             setTimeout(() => {
                 visible.value = false
-            }, 2500)
+            }, time)
         }, 300)
     }
     const getBubbleRef = ()=>{

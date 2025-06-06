@@ -19,7 +19,7 @@ const hideRightSide = () =>{
 }
 
 const sayHello = () => {
-  talkBubbleStore.showBubble('你好，这是一个渐入渐出的气泡！')
+  talkBubbleStore.showBubble('测试，这是一个渐入渐出的气泡',2500)
 }
 </script>
 
