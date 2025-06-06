@@ -80,6 +80,12 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
     const radioDialogVisible = ref<boolean>(false)
     const optionDialogVisible = ref<boolean>(false)
 
+    const leftSideVisible = ref<boolean>(true)
+
+    const getLeftSideVisibleRef = () => {
+        return leftSideVisible
+    }
+
     const getRadioDialogVisibleRef = () => {
         return radioDialogVisible
     }
@@ -91,6 +97,9 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
     }
     const setOptionDialogVisible = (visible:boolean) => {
         optionDialogVisible.value = visible
+    }
+    const setLeftSideVisible = (visible:boolean) => {
+        leftSideVisible.value = visible
     }
     const setRadioDialogVisible = (visible:boolean) => {
         if(!useModelStore().getModel()) {
@@ -107,7 +116,15 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
         }
         actionDialogVisible.value = visible
     }
-    return {getActionDialogVisibleRef,setActionDialogVisible,getRadioDialogVisibleRef,setRadioDialogVisible,setOptionDialogVisible,getOptionDialogVisibleRef}
+    return {getActionDialogVisibleRef,
+        setActionDialogVisible,
+        getRadioDialogVisibleRef,
+        setRadioDialogVisible,
+        setOptionDialogVisible,
+        getOptionDialogVisibleRef,
+        getLeftSideVisibleRef,
+        setLeftSideVisible
+    }
 })
 
 export const useModelStateStore = defineStore('ModelStateStore', () => {

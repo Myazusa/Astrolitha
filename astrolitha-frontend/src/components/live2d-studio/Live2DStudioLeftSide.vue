@@ -172,7 +172,11 @@ const addFocus = () => {
   -webkit-backdrop-filter: blur(10px);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
-
+@media (max-width: 700px) {
+  .left-toolbar {
+    width: 12%;
+  }
+}
 .tool-group {
   display: flex;
   flex-direction: column;
@@ -190,7 +194,7 @@ const addFocus = () => {
   -webkit-backdrop-filter: blur(10px);
   color: var(--theme-color-on-primary);
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 0.1rem solid rgba(255, 255, 255, 0.1);
 }
 
 .tool-btn:hover {

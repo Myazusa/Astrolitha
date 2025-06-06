@@ -5,14 +5,21 @@ import Live2DStudioMain from "@/components/live2d-studio/Live2DStudioMain.vue";
 import Live2DStudioActionDialog from "@/components/live2d-studio/Live2DStudioActionDialog.vue";
 import Live2DStudioOptionDialog from "@/components/live2d-studio/Live2DStudioOptionDialog.vue";
 import Live2DStudioRadioDialog from "@/components/live2d-studio/Live2DStudioRadioDialog.vue";
+import {useSideButtonStateStore} from "@/store/Live2DStudioStore";
+import Live2DStudioRightTopSide from "@/components/live2d-studio/Live2DStudioRightTopSide.vue";
 
+const sideButtonStateStore = useSideButtonStateStore();
 const brightness = ref(100)
+
 </script>
 
 <template>
   <div class="l2d-studio" :style="{ filter: `brightness(${brightness}%)` }">
     <Live2DStudioMain class="main-content" />
-    <Live2DStudioLeftSide class="overlay left-overlay" />
+    <transition name="fade">
+      <Live2DStudioLeftSide v-if="sideButtonStateStore.getLeftSideVisibleRef().value" class="overlay left-overlay" />
+    </transition>
+    <Live2DStudioRightTopSide />
     <Live2DStudioActionDialog />
     <Live2DStudioOptionDialog />
     <Live2DStudioRadioDialog />
@@ -50,5 +57,11 @@ const brightness = ref(100)
 
 .right-overlay {
   right: 0;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>
