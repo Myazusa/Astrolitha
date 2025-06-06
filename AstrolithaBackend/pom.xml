@@ -10,12 +10,16 @@
     </parent>
     <groupId>com.github.myazusa</groupId>
     <artifactId>AstrolithaBackend</artifactId>
-    <version>0.0.6-beta</version>
+    <version>0.0.7-alpha</version>
     <name>AstrolithaBackend</name>
     <description>AstrolithaBackend</description>
     <url/>
     <licenses>
-        <license/>
+        <license>
+            <name>GNU Affero General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
     <developers>
         <developer/>
