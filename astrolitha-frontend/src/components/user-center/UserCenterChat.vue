@@ -7,9 +7,18 @@ import axios from "axios";
 import {useApiStore} from "@/store/ApiStore";
 import {Question} from "@/interface/Question";
 import {useModelStore} from "@/store/Live2DStudioStore";
+import { useRouter } from 'vue-router'
 
 const apiStore = useApiStore();
 const modelStore = useModelStore();
+
+/**
+ * l2d模式跳转逻辑
+ */
+const router = useRouter()
+const handleL2d = async ()=>{
+  await router.replace({name: 'Live2DStudio'})
+}
 
 /**
  * 输入与信息气泡显示的逻辑
@@ -53,6 +62,7 @@ const handleSend = async () => {
     <header>
       <span class="llm-chat-title">聊天</span>
       <div class="llm-chat-header-right">
+        <el-button class="l2d-button" @click="handleL2d" round>Live2d模式</el-button>
         <el-avatar class="llm-chat-header-avatar" :size="36" src="/avatar.png" />
       </div>
     </header>
@@ -121,6 +131,7 @@ header{
   display: flex;
   align-items: center;
   margin-left: auto;
+  gap: 0.5rem;
 }
 .llm-chat-messages {
   flex: 1 1 0;

@@ -2,10 +2,14 @@
 import {Hide,ChatDotRound} from '@element-plus/icons-vue'
 import {ElButton} from "element-plus";
 import {useSideButtonStateStore, useTalkBubbleStore} from "@/store/Live2DStudioStore";
+import {useRouter} from "vue-router";
 
 const sideButtonStateStore = useSideButtonStateStore();
 const talkBubbleStore = useTalkBubbleStore();
-
+const router = useRouter()
+const handleLogin = async () => {
+  await router.replace({name: 'UserLogin'})
+}
 const hideRightSide = () =>{
   if(sideButtonStateStore.getLeftSideVisibleRef().value){
     sideButtonStateStore.setLeftSideVisible(false)
@@ -24,6 +28,16 @@ const sayHello = () => {
     <div class="tool-group">
       <el-button class="tool-btn" @click="hideRightSide"><el-icon><Hide /></el-icon></el-button>
       <el-button class="tool-btn" @click="sayHello"><el-icon><ChatDotRound /></el-icon></el-button>
+      <el-button class="tool-btn" @click="handleLogin">
+        <el-icon>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="var(--theme-color-on-primary)" viewBox="0 0 24 24" id="Login--Streamline-Sharp-Material" height="24" width="24">
+            <desc>
+              Login Streamline Icon: https://streamlinehq.com
+            </desc>
+            <path fill="var(--theme-color-on-primary)" d="M12.025 21v-1.5H19.5V4.5H12.025V3H21v18H12.025Zm-1.375 -4.625 -1.075 -1.075 2.55 -2.55H3v-1.5h9.075l-2.55 -2.55 1.075 -1.075 4.4 4.4 -4.35 4.35Z" stroke-width="0.5"></path>
+          </svg>
+        </el-icon>
+      </el-button>
     </div>
   </div>
 </template>

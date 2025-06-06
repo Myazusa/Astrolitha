@@ -1,9 +1,17 @@
 ﻿<script setup lang="ts">
 import LoginBox from '@/components/LoginBox.vue'
+import {ArrowLeft} from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const handleL2d = async ()=>{
+  await router.replace({name: 'Live2DStudio'})
+}
 </script>
 
 <template>
   <div class="login-container">
+    <el-button class="l2d-button" @click="handleL2d" round><el-icon><ArrowLeft /></el-icon></el-button>
     <LoginBox />
   </div>
 </template>
@@ -32,5 +40,16 @@ import LoginBox from '@/components/LoginBox.vue'
   background-position: center;
   filter: blur(10px);
   z-index: 0;
+}
+.l2d-button{
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  height: 2.5rem;
+  width: 2.5rem;
+  border: transparent;
+}
+:deep(.l2d-button .el-icon){
+  font-size: 2rem;
 }
 </style>
