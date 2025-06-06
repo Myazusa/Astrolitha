@@ -64,7 +64,7 @@ public class OllamaService {
      * @return 模型的回答
      */
     @Async
-    public CompletableFuture<String> getAnswerAsync(String constructedPrompt,String question,ToolCallback[] toolCallbacks){
+    public CompletableFuture<String> getAnswerAsync(String constructedPrompt,String question,List<ToolCallback> toolCallbacks){
         ChatResponse response = ollamaChatModel.call(
                 new Prompt(
                         List.of(

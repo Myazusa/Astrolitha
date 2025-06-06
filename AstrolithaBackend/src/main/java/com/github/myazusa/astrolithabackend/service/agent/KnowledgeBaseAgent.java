@@ -1,7 +1,6 @@
 package com.github.myazusa.astrolithabackend.service.agent;
 
 import com.github.myazusa.astrolithabackend.service.QueryVDBCompositionService;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 
