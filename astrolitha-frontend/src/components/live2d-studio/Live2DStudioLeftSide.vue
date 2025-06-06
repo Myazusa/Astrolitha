@@ -7,7 +7,7 @@ import {
     Setting,
 } from '@element-plus/icons-vue'
 import {useModelStateStore, useModelStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 
 /**
  * 存储访问变量

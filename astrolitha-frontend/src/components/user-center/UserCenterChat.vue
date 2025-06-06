@@ -4,11 +4,12 @@ import { ElAvatar, ElScrollbar, ElInput, ElButton, ElIcon } from 'element-plus'
 import { Promotion } from '@element-plus/icons-vue'
 import {useUserCenterChatStore} from "@/store/UserCenterStore";
 import axios from "axios";
-import {Question} from "@/interface/Question";
 import {useApiStore} from "@/store/ApiStore";
+import {Question} from "@/interface/Question";
+import {useModelStore} from "@/store/Live2DStudioStore";
 
 const apiStore = useApiStore();
-
+const modelStore = useModelStore();
 
 /**
  * 输入与信息气泡显示的逻辑
@@ -20,9 +21,10 @@ const scrollbarRef = ref()
 const handleSend = async () => {
   if (!input.value.trim()) return
   userCenterChatStore.addMessage({ role: 'user',name: '我', content: input.value })
-  const questionRequestDTO = {
+  const questionRequestDTO:Question = {
     modelInterface:'ollama',
-    question: input.value
+    question: input.value,
+    emotions: modelStore.getMotionButtonListRef().value
   };
   input.value = ''
   await axios.post(apiStore.getAskQuestionApi(),questionRequestDTO)

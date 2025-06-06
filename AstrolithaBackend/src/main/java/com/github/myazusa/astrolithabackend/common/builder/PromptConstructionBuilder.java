@@ -25,7 +25,7 @@ public class PromptConstructionBuilder {
     }
 
     public PromptConstructionBuilder withEmotions(List<String> emotions) {
-        questionText.append("请在回答的每一句后，穿插你当前的心情，使用以下json数组内表情指令：[");
+        questionText.append("请在回答的最后加上你回答这个问题的心情，并把心情转换为指令，可以使用以下json数组内表情指令：[");
         for (String emotion : emotions) {
             questionText.append("\"{#e");
             questionText.append(emotion);
