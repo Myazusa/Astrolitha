@@ -18,7 +18,8 @@ A distributed AI integration project.
 
 - **RAG service:** Provides self-built RAG, Including parsing docx and other files and VDB storage.
 - **Live2D display driven by LLM:** Select any Live2D model to display, And the movements and speech are controlled by LLM.
-- **Integrate TTS, ARS and LLM:** Call LLM through ARS and use ARS to generate speech at the end. 
+- **Integrate TTS, ARS and LLM:** Call LLM through ARS and use ARS to generate speech at the end.
+- **Agent support:** The large model can use function call the appropriate tools to perform corresponding operations according to the requirements given by the user.
 - **Distributed support:** Supports deployment using Kubernetes. 
 
 ## Installation
@@ -82,3 +83,30 @@ Great, now you can use all the features in your browser.
 ```bash
     http://localhost:80
 ```
+
+## Microservice
+The project uses the following docker images as microservices.
+
+- mysql:latest
+- ollama/ollama:latest
+- whisper:latest
+- breakstring/gpt-sovits:v4
+- milvusdb/etcd:latest
+- minio/minio:latest
+- milvus-standalone
+
+Corresponding to the following open source projects.
+
+- [mysql](https://github.com/mysql/mysql-server)
+- [ollama](https://github.com/ollama/ollama)
+- [whisper](https://github.com/openai/whisper)
+- [gpt-sovits](https://github.com/RVC-Boss/GPT-SoVITS)
+- [milvus](https://github.com/milvus-io/milvus)
+
+## License
+This project is a finished application rather than a tool library or framework, so it uses the AGPLv3 open source protocol instead of MIT or Apache 2.0.
+
+- For personal: fully supports personal use without any restrictions, you can modify the source code at will without making it public.
+- For commercial: you can use the original project without modification to provide services to the outside world, and the income you get belongs to you. If you have to modify the project, you need to open source the modified code at the same time. If it is closed source and not published, you need to apply for authorization from the source project author.
+
+If you encounter problems, you are welcome to raise an issue in this project or become a project contributor!
