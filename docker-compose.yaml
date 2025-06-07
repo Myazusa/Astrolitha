@@ -167,7 +167,7 @@ services:
       - "minio"
 
   elasticsearch:
-    image: elasticsearch:9.0.2
+    image: elasticsearch:8.18.1
     container_name: elasticsearch
     ports:
       - "9200:9200"
