@@ -153,10 +153,6 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
             })
     }
 
-    const addFiles = ()=>{
-        files.value.push({ id: 5, fileName: 'example5.jpg', isParsed: true,uploadDate:'',uploadUserUuid:'',fileUuid:'' })
-    }
-
     const getFilesRef = () => {
         return files
     }
@@ -180,6 +176,10 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
                     ElMessage.error("解析失敗，網絡錯誤")
                 }
             })
+    }
+
+    const reflashFiles = (newFiles:any) => {
+        files.value = newFiles
     }
 
     const renameFile = (file: RagFile | null, newName: string) => {
@@ -206,6 +206,7 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
         getFilesRef,
         parseFile,
         renameFile,
-        initTable
+        initTable,
+        reflashFiles
     }
 })
