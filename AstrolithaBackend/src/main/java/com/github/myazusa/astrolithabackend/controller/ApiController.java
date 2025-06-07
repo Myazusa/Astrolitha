@@ -3,8 +3,10 @@ package com.github.myazusa.astrolithabackend.controller;
 import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
 import com.github.myazusa.astrolithabackend.dto.*;
 import com.github.myazusa.astrolithabackend.model.RagFile;
+import com.github.myazusa.astrolithabackend.model.RagFileDocument;
 import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionService;
 import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
+import com.github.myazusa.astrolithabackend.service.RagFilesElasticsearchCompositionService;
 import com.github.myazusa.astrolithabackend.service.RagFilesOperationalCompositionService;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
@@ -28,14 +30,16 @@ public class ApiController {
     private final AskQuestionCompositionService askQuestionCompositionService;
     private final ParsingFileCompositionService parsingFileCompositionService;
     private final RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
+    private final RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
         this.askQuestionCompositionService = askQuestionCompositionService;
         this.parsingFileCompositionService = parsingFileCompositionService;
         this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
+        this.ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionService;
     }
 
 
@@ -151,6 +155,17 @@ public class ApiController {
     @PostMapping("/parsing")
     public ResponseEntity<InformationResponseDTO> Parsing(@RequestBody ParsingFileRequestDTO parsingFileRequestDTO){
         parsingFileCompositionService.ParsingFile(parsingFileRequestDTO.getFileName());
+        ragFilesElasticsearchCompositionService.syncRagFiles();
         return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("解析成功"));
+    }
+
+    /**
+     * 搜索文件
+     * @param searchRequestDTO 包含搜索关键词的对象
+     * @return 符合的文件列表
+     */
+    @PostMapping("/search")
+    public ResponseEntity<List<RagFileDocument>> search(@RequestBody SearchRequestDTO searchRequestDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(ragFilesElasticsearchCompositionService.findByFileName(searchRequestDTO.getKeyword()));
     }
 }

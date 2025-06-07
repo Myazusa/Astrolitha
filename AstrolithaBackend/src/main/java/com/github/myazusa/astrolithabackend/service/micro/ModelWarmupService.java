@@ -2,8 +2,6 @@ package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.common.config.OllamaWarmupProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +20,6 @@ public class ModelWarmupService {
         this.warmupProperties = warmupProperties;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
     public void warmupOnStartup() {
         log.info("spring服务器启动完成，开始进行模型预热");
         pingAllModels();
