@@ -94,6 +94,7 @@
 - milvusdb/etcd:latest
 - minio/minio:latest
 - milvus-standalone
+- elasticsearch:8.18.1
 
 以上对应的开源项目地址如下
 
@@ -102,6 +103,12 @@
 - [whisper](https://github.com/openai/whisper)
 - [gpt-sovits](https://github.com/RVC-Boss/GPT-SoVITS)
 - [milvus](https://github.com/milvus-io/milvus)
+- [elasticsearch](https://github.com/elastic/elasticsearch)
+
+在使用elasticsearch时，如果希望支持中文搜索，请进入容器内运行以下指令然后重启容器
+```bash
+  ./bin/elasticsearch-plugin install --batch https://release.infinilabs.com/analysis-ik/stable/elasticsearch-analysis-ik-8.18.1.zip
+```
 
 ## 开源许可
 本项目为成品应用而不是工具库或框架，因此使用AGPLv3开源协议而不是MIT或Apache2.0
