@@ -166,6 +166,11 @@ services:
       - "etcd"
       - "minio"
 
+  elasticsearch:
+    image: elasticsearch:9.0.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
 networks:
   default:
     name: astrolitha
