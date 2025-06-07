@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.myazusa</groupId>
     <artifactId>AstrolithaBackend</artifactId>
-    <version>0.0.7-alpha</version>
+    <version>0.0.8-alpha</version>
     <name>AstrolithaBackend</name>
     <description>AstrolithaBackend</description>
     <url/>
