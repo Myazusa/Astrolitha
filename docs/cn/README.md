@@ -1,5 +1,5 @@
 ﻿<div align="center">
-    <img src="./docs/image/largeicon.png" width="70%" alt="Astrolitha">
+    <img src="../image/largeicon.png" width="70%" alt="Astrolitha">
 <hr>
 
 [![License](https://img.shields.io/badge/LICENSE-AGPL-blue.svg?style=for-the-badge)](https://github.com/Myazusa/Astrolitha/blob/main/LICENSE)
