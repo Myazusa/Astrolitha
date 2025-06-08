@@ -49,7 +49,7 @@ services:
 
 # asr的容器，这个容器是docker上没有镜像的，在本项目FastWhisperService下自己制作镜像
   whisper:
-    image: whisper:latest
+    image: myadzusa/whisper:latest
     container_name: whisper-service
     ports:
       - "10350:10350"
@@ -63,7 +63,7 @@ services:
 
 # tts的容器
   gpt-sovits:
-    image: breakstring/gpt-sovits:v4
+    image: myadzusa/gpt-sovits:v4
     container_name: gpt-sovits
     environment:
       - is_half=False
