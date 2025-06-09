@@ -15,30 +15,30 @@ This is a distributed AI project based on Spring
 ## Preview
 
 <div style="overflow-x: auto; white-space: nowrap;">
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+   <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="./docs/image/live2d.png" style="height: 150px;" />
       <p style="margin: 4px 0;">Live2D Display</p>
-   </div>
-  <div style="display: inline-block; text-align: center; margin-right: 10px;">
+   </span>
+  <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="./docs/image/expression.png" style="height: 150px;" />
       <p style="margin: 4px 0;">Expression Control</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+   </span>
+   <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="./docs/image/voice.png" style="height: 150px;" />
       <p style="margin: 4px 0;">Voice Control</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+   </span>
+   <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="./docs/image/dashboard.png" style="height: 150px;" />
       <p style="margin: 4px 0;">Dashboard</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+   </span>
+   <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="./docs/image/rag.png" style="height: 150px;" />
       <p style="margin: 4px 0;">RAG Repository</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+   </span>
+   <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="/docs/image/option.png" style="height: 150px;" />
       <p style="margin: 4px 0;">Options</p>
-   </div>
+   </span>
 </div>
 
 ## Features
