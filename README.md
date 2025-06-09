@@ -12,8 +12,6 @@ This is a distributed AI project based on Spring
 
 </div>
 
-## Preview
-
 
 <div style="overflow-x: auto; white-space: nowrap; height: 200px;">
    <span style="display: inline-block; text-align: center; margin-right: 10px;">
