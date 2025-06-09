@@ -13,32 +13,17 @@
 
 ## 预览
 
-<div style="overflow-x: auto; white-space: nowrap;">
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
-      <img src="../image/live2d.png" style="width: 720px;" />
-      <p style="margin: 4px 0;">Live2D模型显示</p>
-   </div>
-  <div style="display: inline-block; text-align: center; margin-right: 10px;">
-      <img src="../image/expression.png" style="width: 720px;" />
-      <p style="margin: 4px 0;">表情控制</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
-      <img src="../image/voice.png" style="width: 720px;" />
-      <p style="margin: 4px 0;">声音控制</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
-      <img src="../image/dashboard.png" style="width: 720px;" />
-      <p style="margin: 4px 0;">后端仪表盘</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
-      <img src="../image/rag.png" style="width: 720px;" />
-      <p style="margin: 4px 0;">知识库</p>
-   </div>
-   <div style="display: inline-block; text-align: center; margin-right: 10px;">
-      <img src="../image/option.png" style="width: 720px;" />
-      <p style="margin: 4px 0;">选项</p>
-   </div>
-</div>
+主界面
+
+| <img src="../image/live2d.png" style="width: 100%;" /><br>Live2D模型显示 | <img src="../image/expression.png" style="width: 100%;" /><br>表情控制 | <img src="../image/voice.png" style="width: 100%;" /><br>声音控制 |
+|:--------------------------------------------------------------------:|:------------------------------------------------------------------:|:-----------------------------------------------------------------:|
+
+
+后台控制面板
+
+| <img src="../image/dashboard.png" style="width: 100%;" /><br>仪表盘 | <img src="../image/rag.png" style="width: 100%;" /><br>RAG知识库 | <img src="../image/option.png" style="width: 100%;" /><br>选项 |
+|:----------------------------------------------------------------:|:-------------------------------------------------------------:|:----------------------------------------------------------------:|
+
 
 ## 功能
 
