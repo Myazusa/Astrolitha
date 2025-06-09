@@ -2,6 +2,8 @@
     <img src="./docs/image/largeicon.png" width="70%" alt="Astrolitha">
 <hr>
 
+This is a distributed AI project based on Spring
+
 [![License](https://img.shields.io/badge/LICENSE-AGPL-blue.svg?style=for-the-badge)](https://github.com/Myazusa/Astrolitha/blob/main/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Myazusa/Astrolitha?style=for-the-badge)
 ![GitHub Release](https://img.shields.io/github/v/release/Myazusa/Astrolitha?style=for-the-badge)
@@ -10,9 +12,17 @@
 
 </div>
 
-## About
+## Preview
 
-A distributed AI integration project.
+<div style="display: flex; gap: 1rem;overflow-x: auto; white-space: nowrap;">
+  <img src="./docs/image/live2d.png" width="720">
+  <img src="./docs/image/expression.png" width="720">
+  <img src="./docs/image/voice.png" width="720">
+  <img src="./docs/image/dashboard.png" width="720">
+  <img src="./docs/image/rag.png" width="720">
+  <img src="./docs/image/option.png" width="720">
+</div>
+
 
 ## Features
 

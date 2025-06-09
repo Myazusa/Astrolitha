@@ -1,6 +1,7 @@
 ﻿<div align="center">
     <img src="../image/largeicon.png" width="70%" alt="Astrolitha">
 <hr>
+这是一个基于Spring的分布式AI项目
 
 [![License](https://img.shields.io/badge/LICENSE-AGPL-blue.svg?style=for-the-badge)](https://github.com/Myazusa/Astrolitha/blob/main/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Myazusa/Astrolitha?style=for-the-badge)
@@ -10,9 +11,16 @@
 
 </div>
 
-## 关于项目
+## 预览
 
-这是一个分布式AI集成项目
+<div style="display: flex; gap: 10px;overflow-x: auto; white-space: nowrap;">
+  <img src="../image/live2d.png" width="720">
+  <img src="../image/expression.png" width="720">
+  <img src="../image/voice.png" width="720">
+  <img src="../image/dashboard.png" width="720">
+  <img src="../image/rag.png" width="720">
+  <img src="../image/option.png" width="720">
+</div>
 
 ## 功能
 
