@@ -14,6 +14,7 @@ This is a distributed AI project based on Spring
 
 ## Preview
 
+
 <div style="overflow-x: auto; white-space: nowrap; height: 200px;">
    <span style="display: inline-block; text-align: center; margin-right: 10px;">
       <img src="./docs/image/live2d.png" style="height: 150px;" />
@@ -40,6 +41,7 @@ This is a distributed AI project based on Spring
       <p style="margin: 4px 0;">Options</p>
    </span>
 </div>
+
 
 ## Features
 
