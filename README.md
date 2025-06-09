@@ -14,15 +14,32 @@ This is a distributed AI project based on Spring
 
 ## Preview
 
-<div style="display: flex; gap: 1rem;overflow-x: auto; white-space: nowrap;">
-  <img src="./docs/image/live2d.png" width="720">
-  <img src="./docs/image/expression.png" width="720">
-  <img src="./docs/image/voice.png" width="720">
-  <img src="./docs/image/dashboard.png" width="720">
-  <img src="./docs/image/rag.png" width="720">
-  <img src="./docs/image/option.png" width="720">
+<div style="overflow-x: auto; white-space: nowrap;">
+   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+      <img src="./docs/image/live2d.png" style="width: 720px;" />
+      <p style="margin: 4px 0;">Live2D Display</p>
+   </div>
+  <div style="display: inline-block; text-align: center; margin-right: 10px;">
+      <img src="./docs/image/expression.png" style="width: 720px;" />
+      <p style="margin: 4px 0;">Expression Control</p>
+   </div>
+   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+      <img src="./docs/image/voice.png" style="width: 720px;" />
+      <p style="margin: 4px 0;">Voice Control</p>
+   </div>
+   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+      <img src="./docs/image/dashboard.png" style="width: 720px;" />
+      <p style="margin: 4px 0;">Dashboard</p>
+   </div>
+   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+      <img src="./docs/image/rag.png" style="width: 720px;" />
+      <p style="margin: 4px 0;">RAG Repository</p>
+   </div>
+   <div style="display: inline-block; text-align: center; margin-right: 10px;">
+      <img src="/docs/image/option.png" style="width: 720px;" />
+      <p style="margin: 4px 0;">Options</p>
+   </div>
 </div>
-
 
 ## Features
 
