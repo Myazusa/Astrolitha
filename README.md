@@ -15,13 +15,13 @@ This is a distributed AI project based on Spring
 ## Preview
 主界面
 
-| <img src="./docs/image/live2d.png" style="width: 200px;" /><br>Live2D Display |<img src="./docs/image/expression.png" style="width: 200px;" /><br>Expression Control|<img src="./docs/image/voice.png" style="width: 200px;" /><br>Voice Control|
-|:-----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+| <img src="./docs/image/live2d.png" style="width: 100%;" /><br>Live2D Display | <img src="./docs/image/expression.png" style="width: 100%;" /><br>Expression Control | <img src="./docs/image/voice.png" style="width: 100%;" /><br>Voice Control |
+|:----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------:|
 
 
 后台控制面板
 
-|<img src="./docs/image/dashboard.png" style="width: 200px;" /><br>Dashboard|<img src="./docs/image/rag.png" style="width: 200px;" /><br>RAG Repository|<img src="./docs/image/option.png" style="width: 200px;" /><br>Options|
+|<img src="./docs/image/dashboard.png" style="width: 100%;" /><br>Dashboard|<img src="./docs/image/rag.png" style="width: 100%;" /><br>RAG Repository|<img src="./docs/image/option.png" style="width: 100%;" /><br>Options|
 |:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
 
 
