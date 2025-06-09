@@ -1,8 +1,21 @@
 ﻿<script setup lang="ts">
 import { Cpu,Memo,Coin,Document } from '@element-plus/icons-vue'
 import {useUserCenterProfile} from "@/store/UserCenterStore";
+import {onBeforeUnmount, onMounted} from "vue";
 
 const userCenterProfile = useUserCenterProfile();
+let timer: ReturnType<typeof setInterval>
+
+onMounted(()=>{
+  userCenterProfile.loadSystemStats()
+  timer = setInterval(() => {
+    userCenterProfile.loadSystemStats()
+  }, 5000);
+})
+
+onBeforeUnmount(() => {
+  clearInterval(timer)
+})
 </script>
 
 <template>

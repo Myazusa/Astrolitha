@@ -3,24 +3,6 @@ import {useUserCenterOption} from "@/store/UserCenterStore";
 
 const userCenterOption = useUserCenterOption();
 
-// 获取所有需要的响应式引用
-const backendHost = userCenterOption.getBackendHostRef()
-const backendPort = userCenterOption.getBackendPortRef()
-const ttsLocalMode = userCenterOption.getTtsLocalModeRef()
-const arsLocalMode = userCenterOption.getArsLocalModeRef()
-const vdbLocalMode = userCenterOption.getVdbLocalModeRef()
-const rdbLocalMode = userCenterOption.getRdbLocalModeRef()
-const clusterMode = userCenterOption.getClusterModeRef()
-const ttsMode = userCenterOption.getTtsModeRef()
-const ttsHost = userCenterOption.getTtsHostRef()
-const ttsPort = userCenterOption.getTtsPortRef()
-const arsMode = userCenterOption.getArsModeRef()
-const arsHost = userCenterOption.getArsHostRef()
-const arsPort = userCenterOption.getArsPortRef()
-const vdbMode = userCenterOption.getVdbModeRef()
-const vdbHost = userCenterOption.getVdbHostRef()
-const vdbPort = userCenterOption.getVdbPortRef()
-const language = userCenterOption.getLanguageRef()
 </script>
 
 <template>
@@ -30,22 +12,52 @@ const language = userCenterOption.getLanguageRef()
         <div class="section-title">Astrolitha設置</div>
         <el-form label-width="7rem" class="form">
           <el-form-item label="後端IP地址">
-            <el-input v-model="backendHost" placeholder="127.0.0.1" style="width: 12rem" />
+            <el-input v-model="userCenterOption.backendHost" placeholder="127.0.0.1" style="width: 12rem" />
           </el-form-item>
           <el-form-item label="後端端口">
-            <el-input v-model="backendPort" placeholder="80" style="width: 5rem" />
+            <el-input v-model="userCenterOption.backendPort" placeholder="80" style="width: 5rem" />
           </el-form-item>
           <el-form-item label="本地化TTS">
-            <el-switch v-model="ttsLocalMode" />
+            <el-switch v-model="userCenterOption.ttsLocalMode" :disabled="true"/>
           </el-form-item>
           <el-form-item label="本地化ARS">
-            <el-switch v-model="arsLocalMode" />
+            <el-switch v-model="userCenterOption.arsLocalMode" :disabled="true"/>
           </el-form-item>
           <el-form-item label="本地化VDB">
-            <el-switch v-model="vdbLocalMode" />
+            <el-switch v-model="userCenterOption.vdbLocalMode" :disabled="true"/>
           </el-form-item>
           <el-form-item label="本地化RDB">
-            <el-switch v-model="rdbLocalMode" />
+            <el-switch v-model="userCenterOption.rdbLocalMode" :disabled="true"/>
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <el-card class="card" shadow="never">
+        <div class="section-title">模型設置</div>
+        <el-form label-width="10rem" class="form">
+          <el-form-item label="Chat模型">
+            <el-select v-model="userCenterOption.chatModel" style="width: 12rem">
+              <el-option :value="userCenterOption.chatModel" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Embedding模型">
+            <el-select v-model="userCenterOption.embeddingModel" style="width: 12rem">
+              <el-option :value="userCenterOption.embeddingModel" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="ToolCall模型">
+            <el-select v-model="userCenterOption.toolCallModel" style="width: 12rem">
+              <el-option :value="userCenterOption.toolCallModel" />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </el-card>
+      <el-card class="card" shadow="never">
+        <div class="section-title">其他設置</div>
+        <el-form label-width="10rem" class="form">
+          <el-form-item label="語言設置">
+            <el-select v-model="userCenterOption.language" style="width: 8rem">
+              <el-option label="繁體中文" :value="userCenterOption.language" />
+            </el-select>
           </el-form-item>
         </el-form>
       </el-card>
@@ -53,55 +65,57 @@ const language = userCenterOption.getLanguageRef()
         <div class="section-title" style="margin-top:2rem;">集群設置</div>
         <el-form label-width="7rem" class="form">
           <el-form-item label="集群模式">
-            <el-switch v-model="clusterMode" />
+            <el-switch v-model="userCenterOption.clusterMode" />
           </el-form-item>
-          <div v-if="clusterMode === true">
+          <div v-if="userCenterOption.clusterMode">
             <el-form-item label="TTS集群化">
-              <el-switch v-model="ttsMode" />
+              <el-switch v-model="userCenterOption.ttsMode" />
             </el-form-item>
-            <div v-if="ttsMode === true">
+            <div v-if="userCenterOption.ttsMode">
               <el-form-item label="TTS服務IP地址">
-                <el-input v-model="ttsHost" placeholder="127.0.0.1" style="width: 12rem" />
+                <el-input v-model="userCenterOption.ttsHost" placeholder="127.0.0.1" style="width: 12rem" />
               </el-form-item>
               <el-form-item label="TTS服務端口號">
-                <el-input v-model="ttsPort" placeholder="10350" style="width: 5rem" />
+                <el-input v-model="userCenterOption.ttsPort" placeholder="10350" style="width: 5rem" />
               </el-form-item>
             </div>
             <el-form-item label="ARS集群化">
-              <el-switch v-model="arsMode" />
+              <el-switch v-model="userCenterOption.arsMode" />
             </el-form-item>
-            <div v-if="arsMode === true">
+            <div v-if="userCenterOption.arsMode">
               <el-form-item label="ARS服務IP地址">
-                <el-input v-model="arsHost" placeholder="127.0.0.1" style="width: 12rem" />
+                <el-input v-model="userCenterOption.arsHost" placeholder="127.0.0.1" style="width: 12rem" />
               </el-form-item>
               <el-form-item label="ARS服務端口號">
-                <el-input v-model="arsPort" placeholder="10500" style="width: 5rem" />
+                <el-input v-model="userCenterOption.arsPort" placeholder="10500" style="width: 5rem" />
               </el-form-item>
             </div>
             <el-form-item label="VDB集群化">
-              <el-switch v-model="vdbMode" />
+              <el-switch v-model="userCenterOption.vdbMode" />
             </el-form-item>
-            <div v-if="vdbMode === true">
+            <div v-if="userCenterOption.vdbMode">
               <el-form-item label="VDB服務IP地址">
-                <el-input v-model="vdbHost" placeholder="127.0.0.1" style="width: 12rem" />
+                <el-input v-model="userCenterOption.vdbHost" placeholder="127.0.0.1" style="width: 12rem" />
               </el-form-item>
               <el-form-item label="VDB服務端口號">
-                <el-input v-model="vdbPort" placeholder="9091" style="width: 5rem" />
+                <el-input v-model="userCenterOption.vdbPort" placeholder="9091" style="width: 5rem" />
+              </el-form-item>
+            </div>
+            <el-form-item label="RDB集群化">
+              <el-switch v-model="userCenterOption.rdbMode" />
+            </el-form-item>
+            <div v-if="userCenterOption.vdbMode">
+              <el-form-item label="RDB服務IP地址">
+                <el-input v-model="userCenterOption.rdbHost" placeholder="127.0.0.1" style="width: 12rem" />
+              </el-form-item>
+              <el-form-item label="RDB服務端口號">
+                <el-input v-model="userCenterOption.rdbPort" placeholder="3306" style="width: 5rem" />
               </el-form-item>
             </div>
           </div>
         </el-form>
       </el-card>
-      <el-card class="card" shadow="never">
-        <div class="section-title">其他設置</div>
-        <el-form label-width="10rem" class="form">
-          <el-form-item label="語言設置">
-            <el-select v-model="language" style="width: 8rem">
-              <el-option label="繁體中文" value="zh" />
-            </el-select>
-          </el-form-item>
-        </el-form>
-      </el-card>
+
     </div>
   </div>
 </template>

@@ -6,6 +6,7 @@ import {RagFile} from "@/interface/RagFile";
 import axios from "axios";
 import {useApiStore} from "@/store/ApiStore";
 import {ElMessage} from "element-plus";
+import {BackendStats} from "@/interface/BackendStats";
 
 export const useUserCenterAsideStore = defineStore('UserCenterAsideStore', ()=>{
     // 侧边栏是否可见
@@ -28,10 +29,24 @@ export const useUserCenterAsideStore = defineStore('UserCenterAsideStore', ()=>{
 })
 
 export const useUserCenterProfile = defineStore('UserCenterProfile', ()=>{
-    const cpuDetail = ref<number>(4)
-    const memoryDetail = ref<number>(12)
-    const diskDetail = ref<number>(2.6)
+    const cpuDetail = ref<number>(0)
+    const memoryDetail = ref<number>(0)
+    const diskDetail = ref<number>(0)
     const fileDetail = ref<number>(0)
+
+    const loadSystemStats = async ()=>{
+        await axios.get(useApiStore().getSystemApi())
+            .then((res)=>{
+                let backendStats:BackendStats =  res.data
+                cpuDetail.value = Math.round(backendStats.cpuUsage)
+                memoryDetail.value = Math.round(backendStats.memoryUsage)
+                diskDetail.value = backendStats.diskUsed
+                fileDetail.value = backendStats.fileCount
+            })
+            .catch((err)=>{
+                console.log("无法获取后端信息" + err)
+            })
+    }
     const getCpuDetailRef = ()=>{
         return cpuDetail
     }
@@ -44,69 +59,65 @@ export const useUserCenterProfile = defineStore('UserCenterProfile', ()=>{
     const getFileDetailRef = () => {
         return fileDetail
     }
-    return {getCpuDetailRef,getMemoryDetailRef,getDiskDetailRef,getFileDetailRef}
+    return {getCpuDetailRef,getMemoryDetailRef,getDiskDetailRef,getFileDetailRef,loadSystemStats}
 })
 
 export const useUserCenterOption = defineStore('UserCenterOption', ()=>{
     // Astrolitha設置
     const backendHost = ref('127.0.0.1')
     const backendPort = ref('80')
-    const ttsLocalMode = ref(true)
-    const arsLocalMode = ref(true)
-    const vdbLocalMode = ref(true)
-    const rdbLocalMode = ref(true)
+    const ttsLocalMode = ref(false)
+    const arsLocalMode = ref(false)
+    const vdbLocalMode = ref(false)
+    const rdbLocalMode = ref(false)
 
     // 集群設置
-    const clusterMode = ref(false)
-    const ttsMode = ref(false)
+    const clusterMode = ref(true)
+    const ttsMode = ref(true)
     const ttsHost = ref('127.0.0.1')
     const ttsPort = ref('10350')
-    const arsMode = ref(false)
+    const arsMode = ref(true)
     const arsHost = ref('127.0.0.1')
     const arsPort = ref('10500')
-    const vdbMode = ref(false)
+    const vdbMode = ref(true)
     const vdbHost = ref('127.0.0.1')
     const vdbPort = ref('9091')
+    const rdbMode = ref(true)
+    const rdbHost = ref('127.0.0.1')
+    const rdbPort = ref('3306')
 
     // 其他設置
     const language = ref('zh')
 
-    const getBackendHostRef = () => backendHost
-    const getBackendPortRef = () => backendPort
-    const getTtsLocalModeRef = () => ttsLocalMode
-    const getArsLocalModeRef = () => arsLocalMode
-    const getVdbLocalModeRef = () => vdbLocalMode
-    const getRdbLocalModeRef = () => rdbLocalMode
-    const getClusterModeRef = () => clusterMode
-    const getTtsModeRef = () => ttsMode
-    const getTtsHostRef = () => ttsHost
-    const getTtsPortRef = () => ttsPort
-    const getArsModeRef = () => arsMode
-    const getArsHostRef = () => arsHost
-    const getArsPortRef = () => arsPort
-    const getVdbModeRef = () => vdbMode
-    const getVdbHostRef = () => vdbHost
-    const getVdbPortRef = () => vdbPort
-    const getLanguageRef = () => language
+    // 模型设置
+    const chatModel = ref('deepseek-r1:7b')
+    const embeddingModel = ref('bge-m3:latest')
+    const toolCallModel = ref('llama3.1:8b')
 
     return {
-        getBackendHostRef,
-        getBackendPortRef,
-        getTtsLocalModeRef,
-        getArsLocalModeRef,
-        getVdbLocalModeRef,
-        getRdbLocalModeRef,
-        getClusterModeRef,
-        getTtsModeRef,
-        getTtsHostRef,
-        getTtsPortRef,
-        getArsModeRef,
-        getArsHostRef,
-        getArsPortRef,
-        getVdbModeRef,
-        getVdbHostRef,
-        getVdbPortRef,
-        getLanguageRef
+        chatModel,
+        embeddingModel,
+        toolCallModel,
+        backendHost,
+        backendPort,
+        ttsLocalMode,
+        arsLocalMode,
+        vdbLocalMode,
+        rdbLocalMode,
+        clusterMode,
+        ttsMode,
+        ttsHost,
+        ttsPort,
+        arsMode,
+        arsHost,
+        arsPort,
+        vdbMode,
+        vdbHost,
+        vdbPort,
+        rdbMode,
+        rdbHost,
+        rdbPort,
+        language
     }
 },{
     persist: true
