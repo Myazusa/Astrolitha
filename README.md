@@ -13,33 +13,16 @@ This is a distributed AI project based on Spring
 </div>
 
 ## Preview
+主界面
 
-   <div style="overflow-x: scroll; white-space: nowrap; height: 200px;">
-      <span style="display: inline-block; text-align: center; margin-right: 10px;">
-         <img src="./docs/image/live2d.png" style="height: 150px;" />
-         <p style="margin: 4px 0;">Live2D Display</p>
-      </span>
-     <span style="display: inline-block; text-align: center; margin-right: 10px;">
-         <img src="./docs/image/expression.png" style="height: 150px;" />
-         <p style="margin: 4px 0;">Expression Control</p>
-      </span>
-      <span style="display: inline-block; text-align: center; margin-right: 10px;">
-         <img src="./docs/image/voice.png" style="height: 150px;" />
-         <p style="margin: 4px 0;">Voice Control</p>
-      </span>
-      <span style="display: inline-block; text-align: center; margin-right: 10px;">
-         <img src="./docs/image/dashboard.png" style="height: 150px;" />
-         <p style="margin: 4px 0;">Dashboard</p>
-      </span>
-      <span style="display: inline-block; text-align: center; margin-right: 10px;">
-         <img src="./docs/image/rag.png" style="height: 150px;" />
-         <p style="margin: 4px 0;">RAG Repository</p>
-      </span>
-      <span style="display: inline-block; text-align: center; margin-right: 10px;">
-         <img src="/docs/image/option.png" style="height: 150px;" />
-         <p style="margin: 4px 0;">Options</p>
-      </span>
-   </div>
+| <img src="./docs/image/live2d.png" style="width: 200px;" /><br>Live2D Display |<img src="./docs/image/expression.png" style="width: 200px;" /><br>Expression Control|<img src="./docs/image/voice.png" style="width: 200px;" /><br>Voice Control|
+|:-----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+
+
+后台控制面板
+
+|<img src="./docs/image/dashboard.png" style="width: 200px;" /><br>Dashboard|<img src="./docs/image/rag.png" style="width: 200px;" /><br>RAG Repository|<img src="./docs/image/option.png" style="width: 200px;" /><br>Options|
+|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
 
 
 ## Features
