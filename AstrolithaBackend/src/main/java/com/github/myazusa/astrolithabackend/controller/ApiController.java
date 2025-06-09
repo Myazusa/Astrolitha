@@ -1,13 +1,11 @@
 package com.github.myazusa.astrolithabackend.controller;
 
 import com.github.myazusa.astrolithabackend.common.enums.ModelInterfaceEnums;
+import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
 import com.github.myazusa.astrolithabackend.dto.*;
 import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.model.RagFileDocument;
-import com.github.myazusa.astrolithabackend.service.AskQuestionCompositionService;
-import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
-import com.github.myazusa.astrolithabackend.service.RagFilesElasticsearchCompositionService;
-import com.github.myazusa.astrolithabackend.service.RagFilesOperationalCompositionService;
+import com.github.myazusa.astrolithabackend.service.*;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +29,17 @@ public class ApiController {
     private final ParsingFileCompositionService parsingFileCompositionService;
     private final RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
     private final RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService;
+    private final BackendStatsCompositionService backendStatsCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService, BackendStatsCompositionService backendStatsCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
         this.askQuestionCompositionService = askQuestionCompositionService;
         this.parsingFileCompositionService = parsingFileCompositionService;
         this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
         this.ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionService;
+        this.backendStatsCompositionService = backendStatsCompositionService;
     }
 
 
@@ -167,5 +167,18 @@ public class ApiController {
     @PostMapping("/search")
     public ResponseEntity<List<RagFileDocument>> search(@RequestBody SearchRequestDTO searchRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(ragFilesElasticsearchCompositionService.findByFileName(searchRequestDTO.getKeyword()));
+    }
+
+    /**
+     * 获取系统状态
+     * @return 带有系统状态的对象
+     */
+    @GetMapping("/system")
+    public ResponseEntity<BackendStatsResponseDTO> systemStats(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(backendStatsCompositionService.getBackendStats());
+        } catch (InterruptedException e) {
+            throw new UnknownException("线程暂停失败：" + e);
+        }
     }
 }

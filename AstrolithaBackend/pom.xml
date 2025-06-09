@@ -149,6 +149,11 @@
             <artifactId>flexmark-all</artifactId>
             <version>0.64.8</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>6.8.2</version>
+        </dependency>
     </dependencies>
 
     <build>

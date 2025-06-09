@@ -21,7 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class AstrolithaBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(AstrolithaBackendApplication.class, args);
-        // 服务启动需要先运行ollama应用、milvus容器。只要是运行/测试都需要milvus服务存在，否则bean报错
+        // 服务启动需要先运行集群。只要是运行/测试都需要集群在运行，否则bean报错
         log.info("spring服务器已启动");
     }
 }

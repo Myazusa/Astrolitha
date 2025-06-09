@@ -106,4 +106,8 @@ public class RagSqlService extends ServiceImpl<RagFileMapper, RagFile> {
 
         return this.update(updateObj, updateWrapper);
     }
+
+    public Long selectFileCount(){
+        return this.count();
+    }
 }
