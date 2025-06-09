@@ -6,6 +6,7 @@ import com.github.myazusa.astrolithabackend.dto.*;
 import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.model.RagFileDocument;
 import com.github.myazusa.astrolithabackend.service.*;
+import com.github.myazusa.astrolithabackend.service.agent.CustomAgentBuilderService;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,10 @@ public class ApiController {
     private final RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
     private final RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService;
     private final BackendStatsCompositionService backendStatsCompositionService;
+    private final CustomAgentBuilderService customAgentBuilderService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService, BackendStatsCompositionService backendStatsCompositionService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService, BackendStatsCompositionService backendStatsCompositionService, CustomAgentBuilderService customAgentBuilderService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
         this.askQuestionCompositionService = askQuestionCompositionService;
@@ -40,6 +42,7 @@ public class ApiController {
         this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
         this.ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionService;
         this.backendStatsCompositionService = backendStatsCompositionService;
+        this.customAgentBuilderService = customAgentBuilderService;
     }
 
 
@@ -63,9 +66,11 @@ public class ApiController {
         switch (modelInterfaceEnums) {
             case ollama -> {
                 String answer;
-                if (questionRequestDTO.getEnableAgent()) {
+                if (questionRequestDTO.getEnableCustomAgent()) {
+                    answer = askQuestionCompositionService.askQuestionWithCustomAgent(questionRequestDTO.getQuestion());
+                } else if (questionRequestDTO.getEnableAgent()) {
                     answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion(),questionRequestDTO.getEmotions());
-                }else {
+                } else {
                     answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
                 }
                 //
@@ -180,5 +185,10 @@ public class ApiController {
         } catch (InterruptedException e) {
             throw new UnknownException("线程暂停失败：" + e);
         }
+    }
+    @PostMapping("/create_tool")
+    public ResponseEntity<InformationResponseDTO> createTool(@RequestBody CustomToolFunctionRequestDTO customToolFunctionRequestDTO){
+        customAgentBuilderService.buildAgent(customToolFunctionRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("创建工具成功"));
     }
 }

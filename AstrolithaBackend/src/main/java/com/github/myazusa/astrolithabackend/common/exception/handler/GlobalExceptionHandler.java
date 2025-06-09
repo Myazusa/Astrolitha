@@ -101,6 +101,12 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("无效Agent，"+e.getMessage());
     }
+    @ExceptionHandler(InjectException.class)
+    public ResponseEntity<String> handlerInjectException(Exception e){
+        log.error("方法注入失败: {}",e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("方法注入失败，"+e.getMessage());
+    }
+
     @ExceptionHandler(UnknownException.class)
     public ResponseEntity<String> handleUnknownException(Exception e){
         log.error("未知错误: {}",e.getMessage());

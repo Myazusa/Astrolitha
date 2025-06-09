@@ -2,11 +2,10 @@ package com.github.myazusa.astrolithabackend.service;
 
 import com.github.myazusa.astrolithabackend.common.exception.RemoteServiceException;
 import com.github.myazusa.astrolithabackend.service.agent.AgentBuilderService;
-import com.github.myazusa.astrolithabackend.service.agent.KnowledgeBaseAgent;
+import com.github.myazusa.astrolithabackend.service.agent.CustomAgentBuilderService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
 import com.github.myazusa.astrolithabackend.common.builder.PromptConstructionBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +19,14 @@ import java.util.concurrent.ExecutionException;
 public class AskQuestionCompositionService {
     private final OllamaService ollamaService;
     private final AgentBuilderService agentBuilderService;
+    private final CustomAgentBuilderService customAgentBuilderService;
 
 
     @Autowired
-    public AskQuestionCompositionService(OllamaService ollamaService, AgentBuilderService agentBuilderService) {
+    public AskQuestionCompositionService(OllamaService ollamaService, AgentBuilderService agentBuilderService, CustomAgentBuilderService customAgentBuilderService) {
         this.ollamaService = ollamaService;
         this.agentBuilderService = agentBuilderService;
+        this.customAgentBuilderService = customAgentBuilderService;
     }
 
     /**
@@ -73,6 +74,30 @@ public class AskQuestionCompositionService {
                 .build();
 
         CompletableFuture<String> future = ollamaService.getAnswerAsync(constructedPrompt,question, toolCallbacks);
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("ollama服务访问失败", e);
+            throw new RemoteServiceException("ollama服务访问失败");
+        }
+    }
+
+    /**
+     * 启用了自定义agent功能，才调用这个方法，与上一个方法不兼容
+     */
+    public String askQuestionWithCustomAgent(String question){
+        // 构造系统提示词
+        String constructedPrompt = new PromptConstructionBuilder()
+                .withLanguage()
+                .withSimplify()
+                .withLimitToolUse()
+                .build();
+
+        // 构造Agent工具链，每次都需要重新构造以应对工具的增减
+        List<ToolCallback> toolCallbacks = customAgentBuilderService.getGlobalToolCallbacks();
+
+        CompletableFuture<String> future = ollamaService.getAnswerAsync(constructedPrompt,question, toolCallbacks);
+
         try {
             return future.get();
         } catch (InterruptedException | ExecutionException e) {

@@ -19,5 +19,8 @@ public class QuestionRequestDTO {
     @NotNull
     private Boolean enableAgent;
 
+    @NotNull
+    private Boolean enableCustomAgent;
+
     private List<String> emotions;
 }

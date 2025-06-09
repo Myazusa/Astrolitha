@@ -44,6 +44,9 @@ app:
       rag:
         origin: file:./uploads/rag/
         mapping: /uploads/rag/**
+      function:
+        origin: file:./uploads/function/
+        mapping: /uploads/function/**
 
 ollama:
   warmup:
