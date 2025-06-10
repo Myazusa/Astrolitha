@@ -7,6 +7,7 @@ import axios from "axios";
 import {useApiStore} from "@/store/ApiStore";
 import {ElMessage} from "element-plus";
 import {BackendStats} from "@/interface/BackendStats";
+import {ToolFunction} from "@/interface/ToolFunction";
 
 export const useUserCenterAsideStore = defineStore('UserCenterAsideStore', ()=>{
     // 侧边栏是否可见
@@ -160,7 +161,6 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
             })
             .catch(err => {
                 console.log(err)
-                ElMessage.error("刷新失败：" + err)
             })
     }
 
@@ -219,5 +219,31 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
         renameFile,
         initTable,
         reflashFiles
+    }
+})
+
+export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolStore',()=>{
+    const tools = ref<ToolFunction[]>()
+
+    const addTool = (tool:ToolFunction) => {
+        axios.post(useApiStore().getCreateToolApi(),tool,{
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => {
+            if(res.status === 200){
+                tools.value?.push(tool)
+            }else {
+                ElMessage.error("添加失败：" + res.status)
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            ElMessage.error("添加失败：" + err)
+        })
+    }
+    const getToolsRef = () => {
+        return tools
     }
 })

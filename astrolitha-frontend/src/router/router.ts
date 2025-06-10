@@ -33,6 +33,11 @@ const routes: RouteRecordRaw[] = [
                 component: () => import("@/components/user-center/UserCenterDatabase.vue"),
             },
             {
+                path: 'tools',
+                name: 'UserCenterCustomTool',
+                component: ()=>import("@/components/user-center/UserCenterCustomTool.vue"),
+            },
+            {
                 path: 'option',
                 name: 'UserCenterOption',
                 component: () => import("@/components/user-center/UserCenterOption.vue"),

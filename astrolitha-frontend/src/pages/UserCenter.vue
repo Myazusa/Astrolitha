@@ -35,6 +35,9 @@ watch(activeMenu,()=>{
     case 'database':
       router.push({name:'UserCenterDatabase'})
       break
+    case 'tools':
+      router.push({name:'UserCenterCustomTool'})
+      break
     default:
       break
   }

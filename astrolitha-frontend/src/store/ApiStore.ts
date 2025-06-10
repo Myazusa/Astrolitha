@@ -12,8 +12,11 @@ export const useApiStore = defineStore('ApiStore',()=>{
     const parsingApi:string = '/parsing'
     const searchApi:string = '/search'
     const systemApi:string = '/system'
+    const createToolApi:string = '/create_tool'
 
-
+    const getCreateToolApi = ()=>{
+        return baseAddress + apiUrl + createToolApi
+    }
     const getSystemApi = ()=>{
         return baseAddress + apiUrl + systemApi
     }
@@ -52,6 +55,7 @@ export const useApiStore = defineStore('ApiStore',()=>{
         getRenameFileApi,
         getTranscribeApi,
         getSearchApi,
-        getSystemApi
+        getSystemApi,
+        getCreateToolApi
     }
 })

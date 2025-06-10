@@ -2,7 +2,9 @@
 
 import {ElMenu, ElMenuItem, ElScrollbar} from "element-plus";
 import {useUserCenterAsideStore} from "@/store/UserCenterStore";
-import {User, Setting, Odometer, Files} from "@element-plus/icons-vue";
+import {User, Setting, Odometer,Reading, Files} from "@element-plus/icons-vue";
+import {onMounted} from "vue";
+import router from "@/router/router";
 
 const userCenterAsideStore = useUserCenterAsideStore()
 
@@ -10,8 +12,17 @@ const menuItems = [
   { index: 'profile', icon: Odometer },
   { index: 'chat', icon: User },
   { index: 'database', icon: Files },
+  {index: 'tools',icon: Reading},
   { index: 'option', icon: Setting },
 ]
+onMounted(() => {
+  const s = router.currentRoute.value.path.replace("/uc","");
+  if(s === ""){
+    userCenterAsideStore.getActiveMenuRef().value = "profile"
+  }else {
+    userCenterAsideStore.getActiveMenuRef().value = s.replace("/","")
+  }
+})
 </script>
 
 <template>
