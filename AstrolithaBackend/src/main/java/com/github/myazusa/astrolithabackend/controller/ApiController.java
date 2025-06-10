@@ -187,6 +187,11 @@ public class ApiController {
         }
     }
 
+    /**
+     * 创建工具的方法
+     * @param customToolFunctionRequestDTO 方法定义
+     * @return 200为成功
+     */
     @PostMapping("/create_tool")
     public ResponseEntity<InformationResponseDTO> createTool(@RequestBody CustomToolFunctionRequestDTO customToolFunctionRequestDTO){
         customAgentBuilderService.buildAgent(customToolFunctionRequestDTO);
