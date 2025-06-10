@@ -67,7 +67,9 @@ main {
   background: var(--theme-color-primary);
   color: var(--theme-color-on-primary);
   overflow: auto;
-  width: 100vw
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
 }
 .user-center-layout {
   display: flex;

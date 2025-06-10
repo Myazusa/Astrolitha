@@ -98,6 +98,7 @@ defineExpose({
     title="上傳數據庫"
     width="30rem"
     :close-on-click-modal="false"
+    style="background: var(--theme-color-secondary) !important; color: var(--theme-color-on-secondary) !important;"
   >
     <el-upload
       ref="uploadRef"

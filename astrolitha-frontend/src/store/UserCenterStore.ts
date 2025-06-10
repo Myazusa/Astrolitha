@@ -246,4 +246,8 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
     const getToolsRef = () => {
         return tools
     }
+
+    return{
+        getToolsRef,addTool
+    }
 })
