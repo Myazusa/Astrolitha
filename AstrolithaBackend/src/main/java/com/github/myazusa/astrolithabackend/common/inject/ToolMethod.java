@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
  * ToolCallback的方法体
  */
 public class ToolMethod {
-    public static Object invoke(String remoteApi, String requestMethod,@Nullable Object... args) {
+    public static String invoke(String remoteApi, String requestMethod) {
         WebClient webClient = WebClient.builder().baseUrl(remoteApi).build();
         CompletableFuture<String> future = null;
         if (Objects.equals(requestMethod, "post")) {
@@ -21,12 +21,11 @@ public class ToolMethod {
                     .retrieve()
                     .bodyToMono(String.class)
                     .toFuture();
-            return future;
         }else if (Objects.equals(requestMethod, "get")) {
             future = webClient.get().retrieve().bodyToMono(String.class).toFuture();
         }
 
-        Object result;
+        String result;
         try {
             if (future != null) {
                 result = future.get();

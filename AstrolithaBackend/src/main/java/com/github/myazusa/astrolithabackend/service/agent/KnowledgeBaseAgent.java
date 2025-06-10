@@ -18,8 +18,8 @@ public class KnowledgeBaseAgent {
         return String.join("\n", result);
     }
 
-    @Tool(name = "queryCurrentSeatNumber", description = "查询餐厅业务的工具方法。查询并返回用户的座位号")
-    public String queryCurrentSeatNumber(){
-        return "座位号为：114514";
-    }
+//    @Tool(name = "queryCurrentSeatNumber", description = "查询餐厅业务的工具方法。查询并返回用户的座位号")
+//    public String queryCurrentSeatNumber(){
+//        return "座位号为：114514";
+//    }
 }

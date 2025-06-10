@@ -14,10 +14,13 @@ import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.method.MethodToolCallback;
 import org.springframework.ai.tool.support.ToolDefinitions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -28,18 +31,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CustomAgentBuilderService {
-    private final CustomAgentBuilderService customAgentBuilderService;
     private final Path functionDir = Paths.get("./uploads/function").toAbsolutePath().normalize();
     private final ResourceLoader resourceLoader;
     private final ObjectMapper objectMapper = new ObjectMapper();
     public final static String CLASS_PACKAGE = "com.github.myazusa.astrolithabackend.service.gen.";
     private static final List<Map<String, Class<?>>> customMethodList = new ArrayList<>();
-
+    private final ConcurrentHashMap<String, Class<?>> classCache = new ConcurrentHashMap<>();
     @Getter
     private final List<ToolCallback> globalToolCallbacks = new ArrayList<>();
 
-    public CustomAgentBuilderService(CustomAgentBuilderService customAgentBuilderService, ResourceLoader resourceLoader) {
-        this.customAgentBuilderService = customAgentBuilderService;
+    @Autowired
+    public CustomAgentBuilderService(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
@@ -62,12 +64,14 @@ public class CustomAgentBuilderService {
      * @return 工具
      */
     private ToolCallback injectCustomToolCallMethod(CustomToolFunctionRequestDTO customToolFunctionRequestDTO){
-        Method method = constructAndRegisterMethod(customToolFunctionRequestDTO);
+        Object object = constructAndRegisterMethod(customToolFunctionRequestDTO).getFirst();
+        Method method = constructAndRegisterMethod(customToolFunctionRequestDTO).getSecond();
         ToolDefinition toolDefinition = ToolDefinitions.builder(method)
                 .name(customToolFunctionRequestDTO.getFunctionName())
                 .description(customToolFunctionRequestDTO.getToolDescription())
                 .build();
         return MethodToolCallback.builder()
+                .toolObject(object)
                 .toolMethod(method)
                 .toolDefinition(toolDefinition)
                 .build();
@@ -78,32 +82,42 @@ public class CustomAgentBuilderService {
      * @param customToolFunctionRequestDTO 前端传过来的方法定义
      * @return 动态创建的方法
      */
-    private Method constructAndRegisterMethod(CustomToolFunctionRequestDTO customToolFunctionRequestDTO){
+    private Pair<Object,Method> constructAndRegisterMethod(CustomToolFunctionRequestDTO customToolFunctionRequestDTO){
         Method method = null;
         try {
-            method = ToolMethod.class.getMethod("invoke", String.class, String.class, Object[].class);
+            method = ToolMethod.class.getMethod("invoke", String.class, String.class);
         } catch (NoSuchMethodException e) {
             throw new InjectException("方法模板创建失败" + e.getMessage());
         }
+        Class<?> dynamicClass = classCache.get(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName());
+        if (dynamicClass == null) {
+            try (DynamicType.Unloaded<Object> unloaded = new ByteBuddy()
+                    .subclass(Object.class)
+                    .name(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName())
+                    .defineMethod(customToolFunctionRequestDTO.getFunctionName(), String.class, Modifier.PUBLIC)
+                    .intercept(MethodCall.invoke(method)
+                            .with(customToolFunctionRequestDTO.getRemoteApi(), customToolFunctionRequestDTO.getRequestMethod())
+                    )
+                    .make()) {
 
-        try(DynamicType.Unloaded<Object> unloaded = new ByteBuddy()
-                .subclass(Object.class)
-                .name(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName())
-                .defineMethod(customToolFunctionRequestDTO.getFunctionName(), String.class, Modifier.PUBLIC)
-                .intercept(MethodCall.invoke(method)
-                        .with(customToolFunctionRequestDTO.getRemoteApi(), customToolFunctionRequestDTO.getRequestMethod(), customToolFunctionRequestDTO.getParams())
-                )
-                .make()) {
-            Class<?> customClass = unloaded
-                    .load(Thread.class.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-                    .getLoaded();
-            Map<String, Class<?>> hashMap = new ConcurrentHashMap<>();
-            hashMap.put(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName(),customClass);
-            customMethodList.add(hashMap);
-            return customClass.getMethod(customToolFunctionRequestDTO.getFunctionName());
-        } catch (NoSuchMethodException e) {
+                Class<?> customClass = unloaded
+                        .load(CustomAgentBuilderService.class.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+                        .getLoaded();
+                Map<String, Class<?>> hashMap = new ConcurrentHashMap<>();
+                classCache.put(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName(), customClass);
+                hashMap.put(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName(), customClass);
+                customMethodList.add(hashMap);
+            }
+        }
+        try {
+            Object instance = classCache.get(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName()).getDeclaredConstructor().newInstance();
+            Method customClassMethod = classCache.get(CLASS_PACKAGE + customToolFunctionRequestDTO.getFunctionName()).getMethod(customToolFunctionRequestDTO.getFunctionName());
+            return Pair.of(instance, customClassMethod);
+        }catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                IllegalAccessException e) {
             throw new InjectException(e.getMessage());
         }
+
     }
 
     /**
