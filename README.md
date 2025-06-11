@@ -21,8 +21,8 @@ Main interface
 
 Dashboard and normal chat and options
 
-|<img src="./docs/image/dashboard.png" style="width: 100%;" /><br>Dashboard| <img src="./docs/image/rag.png" style="width: 100%;" /><br>LLM Chat |<img src="./docs/image/option.png" style="width: 100%;" /><br>Options|
-|:----------------------------------------------------------------------------:|:-------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+|<img src="./docs/image/dashboard.png" style="width: 100%;" /><br>Dashboard| <img src="./docs/image/chat.png" style="width: 100%;" /><br>LLM Chat |<img src="./docs/image/option.png" style="width: 100%;" /><br>Options|
+|:----------------------------------------------------------------------------:|:--------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
 
 RAG and toolchain
 
