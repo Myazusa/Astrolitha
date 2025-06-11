@@ -97,7 +97,6 @@ public class ApiController {
         }
         return gptSoVITSService.synthesizeSpeechAsyncStream(gptSoVITSRequestDTO)
                 .map(audio -> ResponseEntity.ok()
-                        .contentType(MediaType.valueOf("audio/wav"))
                         .body(audio));
     }
 

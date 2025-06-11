@@ -1,7 +1,6 @@
 package com.github.myazusa.astrolithabackend.service.agent;
 
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

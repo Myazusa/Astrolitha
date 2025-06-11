@@ -1,11 +1,20 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 public class GPTSoVITSService {
     private final WebClient gptSoVITSClient;
@@ -31,11 +40,7 @@ public class GPTSoVITSService {
         if (gptSoVITSRequestDTO.getRef_audio_path().isEmpty()) {
             gptSoVITSRequestDTO.setRef_audio_path("default.wav");
         }
-
         return gptSoVITSClient.post()
-                .uri("/")
-                .header("Content-Type", "application/json")
-                .accept(org.springframework.http.MediaType.valueOf("audio/wav"))
                 .bodyValue(gptSoVITSRequestDTO)
                 .retrieve()
                 .bodyToMono(byte[].class);

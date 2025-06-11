@@ -23,7 +23,9 @@ spring:
         model: llama3.1:8b
       embedding:
         model: bge-m3:latest
-
+logging:
+  level:
+    org.springframework.web.reactive.function.client.ExchangeFunctions: trace
 # mybatis配置
 mybatis:
   configuration:
@@ -59,6 +61,6 @@ ollama:
 
 microservice:
   gpt-sovits:
-    url: http://localhost:9880
+    url: http://localhost:9880/tts
   whisper:
     url: http://localhost:10350
