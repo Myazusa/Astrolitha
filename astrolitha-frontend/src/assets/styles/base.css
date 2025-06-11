@@ -154,6 +154,9 @@ input:focus,textarea:focus{
 /**
  * 覆盖默认element-plus的dialog样式
  */
+.el-popper{
+  font-family: 'ResourceHanRoundedCN', sans-serif !important;
+}
 .el-dialog{
   background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(10px) !important;

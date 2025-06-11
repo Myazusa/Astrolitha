@@ -1,4 +1,6 @@
-﻿export function extractAndRemoveEPlaceholders(input: string): { placeholders: string[], cleaned: string }{
+﻿import {ToolFunction} from "@/interface/ToolFunction";
+
+export function extractAndRemoveEPlaceholders(input: string): { placeholders: string[], cleaned: string }{
     const regex = /\{#e(.*?)\}/g;
 
     const placeholders: string[] = [];
@@ -16,10 +18,8 @@ export function removeEnglishCharacters(input: string) :string{
     return input.replace(/[a-zA-Z]/g, '');
 }
 
-export function noSpaces(obj: any) :boolean{
-    return Object.values(obj).every(
-        val => typeof val === 'string' && !/\s/.test(val)
-    )
+export function noSpaces(obj: ToolFunction) :boolean{
+    return !/\s/.test(obj.functionName) && !/\s/.test(obj.remoteApi);
 }
 
 
@@ -37,13 +37,9 @@ function isValidJavaMethodName(name: string): boolean {
     return javaMethodNamePattern.test(name) && !javaKeywords.has(name);
 }
 
-export function noSpecialChars(obj: any) :boolean{
-
-    return Object.values(obj).every(
-        val => typeof val === 'string' && isValidJavaMethodName(val)
-    )
+export function noSpecialChars(obj: ToolFunction) :boolean{
+    return isValidJavaMethodName(obj.functionName) && isValidJavaMethodName(obj.requestMethod)
 }
-export function noEmpty(obj: any) :boolean{
-    return Object.values(obj).every(
-        val => typeof val === 'string' && val === '')
+export function noEmpty(obj: ToolFunction) :boolean{
+    return obj.name !== '' && obj.functionName !== '' && obj.remoteApi !== '' && obj.toolDescription !== '';
 }

@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
 
-import UserCenterCustomToolDetail from "@/components/user-center/UserCenterCustomToolDetail.vue";
+import UserCenterCustomToolDetailDialog from "@/components/user-center/UserCenterCustomToolDetailDialog.vue";
 import UserCenterCustomToolList from "@/components/user-center/UserCenterCustomToolList.vue";
 import {ref} from "vue";
 import UserCenterCustomAddDialog from "@/components/user-center/UserCenterCustomAddDialog.vue";
@@ -19,28 +19,19 @@ const handleAddClick = () => {
       <el-button class="add-tool-button" size="large" round @click="handleAddClick">添加工具</el-button>
     </div>
   </header>
-  <div style="display: flex;flex-direction: row;height: 100%;padding: 1.5rem;gap: 0.75rem">
-    <nav>
-      <UserCenterCustomToolList />
-    </nav>
+  <div style="display: flex;flex-direction: row;height: 100vh;padding: 1.5rem;">
     <section>
-      <UserCenterCustomToolDetail />
+      <UserCenterCustomToolList />
     </section>
   </div>
   <UserCenterCustomAddDialog ref="addDialogRef" />
 </template>
 
 <style scoped>
-nav{
-  width: 10rem;
-  background-color: var(--theme-color-secondary);
-  border-radius: 2rem 0 0 2rem;
-
-}
 section{
   width: 100%;
   background-color: var(--theme-color-secondary);
-  border-radius: 0 2rem 2rem 0;
+  border-radius: 2rem;
 }
 header{
   display: flex;
