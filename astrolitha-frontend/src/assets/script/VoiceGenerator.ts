@@ -2,20 +2,26 @@
 import axios from "axios";
 import {Voice} from "@/interface/Voice";
 
-export function voiceGenerator(filteredAnswer: string):Blob {
-    const gptSoVITSRequestDTO:Voice = {
-        ref_audio_path:"default.wav",
-        prompt_text:"不过老师怎么会知道这么可爱的地方？老师也喜欢？真的？",
-        text_lang:"zh",
-        prompt_lang:"zh",
+export async function voiceGenerator(filteredAnswer: string) {
+    const gptSoVITSRequestDTO: Voice = {
+        ref_audio_path: "default.wav",
+        prompt_text: "不过老师怎么会知道这么可爱的地方？老师也喜欢？真的？",
+        text_lang: "zh",
+        prompt_lang: "zh",
         text: filteredAnswer
     }
-    let audio:Blob = new Blob();
-    axios.post(useApiStore().getSpeakApi(), gptSoVITSRequestDTO, {
-        responseType: 'blob' // 关键点
+    let audio: ArrayBuffer = new ArrayBuffer();
+    await axios.post(useApiStore().getSpeakApi(), gptSoVITSRequestDTO, {
+        responseType: 'arraybuffer'
     })
-    .then(response => {
-        audio = response.data as Blob
-    })
+        .then(response => {
+            if (response.data instanceof ArrayBuffer) {
+                console.log("类型检查：",);
+                audio = response.data
+                return audio
+            }
+        }).catch(error => {
+            console.log("未知获取音频错误：", error);
+        })
     return audio;
 }

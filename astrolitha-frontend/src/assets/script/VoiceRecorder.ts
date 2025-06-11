@@ -98,29 +98,31 @@ export function VoiceRecorder() {
         formData.append('file', wavBlob, 'voice.wav')
 
         axios.post(apiStore.getTranscribeApi(), formData)
-            .then((res) => {
+            .then(async (res) => {
                 chunks.value = []
                 // 语音转文字
-                ElMessage.info(res.data)
+                console.log("获得得文字是：" + res.data.message)
                 // 文字调用LLM，不可以使用异步
-                const answer = sendQuestion(res.data);
+                const answer = await sendQuestion(res.data.message);
+                //
+                console.log("获得得回答是：" + answer)
                 if (answer.length > 0) {
                     // 处理回答中的控制符
                     const result = extractAndRemoveEPlaceholders(answer);
-
+                    console.log("处理控制符得到：" + result)
                     if (result.placeholders.length > 0) {
                         // 设置表情
                         useModelStore().getModel()?.expression(result.placeholders[0])
                     }
                     // 处理回答中的英文
                     let filteredAnswer = removeEnglishCharacters(result.cleaned);
-
+                    console.log("处理英文得到：" + filteredAnswer)
                     // 文字转语音
-                    const blob = voiceGenerator(filteredAnswer);
+                    const arraybuffer = await voiceGenerator(filteredAnswer);
 
                     // 控制模型嘴部
-                    mouthControl(blob,returnAudioContext,result.cleaned)
-                }else {
+                    mouthControl(arraybuffer, returnAudioContext, result.cleaned)
+                } else {
                     ElMessage.error('LLM的回复为空');
                 }
                 recorderStore.waitingResponse = false

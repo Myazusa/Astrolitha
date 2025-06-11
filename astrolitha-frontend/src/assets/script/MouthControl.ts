@@ -1,8 +1,7 @@
 ﻿import {useModelStore, useTalkBubbleStore} from "@/store/Live2DStudioStore";
 
-export async function mouthControl(audio:Blob ,audioContext:AudioContext,result:string) {
-    const audioData = await audio.arrayBuffer()
-    const audioBuffer = await audioContext.decodeAudioData(audioData)
+export async function mouthControl(audio:ArrayBuffer ,audioContext:AudioContext,result:string) {
+    const audioBuffer = await audioContext.decodeAudioData(audio)
     const source = audioContext.createBufferSource()
     const analyser = audioContext.createAnalyser()
     source.buffer = audioBuffer

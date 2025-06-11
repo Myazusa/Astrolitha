@@ -3,16 +3,19 @@ import axios from "axios";
 import {useModelStore} from "@/store/Live2DStudioStore";
 import {useApiStore} from "@/store/ApiStore";
 
-export function sendQuestion(question:string):string{
-    const questionRequestDTO:Question = {
-        modelInterface:'ollama',
+export async function sendQuestion(question: string) {
+    const questionRequestDTO: Question = {
+        modelInterface: 'ollama',
         question: question,
-        emotions: useModelStore().getMotionButtonListRef().value
+        enableAgent: true,
+        enableCustomAgent: false,
+        emotions: []
     };
-    let answer:string = "";
-    axios.post(useApiStore().getAskQuestionApi(),questionRequestDTO)
+    let answer: string = "";
+    await axios.post(useApiStore().getAskQuestionApi(), questionRequestDTO)
         .then(response => {
-            answer = response.data
+            answer = response.data.message
+
         })
         .catch((err) => {
             console.log(err)

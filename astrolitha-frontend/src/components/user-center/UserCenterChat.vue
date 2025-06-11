@@ -33,13 +33,15 @@ const handleSend = async () => {
   const questionRequestDTO:Question = {
     modelInterface:'ollama',
     question: input.value,
-    emotions: modelStore.getMotionButtonListRef().value
+    enableAgent:true,
+    enableCustomAgent:false,
+    emotions: []
   };
   input.value = ''
   await axios.post(apiStore.getAskQuestionApi(),questionRequestDTO)
     .then(response => {
       input.value = ''
-      const cleaned = response.data.replace(/<think>.*?<\/think>/gs, '')
+      const cleaned = response.data.message.replace(/<think>.*?<\/think>/gs, '')
       setTimeout(() => {
         userCenterChatStore.addMessage({ role: 'assistant',name: 'Deepseek', content: cleaned })
         nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
