@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 
-import UserCenterCustomToolDetailDialog from "@/components/user-center/UserCenterCustomToolDetailDialog.vue";
 import UserCenterCustomToolList from "@/components/user-center/UserCenterCustomToolList.vue";
 import {ref} from "vue";
 import UserCenterCustomAddDialog from "@/components/user-center/UserCenterCustomAddDialog.vue";

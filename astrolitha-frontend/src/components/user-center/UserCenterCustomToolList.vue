@@ -1,12 +1,20 @@
 ﻿<script setup lang="ts">
 import {useUserCenterCustomToolStore} from "@/store/UserCenterStore";
+import UserCenterCustomToolDetailDialog from "@/components/user-center/UserCenterCustomToolDetailDialog.vue";
+import {ref} from "vue";
 
 const userCenterCustomToolStore = useUserCenterCustomToolStore();
+
+const detailDialogRef = ref()
+const handleDetailClick = (index:number) => {
+  userCenterCustomToolStore.selectedToolIndex = index;
+  detailDialogRef.value.dialogVisible = true
+}
 </script>
 
 <template>
   <div class="container">
-      <div class="tool" v-for="tool in userCenterCustomToolStore.getToolsRef().value" v-if="userCenterCustomToolStore.getToolsRef().value?.length" :key="tool.name">
+      <div @click="handleDetailClick(index)" class="tool" v-for="(tool, index) in userCenterCustomToolStore.getToolsRef().value" v-if="userCenterCustomToolStore.getToolsRef().value?.length" :key="index">
         <el-icon class="tool-icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="Function--Streamline-Sharp-Material" height="24" width="24">
             <desc>
@@ -31,6 +39,7 @@ const userCenterCustomToolStore = useUserCenterCustomToolStore();
         沒有數據呢
       </div>
   </div>
+  <UserCenterCustomToolDetailDialog ref="detailDialogRef"/>
 </template>
 
 <style scoped>

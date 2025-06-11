@@ -224,6 +224,7 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
 
 export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolStore',()=>{
     const tools = ref<ToolFunction[]>([])
+    let selectedToolIndex:number = 0;
 
     const addTool = (tool:ToolFunction) => {
         // axios.post(useApiStore().getCreateToolApi(),tool,{
@@ -250,6 +251,6 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
     }
 
     return{
-        getToolsRef,addTool
+        getToolsRef,addTool,selectedToolIndex
     }
 })
