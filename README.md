@@ -19,19 +19,28 @@ Main interface
 |:----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------:|
 
 
-Control panel
+Dashboard and normal chat and options
 
-|<img src="./docs/image/dashboard.png" style="width: 100%;" /><br>Dashboard|<img src="./docs/image/rag.png" style="width: 100%;" /><br>RAG Repository|<img src="./docs/image/option.png" style="width: 100%;" /><br>Options|
-|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+|<img src="./docs/image/dashboard.png" style="width: 100%;" /><br>Dashboard| <img src="./docs/image/rag.png" style="width: 100%;" /><br>LLM Chat |<img src="./docs/image/option.png" style="width: 100%;" /><br>Options|
+|:----------------------------------------------------------------------------:|:-------------------------------------------------------------------:|:----------------------------------------------------------------------------:|
+
+RAG and toolchain
+
+| <img src="./docs/image/rag.png" style="width: 100%;" /><br>RAG Repository | <img src="./docs//image/addtool.png" style="width: 100%;" /><br>Add Tool | <img src="./docs/image/tool.png" style="width: 100%;" /><br>Toolchain |
+|:-------------------------------------------------------------------------:|:------------------------------------------------------------------------:|:---------------------------------------------------------------------:|
 
 
 ## Features
 
+Base Features:
 - **RAG service:** Provides self-built RAG, Including parsing docx and other files and VDB storage.
 - **Live2D display driven by LLM:** Select any Live2D model to display, And the movements and speech are controlled by LLM.
 - **Integrate TTS, ARS and LLM:** Call LLM through ARS and use ARS to generate speech at the end.
 - **Agent support:** The large model can use function call the appropriate tools to perform corresponding operations according to the requirements given by the user.
 - **Distributed support:** Supports deployment using Kubernetes. 
+
+New Features：
+- **Custom toolchain:** Supports calling interfaces of other projects as tools for the project model through Java reflection.
 
 ## Installation
 
