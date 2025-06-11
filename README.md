@@ -114,6 +114,7 @@ The project uses the following docker images as microservices.
 - milvusdb/etcd:latest
 - minio/minio:latest
 - milvus-standalone
+- elasticsearch:8.18.1
 
 Corresponding to the following open source projects.
 
@@ -122,6 +123,7 @@ Corresponding to the following open source projects.
 - [whisper](https://github.com/openai/whisper)
 - [gpt-sovits](https://github.com/RVC-Boss/GPT-SoVITS)
 - [milvus](https://github.com/milvus-io/milvus)
+- [elasticsearch](https://github.com/elastic/elasticsearch)
 
 ## License
 This project is a finished application rather than a tool library or framework, so it uses the AGPLv3 open source protocol instead of MIT or Apache 2.0.
