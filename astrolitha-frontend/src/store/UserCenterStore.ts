@@ -227,24 +227,24 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
     let selectedToolIndex:number = 0;
 
     const addTool = (tool:ToolFunction) => {
-        // axios.post(useApiStore().getCreateToolApi(),tool,{
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     }
-        // })
-        // .then(res => {
-        //     if(res.status === 200){
-        //         tools.value?.push(tool)
-        //     }else {
-        //         ElMessage.error("添加失败：" + res.status)
-        //     }
-        // })
-        // .catch(err => {
-        //     console.log(err)
-        //     ElMessage.error("添加失败：" + err)
-        // })
-        tools.value?.push(tool)
-
+        axios.post(useApiStore().getCreateToolApi(),tool,{
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => {
+            if(res.status === 200){
+                tool.toolUUID = res.data.message
+                tools.value?.push(tool)
+            }else {
+                ElMessage.error("添加失败：" + res.status)
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            ElMessage.error("添加失败：" + err)
+        })
+        //tools.value?.push(tool)
     }
     const getToolsRef = () => {
         return tools

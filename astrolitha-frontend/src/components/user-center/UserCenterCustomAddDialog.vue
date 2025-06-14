@@ -12,6 +12,7 @@ const userCenterCustomToolStore = useUserCenterCustomToolStore();
 const dialogVisible = ref(false)
 
 const toolFunction = ref<ToolFunction>({
+  toolUUID:"",
   name: "myCustom",
   enabled: false,
   functionName: "",
@@ -34,6 +35,7 @@ const handleConfirmClick = () => {
     return
   }
   const temp: ToolFunction = {
+    toolUUID: "",
     name: toolFunction.value.name,
     enabled: toolFunction.value.enabled,
     functionName: toolFunction.value.functionName,
@@ -50,6 +52,7 @@ const handleClose = () => {
 }
 const handleClear = () =>{
   toolFunction.value = {
+    toolUUID:"",
     name: "myCustom",
     enabled: false,
     functionName: "",

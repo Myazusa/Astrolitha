@@ -1,4 +1,5 @@
 ﻿export interface ToolFunction {
+    toolUUID: string;
     name:string;
     enabled:boolean;
     functionName: string;
