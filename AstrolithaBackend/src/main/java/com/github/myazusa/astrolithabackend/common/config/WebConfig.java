@@ -17,21 +17,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.resource.location.rag.mapping}")
     private String ragResourceLocationHttpMapping;
 
-    @Value("${app.resource.location.function.origin}")
-    private String functionResourceLocation;
-
-    @Value("${app.resource.location.function.mapping}")
-    private String functionResourceLocationHttpMapping;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(ragResourceLocationHttpMapping)
                 .addResourceLocations(ragResourceLocation)
-                .setCacheControl(CacheControl.maxAge(Duration.ofDays(30)))
-                .resourceChain(true);
-
-        registry.addResourceHandler(functionResourceLocationHttpMapping)
-                .addResourceLocations(functionResourceLocation)
                 .setCacheControl(CacheControl.maxAge(Duration.ofDays(30)))
                 .resourceChain(true);
     }

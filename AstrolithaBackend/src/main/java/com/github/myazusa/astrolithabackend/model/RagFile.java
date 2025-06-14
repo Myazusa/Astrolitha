@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("rag_file")
 public class RagFile {
+    @TableField(insertStrategy = FieldStrategy.NOT_NULL)
     private Integer id;
     private String fileName;
     private String fileUuid;

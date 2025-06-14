@@ -6,12 +6,10 @@ import com.github.myazusa.astrolithabackend.dto.*;
 import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.model.RagFileDocument;
 import com.github.myazusa.astrolithabackend.service.*;
-import com.github.myazusa.astrolithabackend.service.agent.CustomAgentBuilderService;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +29,10 @@ public class ApiController {
     private final RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
     private final RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService;
     private final BackendStatsCompositionService backendStatsCompositionService;
-    private final CustomAgentBuilderService customAgentBuilderService;
+    private final CustomAgentCompositionService customAgentCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService, BackendStatsCompositionService backendStatsCompositionService, CustomAgentBuilderService customAgentBuilderService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService, BackendStatsCompositionService backendStatsCompositionService, CustomAgentCompositionService customAgentCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
         this.askQuestionCompositionService = askQuestionCompositionService;
@@ -42,11 +40,12 @@ public class ApiController {
         this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
         this.ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionService;
         this.backendStatsCompositionService = backendStatsCompositionService;
-        this.customAgentBuilderService = customAgentBuilderService;
+        this.customAgentCompositionService = customAgentCompositionService;
     }
 
 
     /**
+     * 测试成功
      * 提问接口
      * @param questionRequestDTO 一个构造好的“问题”请求对象，包含提问内容，模型设置的参数（参数现在只能是ollama）
      * @return markdown文本，前端需要用markdown解析
@@ -87,6 +86,7 @@ public class ApiController {
     }
 
     /**
+     * 测试成功
      * 语音接口，传入想要AI读的文本，以及对该文本的提示词
      * @return wav格式的音频文件
      */
@@ -164,6 +164,7 @@ public class ApiController {
     }
 
     /**
+     * 测试成功
      * 搜索文件
      * @param searchRequestDTO 包含搜索关键词的对象
      * @return 符合的文件列表
@@ -174,6 +175,7 @@ public class ApiController {
     }
 
     /**
+     * 测试成功
      * 获取系统状态
      * @return 带有系统状态的对象
      */
@@ -187,13 +189,25 @@ public class ApiController {
     }
 
     /**
+     * 测试成功
      * 创建工具的方法
-     * @param customToolFunctionRequestDTO 方法定义
-     * @return 200为成功
+     * @param customToolFunctionDTO 方法定义
+     * @return 返回工具的uuid
      */
     @PostMapping("/create_tool")
-    public ResponseEntity<InformationResponseDTO> createTool(@RequestBody CustomToolFunctionRequestDTO customToolFunctionRequestDTO){
-        customAgentBuilderService.buildAgent(customToolFunctionRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("创建工具成功"));
+    public ResponseEntity<InformationResponseDTO> createTool(@RequestBody CustomToolFunctionDTO customToolFunctionDTO){
+        // todo:拆分添加和创建工具的步骤
+        String uuid = customAgentCompositionService.addTool(customToolFunctionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(uuid));
+    }
+
+    /**
+     * 获取所有工具
+     * @return 工具对象列表
+     */
+    @GetMapping("/list_tool")
+    public ResponseEntity<List<CustomToolFunctionDTO>> listTool(){
+        List<CustomToolFunctionDTO> customToolFunctionDTOS = customAgentCompositionService.listTool();
+        return ResponseEntity.status(HttpStatus.OK).body(customToolFunctionDTOS);
     }
 }

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Accessors(chain = true)
 @Data
-public class CustomToolFunctionRequestDTO {
+public class CustomToolFunctionDTO {
     @NotNull
     @NotBlank
     private String functionName;
@@ -22,6 +22,15 @@ public class CustomToolFunctionRequestDTO {
     @NotNull
     @NotBlank
     private String requestMethod;
+
+    @NotNull
+    private String name;
+
+    @NotNull
+    private Boolean enabled;
+
+    @NotNull
+    private String toolUUID;
 
 //    @NotNull
 //    private List<Param> params;
