@@ -1,5 +1,6 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,6 +8,7 @@ import com.github.myazusa.astrolithabackend.common.exception.JsonConversionExcep
 import com.github.myazusa.astrolithabackend.dto.CustomToolFunctionDTO;
 import com.github.myazusa.astrolithabackend.mapper.ToolFunctionMapper;
 import com.github.myazusa.astrolithabackend.model.Function;
+import com.github.myazusa.astrolithabackend.model.RagFile;
 import com.github.myazusa.astrolithabackend.model.ToolFunction;
 import org.springframework.stereotype.Service;
 
@@ -52,12 +54,19 @@ public class ToolFunctionSqlService extends ServiceImpl<ToolFunctionMapper, Tool
             customToolFunctionDTOS.add(new CustomToolFunctionDTO()
                     .setToolUUID(toolFunction.getToolUUID())
                     .setName(toolFunction.getName())
-                    .setEnabled(false)
+                    .setEnabled(toolFunction.getEnabled())
                     .setFunctionName(function.getFunctionName())
                     .setToolDescription(function.getToolDescription())
                     .setRequestMethod(function.getRequestMethod())
                     .setRemoteApi(function.getRemoteApi()));
         });
         return customToolFunctionDTOS;
+    }
+    public void updateToolEnabled(CustomToolFunctionDTO customToolFunctionDTO) {
+        ToolFunction updateObj = new ToolFunction();
+        updateObj.setEnabled(customToolFunctionDTO.getEnabled());
+        LambdaUpdateWrapper<ToolFunction> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(ToolFunction::getEnabled, customToolFunctionDTO.getEnabled());
+        this.update(updateObj, updateWrapper);
     }
 }

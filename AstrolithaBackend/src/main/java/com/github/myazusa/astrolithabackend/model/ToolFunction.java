@@ -12,6 +12,8 @@ public class ToolFunction {
     private Integer id;
     private String toolUUID;
     private String name;
+    @TableField(insertStrategy = FieldStrategy.NOT_NULL)
+    private Boolean enabled;
     // 这个json是Function对象
     private String json;
 }

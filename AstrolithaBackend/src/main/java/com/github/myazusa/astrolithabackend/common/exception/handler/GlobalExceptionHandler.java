@@ -104,6 +104,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InjectException.class)
     public ResponseEntity<String> handlerInjectException(Exception e){
         log.error("方法注入失败: {}",e.getMessage());
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("方法注入失败，"+e.getMessage());
     }
 

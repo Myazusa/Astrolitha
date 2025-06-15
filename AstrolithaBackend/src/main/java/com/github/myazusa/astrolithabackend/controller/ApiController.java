@@ -196,9 +196,14 @@ public class ApiController {
      */
     @PostMapping("/create_tool")
     public ResponseEntity<InformationResponseDTO> createTool(@RequestBody CustomToolFunctionDTO customToolFunctionDTO){
-        // todo:拆分添加和创建工具的步骤
         String uuid = customAgentCompositionService.addTool(customToolFunctionDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(uuid));
+    }
+
+    @PostMapping("/enable_tool")
+    public ResponseEntity<InformationResponseDTO> enableTool(@RequestBody CustomToolFunctionDTO customToolFunctionDTO){
+        customAgentCompositionService.enableTool(customToolFunctionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("启用成功"));
     }
 
     /**
