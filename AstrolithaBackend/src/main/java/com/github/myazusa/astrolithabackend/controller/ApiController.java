@@ -192,14 +192,19 @@ public class ApiController {
      * 测试成功
      * 创建工具的方法
      * @param customToolFunctionDTO 方法定义
-     * @return 返回工具的uuid
+     * @return 200成功
      */
     @PostMapping("/create_tool")
     public ResponseEntity<InformationResponseDTO> createTool(@RequestBody CustomToolFunctionDTO customToolFunctionDTO){
-        String uuid = customAgentCompositionService.addTool(customToolFunctionDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(uuid));
+        customAgentCompositionService.addTool(customToolFunctionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("创建成功"));
     }
 
+    /**
+     * 启用工具
+     * @param customToolFunctionDTO 要创建的工具对象
+     * @return 200是成功
+     */
     @PostMapping("/enable_tool")
     public ResponseEntity<InformationResponseDTO> enableTool(@RequestBody CustomToolFunctionDTO customToolFunctionDTO){
         customAgentCompositionService.enableTool(customToolFunctionDTO);

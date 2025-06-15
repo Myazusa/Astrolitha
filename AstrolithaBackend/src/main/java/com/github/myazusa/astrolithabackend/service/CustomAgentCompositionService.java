@@ -17,8 +17,8 @@ public class CustomAgentCompositionService {
         this.customAgentBuilderService = customAgentBuilderService;
         this.toolFunctionSqlService = toolFunctionSqlService;
     }
-    public String addTool(CustomToolFunctionDTO customToolFunctionDTO){
-        return toolFunctionSqlService.addToolFunction(customToolFunctionDTO);
+    public void addTool(CustomToolFunctionDTO customToolFunctionDTO){
+        toolFunctionSqlService.addToolFunction(customToolFunctionDTO);
     }
     public List<CustomToolFunctionDTO> listTool(){
         return toolFunctionSqlService.selectAll();

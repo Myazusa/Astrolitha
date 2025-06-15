@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 public class ToolFunctionSqlService extends ServiceImpl<ToolFunctionMapper, ToolFunction> {
     private final static ObjectMapper mapper = new ObjectMapper();
-    public String addToolFunction(CustomToolFunctionDTO customToolFunctionDTO) {
+    public void addToolFunction(CustomToolFunctionDTO customToolFunctionDTO) {
         String uuid = UUID.randomUUID().toString();
         ToolFunction toolFunction = new ToolFunction();
         toolFunction.setName(customToolFunctionDTO.getName());
@@ -38,7 +38,7 @@ public class ToolFunctionSqlService extends ServiceImpl<ToolFunctionMapper, Tool
         } catch (JsonProcessingException e) {
             throw new JsonConversionException();
         }
-        return uuid;
+
     }
     public List<CustomToolFunctionDTO> selectAll() {
         List<ToolFunction> toolFunctions = this.list();
