@@ -102,16 +102,22 @@ The following is a tutorial for deploying this project
 1. Promise me you won’t use Mac to run LLM projects, okay?
 
 ### Compile
-1. Enter the front-end astrolitha-frontend directory and build
+>  You can skip this step and use the jar in the release
+1. Enter the front-end astrolitha-frontend directory and build.
    ```bash
-   npm run build
+   npm run build .
    ```
 2. Put the static files obtained in the previous step into the static directory of the back-end AstrolithaBackend
 3. Compile AstrolithaBackend into a jar package
+   ```bash
+   mvn clean package -Dmaven.test.skip=true
+   ```
 
 ### Running
 1. Run it with [java 24](https://jdk.java.net/java-se-ri/24), of course you can also use nginx
-
+   ```bash
+      java -jar ./AstrolithaBackend-0.0.9-alpha.jar
+   ```
 2. Great, now you can use all the features in your browser.
    ```bash
     http://localhost:8080

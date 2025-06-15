@@ -102,17 +102,21 @@ RAG知识库与工具链
 1. 答应我不要用Mac来跑任何大模型相关的项目好么？
 
 ### 编译
+> 你可以跳过这步，直接使用release里的jar
 1. 进入前端astrolitha-frontend目录下并构建
    ```bash
       npm run build
    ```
 2. 将上一步得到的静态文件放入后端AstrolithaBackend目录下的static中
 3. 将AstrolithaBackend编译为jar包
-
+   ```bash
+   mvn clean package -Dmaven.test.skip=true
+   ```
+   
 ### 运行
 1. 使用 [java 24](https://jdk.java.net/java-se-ri/24) 运行，当然也可以用nginx
    ```bash
-      java -jar ./AstrolithaBackend.jar
+      java -jar ./AstrolithaBackend-0.0.9-alpha.jar
    ```
 2. 现在可以使用浏览器访问以下地址来使用功能
    ```bash
