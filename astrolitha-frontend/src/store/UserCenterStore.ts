@@ -223,7 +223,7 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
 })
 
 export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolStore',()=>{
-    const tools = ref<ToolFunction[]>([])
+    const tools = reactive(ref<ToolFunction[]>([]))
     let selectedToolIndex:number = 0;
 
     const addTool = (tool:ToolFunction) => {
@@ -233,10 +233,7 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
             }
         })
         .then(res => {
-            if(res.status === 200){
-                tool.toolUUID = res.data.message
-                tools.value?.push(tool)
-            }else {
+            if(res.status !== 200){
                 ElMessage.error("添加失败：" + res.status)
             }
         })
@@ -244,13 +241,43 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
             console.log(err)
             ElMessage.error("添加失败：" + err)
         })
-        //tools.value?.push(tool)
+    }
+    const initTools = () => {
+        axios.get(useApiStore().getListToolApi())
+            .then(res => {
+                if(res.status === 200){
+                    tools.value = res.data
+                }else {
+                    ElMessage.error("獲取失敗：" + res.status)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                ElMessage.error("獲取失敗：" + err)
+            })
+    }
+    const enableTool = () => {
+        const tool = tools.value[selectedToolIndex]
+        axios.post(useApiStore().getEnableToolApi(),tool,{
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => {
+                if(res.status !== 200){
+                    ElMessage.error("啓用失敗：" + res.status)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                ElMessage.error("啓用失敗：" + err)
+            })
     }
     const getToolsRef = () => {
         return tools
     }
 
     return{
-        getToolsRef,addTool,selectedToolIndex
+        getToolsRef,addTool,selectedToolIndex,initTools,enableTool
     }
 })

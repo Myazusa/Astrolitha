@@ -13,7 +13,15 @@ export const useApiStore = defineStore('ApiStore',()=>{
     const searchApi:string = '/search'
     const systemApi:string = '/system'
     const createToolApi:string = '/create_tool'
+    const enableToolApi:string = '/enable_tool'
+    const listToolApi:string = '/list_tool'
 
+    const getEnableToolApi = () => {
+        return baseAddress + apiUrl + enableToolApi
+    }
+    const getListToolApi = ()=> {
+        return baseAddress + apiUrl + listToolApi
+    }
     const getCreateToolApi = ()=>{
         return baseAddress + apiUrl + createToolApi
     }
@@ -54,6 +62,8 @@ export const useApiStore = defineStore('ApiStore',()=>{
         getTranscribeApi,
         getSearchApi,
         getSystemApi,
-        getCreateToolApi
+        getCreateToolApi,
+        getListToolApi,
+        getEnableToolApi
     }
 })

@@ -5,6 +5,12 @@ import {useUserCenterCustomToolStore} from "@/store/UserCenterStore";
 const dialogVisible = ref(false)
 const userCenterCustomToolStore = useUserCenterCustomToolStore();
 
+const handleChange = (value: boolean) => {
+  if (value) {
+    userCenterCustomToolStore.enableTool()
+  }
+}
+
 defineExpose({
   dialogVisible
 })
@@ -21,7 +27,7 @@ defineExpose({
     title="工具详细"
 >
   <div style="margin-top: 1.5rem">
-    <span style="margin-right: 0.5rem">啓用工具</span><el-switch v-model="userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].enabled"></el-switch>
+    <span style="margin-right: 0.5rem">啓用工具</span><el-switch v-model="userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].enabled" @change="handleChange"></el-switch>
   </div>
   <el-descriptions class="descriptions" size="large">
     <el-descriptions-item label="工具名">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].name }}</el-descriptions-item>

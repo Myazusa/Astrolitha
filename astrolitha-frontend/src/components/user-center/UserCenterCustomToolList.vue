@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 import {useUserCenterCustomToolStore} from "@/store/UserCenterStore";
 import UserCenterCustomToolDetailDialog from "@/components/user-center/UserCenterCustomToolDetailDialog.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const userCenterCustomToolStore = useUserCenterCustomToolStore();
 
@@ -10,6 +10,9 @@ const handleDetailClick = (index:number) => {
   userCenterCustomToolStore.selectedToolIndex = index;
   detailDialogRef.value.dialogVisible = true
 }
+onMounted(() => {
+  userCenterCustomToolStore.initTools()
+})
 </script>
 
 <template>

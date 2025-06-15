@@ -45,6 +45,7 @@ const handleConfirmClick = () => {
   }
   userCenterCustomToolStore.addTool(temp)
   handleClose()
+  userCenterCustomToolStore.initTools()
 }
 const handleClose = () => {
   dialogVisible.value = false
