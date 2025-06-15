@@ -39,11 +39,15 @@ RAG知识库与工具链
 - **支持集群部署：** 完全容器化的服务支持Kubernetes进行集群部署。
 
 新增功能：
-- **自定义工具链：** 通过Java反射支持调用其他项目的接口作为该项目模型的工具使用。
+- **自定义工具链：** 通过Java反射支持调用其他项目的接口(无需对方实现MCP)作为该项目模型的工具使用。
 
 ## 安装
 
-### Windows
+以下是该项目部署的教程
+
+### 部署
+
+#### Windows
 1. 下载 [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 2. 克隆项目至本地
     ```bash
@@ -55,7 +59,7 @@ RAG知识库与工具链
         docker-compose up -d
     ```
 
-### Linux
+#### Linux
 1. 安装 Docker Desktop。具体方法请参考 [Docker Docs](https://docs.docker.com/desktop/setup/install/linux/)
 2. 设置docker自启动
     ```bash
@@ -94,14 +98,26 @@ RAG知识库与工具链
     ```bash
         docker-compose up -d
     ```
-### Mac
+#### Mac
 1. 答应我不要用Mac来跑任何大模型相关的项目好么？
 
-## 结果
-现在可以使用浏览器访问以下地址来使用功能
-```bash
-    http://localhost:80
-```
+### 编译
+1. 进入前端astrolitha-frontend目录下并构建
+   ```bash
+      npm run build
+   ```
+2. 将上一步得到的静态文件放入后端AstrolithaBackend目录下的static中
+3. 将AstrolithaBackend编译为jar包
+
+### 运行
+1. 使用 [java 24](https://jdk.java.net/java-se-ri/24) 运行，当然也可以用nginx
+   ```bash
+      java -jar ./AstrolithaBackend.jar
+   ```
+2. 现在可以使用浏览器访问以下地址来使用功能
+   ```bash
+      http://localhost:8080
+   ```
 
 ## 微服务
 项目使用了以下docker镜像来作为微服务
@@ -130,7 +146,7 @@ RAG知识库与工具链
 ```
 
 ## 开源许可
-本项目为成品应用而不是工具库或框架，因此使用AGPLv3开源协议而不是MIT或Apache2.0
+本项目为SaaS应用而不是工具库或框架，因此使用AGPLv3开源协议而不是MIT或Apache2.0
 
 - 关于个人：完全支持个人使用，且不做任何限制，你可以任意修改源代码且不需要公开。
 - 关于商用：你可以随意使用不含修改的原始项目进行对外提供服务，并且获得的收益归你自己所有。如果不得不修改项目，需要同时开源公布修改的代码，如果闭源不公布则需向源项目作者申请授权。

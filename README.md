@@ -40,11 +40,14 @@ Base Features:
 - **Distributed support:** Supports deployment using Kubernetes. 
 
 New Features：
-- **Custom toolchain:** Supports calling interfaces of other projects as tools for the project model through Java reflection.
+- **Custom toolchain:** Supports calling interfaces of other projects as tools (No need for the other projects to implement MCP) for the project model through Java reflection.
 
 ## Installation
+The following is a tutorial for deploying this project
 
-### Windows
+### deployment
+
+#### Windows
 1. Download [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 2. Clone the project at the desired location.
     ```bash
@@ -56,7 +59,7 @@ New Features：
         docker-compose up -d
     ```
 
-### Linux
+#### Linux
 1. Install Docker Desktop.For details, please see [Docker Docs](https://docs.docker.com/desktop/setup/install/linux/)
 2. Set up Docker service to start automatically.
     ```bash
@@ -95,14 +98,24 @@ New Features：
     ```bash
         docker-compose up -d
     ```
-### Mac
+#### Mac
 1. Promise me you won’t use Mac to run LLM projects, okay?
 
-## Finish
-Great, now you can use all the features in your browser.
-```bash
-    http://localhost:80
-```
+### Compile
+1. Enter the front-end astrolitha-frontend directory and build
+   ```bash
+   npm run build
+   ```
+2. Put the static files obtained in the previous step into the static directory of the back-end AstrolithaBackend
+3. Compile AstrolithaBackend into a jar package
+
+### Running
+1. Run it with [java 24](https://jdk.java.net/java-se-ri/24), of course you can also use nginx
+
+2. Great, now you can use all the features in your browser.
+   ```bash
+    http://localhost:8080
+   ```
 
 ## Microservice
 The project uses the following docker images as microservices.
@@ -126,7 +139,7 @@ Corresponding to the following open source projects.
 - [elasticsearch](https://github.com/elastic/elasticsearch)
 
 ## License
-This project is a finished application rather than a tool library or framework, so it uses the AGPLv3 open source protocol instead of MIT or Apache 2.0.
+This project is a SaaS application rather than a tool library or framework, so it uses the AGPLv3 open source protocol instead of MIT or Apache 2.0.
 
 - For personal: fully supports personal use without any restrictions, you can modify the source code at will without making it public.
 - For commercial: you can use the original project without modification to provide services to the outside world, and the income you get belongs to you. If you have to modify the project, you need to open source the modified code at the same time. If it is closed source and not published, you need to apply for authorization from the source project author.
