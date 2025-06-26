@@ -63,34 +63,36 @@ services:
 
 # tts的容器
   gpt-sovits:
-    image: myadzusa/gpt-sovits:v4
-    container_name: gpt-sovits
+    image: xxxxrt666/gpt-sovits:latest-cu128-lite
+    container_name: gpt-sovits-cu128-lite
     environment:
-      - is_half=False
-      - is_share=False
+      - is_half=true
     volumes:
-      - ./volumes/sovits/GPT_weights:/workspace/GPT_weights
-      - ./volumes/sovits/GPT_weights_v2:/workspace/GPT_weights_v2
-      - ./volumes/sovits/GPT_weights_v3:/workspace/GPT_weights_v3
-      - ./volumes/sovits/GPT_weights_v4:/workspace/GPT_weights_v4
-      - ./volumes/sovits/output:/workspace/output
-      - ./volumes/sovits/logs:/workspace/logs
-      - ./volumes/sovits/SoVITS_weights:/workspace/SoVITS_weights
-      - ./volumes/sovits/SoVITS_weights_v2:/workspace/SoVITS_weights_v2
-      - ./volumes/sovits/SoVITS_weights_v3:/workspace/SoVITS_weights_v3
-      - ./volumes/sovits/SoVITS_weights_v4:/workspace/SoVITS_weights_v4
-      - ./volumes/sovits/reference:/workspace/reference
-      - ./volumes/sovits/GPT_SoVITS/pretrained_models:/workspace/GPT_SoVITS/pretrained_models
-    working_dir: /workspace
-    command: ["python", "api_v2.py","-a","0.0.0.0","-p","9880","-c","GPT_SoVITS/configs/tts_infer.yaml"]
-    #command: ["python", "api.py"]
+      - ./volumes/sovits/ref:/workspace/GPT-SoVITS/ref
+      - ./volumes/sovits/models/G2PWModel:/workspace/models/G2PWModel
+      - ./volumes/sovits/models/asr_models:/workspace/models/asr_models
+      - ./volumes/sovits/models/uvr5_weights:/workspace/models/uvr5_weights
+      - ./volumes/sovits/models/pretrained_models:/workspace/models/pretrained_models
+      - ./volumes/sovits/GPT_weights:/workspace/GPT-SoVITS/GPT_weights
+      - ./volumes/sovits/SoVITS_weights:/workspace/GPT-SoVITS/SoVITS_weights
+      - ./volumes/sovits/configs:/workspace/GPT-SoVITS/GPT_SoVITS/configs
+    working_dir: /workspace/GPT-SoVITS
+    command: >
+      bash -c "
+      rm -rf ./GPT_SoVITS/pretrained_models &&
+      ln -sf /workspace/models/pretrained_models ./GPT_SoVITS/pretrained_models &&
+      ln -sf /workspace/models/G2PWModel ./GPT_SoVITS/text/G2PWModel &&
+      ln -sf /workspace/models/asr_models ./tools/asr/models &&
+      ln -sf /workspace/models/uvr5_weights ./tools/uvr5/uvr5_weights &&
+      python api_v2.py -a 0.0.0.0 -p 9880 -c GPT_SoVITS/configs/tts_infer.yaml"
+    #command: ["python", "GPT-SoVITS/api.py"]
     ports:
       - "9880:9880"
-      - "9871:9871"
-      - "9872:9872"
-      - "9873:9873"
-      - "9874:9874"
-    shm_size: 16G
+#      - "9871:9871"
+#      - "9872:9872"
+#      - "9873:9873"
+#      - "9874:9874"
+    shm_size: "16G"
     deploy:
       resources:
         reservations:
@@ -101,7 +103,6 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
-
 # vdb的容器
   etcd:
     container_name: milvus-etcd
@@ -176,9 +177,27 @@ services:
       - xpack.security.enabled=false
       - xpack.security.http.ssl.enabled=false
       - ES_JAVA_OPTS=-Xms1g -Xmx2g
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin114514
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_EDITOR_BASE_URL=http://localhost:5678
+      - DB_TYPE=sqlite
+      - DB_SQLITE_DATABASE=/home/node/.n8n/database.sqlite
+      - TZ=Asia/Shanghai
     volumes:
-      - ./volumes/elasticsearch/es-data:/usr/share/elasticsearch/data
-      - ./volumes/elasticsearch/es-logs:/usr/share/elasticsearch/logs
+      - ./volumes/n8n/n8n_data:/home/node/.n8n
+      - ./AstrolithaBackend/uploads/rag:/data/uploads/rag
 networks:
   default:
     name: astrolitha
