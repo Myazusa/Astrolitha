@@ -1,6 +1,7 @@
 package com.github.myazusa.astrolithabackend.service;
 
 import com.github.myazusa.astrolithabackend.common.exception.RemoteServiceException;
+import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
 import com.github.myazusa.astrolithabackend.service.agent.AgentBuilderService;
 import com.github.myazusa.astrolithabackend.service.agent.CustomAgentBuilderService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
@@ -23,7 +24,7 @@ public class AskQuestionCompositionService {
 
 
     @Autowired
-    public AskQuestionCompositionService(OllamaService ollamaService, AgentBuilderService agentBuilderService, CustomAgentBuilderService customAgentBuilderService) {
+    public AskQuestionCompositionService(OllamaService ollamaService,AgentBuilderService agentBuilderService, CustomAgentBuilderService customAgentBuilderService) {
         this.ollamaService = ollamaService;
         this.agentBuilderService = agentBuilderService;
         this.customAgentBuilderService = customAgentBuilderService;
@@ -68,6 +69,9 @@ public class AskQuestionCompositionService {
         }
 
         // 构造Agent工具链
+        if (agentBuilderService.builder() == null) {
+            throw new UnknownException("向量数据库微服务未加载或未初始化，导致Agent工具不可用");
+        }
         List<ToolCallback> toolCallbacks = agentBuilderService.builder()
                 .withKnowledgeBaseAgent()
                 .withUtilsAgent()

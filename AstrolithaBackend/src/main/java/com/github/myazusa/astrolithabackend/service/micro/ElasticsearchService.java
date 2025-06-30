@@ -1,6 +1,7 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Service;
 

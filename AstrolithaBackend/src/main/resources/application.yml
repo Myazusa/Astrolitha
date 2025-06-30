@@ -11,6 +11,8 @@ spring:
     url: jdbc:mysql://localhost:3306/default?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: root
     password: 123456
+    hikari:
+      initialization-fail-timeout: -1
   elasticsearch:
     uris: http://localhost:9200
   ai:

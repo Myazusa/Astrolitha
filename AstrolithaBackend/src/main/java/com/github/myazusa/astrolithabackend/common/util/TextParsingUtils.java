@@ -61,7 +61,6 @@ public class TextParsingUtils {
 
             parser.parse(input, handler, metadata, parseContext);
             return handler.toString();
-
         } catch (TikaException | SAXException | IOException e) {
             log.error("解析文件时发生错误: {}", e.getMessage(), e);
             throw new UnknownException("解析文件时发生错误");

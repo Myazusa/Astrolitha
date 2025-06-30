@@ -3,6 +3,7 @@ package com.github.myazusa.astrolithabackend.service.agent;
 import com.github.myazusa.astrolithabackend.service.QueryVDBCompositionService;
 import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +13,19 @@ import java.util.List;
 
 @Service
 public class AgentBuilderService {
-    private final QueryVDBCompositionService queryVDBCompositionService;
+    private final ObjectProvider<QueryVDBCompositionService> queryVDBCompositionServiceObjectProvider;
 
 
     @Autowired
-    public AgentBuilderService(QueryVDBCompositionService queryVDBCompositionService) {
-        this.queryVDBCompositionService = queryVDBCompositionService;
+    public AgentBuilderService(ObjectProvider<QueryVDBCompositionService> queryVDBCompositionServiceObjectProvider) {
+        this.queryVDBCompositionServiceObjectProvider = queryVDBCompositionServiceObjectProvider;
     }
 
     public AgentBuilder builder() {
+        QueryVDBCompositionService queryVDBCompositionService = queryVDBCompositionServiceObjectProvider.getIfAvailable();
+        if (queryVDBCompositionService == null) {
+            return null;
+        }
         return new AgentBuilder(queryVDBCompositionService);
     }
 

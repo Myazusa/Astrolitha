@@ -4,6 +4,7 @@ import com.github.myazusa.astrolithabackend.common.exception.FileOperationExcept
 import com.github.myazusa.astrolithabackend.common.util.JsonUtils;
 import com.github.myazusa.astrolithabackend.common.exception.RemoteServiceException;
 import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
+import com.github.myazusa.astrolithabackend.common.util.TextSummarizeUtils;
 import com.github.myazusa.astrolithabackend.service.micro.*;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,6 @@ public class ParsingFileCompositionService {
     private final RagFileExplorerService ragFileExplorerService;
     private final RagSqlService ragSqlService;
 
-    private final StringBuilder pathStringBuilder = new StringBuilder("./uploads/rag/");
-
     public ParsingFileCompositionService(TextChunkingService textChunkingService, OllamaService ollamaService, MilvusService milvusService, RagFileExplorerService ragFileExplorerService, RagSqlService ragSqlService) {
         this.textChunkingService = textChunkingService;
         this.ollamaService = ollamaService;
@@ -43,16 +42,21 @@ public class ParsingFileCompositionService {
     public void ParsingFile(String fileName){
         ragSqlService.updateParsedStatus(fileName);
         // 先更新RDB数据库，不能反过来
-        String path = pathStringBuilder.append(fileName).toString();
+        String path = "./uploads/rag/" + fileName;
         if(!ragFileExplorerService.fileExists(fileName)) {
             throw new UnknownException("文件不存在");
         }
-        List<String> chunks = textChunkingService.TextChunking(path);
+
+        // 分割文本
+        List<String> chunks = textChunkingService.RecursiveTextChunking(path);
         if (chunks == null || chunks.isEmpty()) {
             log.warn("文本切分结果为空，跳过 embedding 调用");
             throw new FileOperationException("分词结果为空，无法生成embedding");
         }
-        CompletableFuture<List<Embedding>> future = ollamaService.getEmbeddingAsync(chunks);
+        // 递归获取全文摘要
+        String summarize = new TextSummarizeUtils(ollamaService).summarize(chunks);
+        List<String> summarizedChunks = chunks.stream().map(chunk -> summarize +"---"+ chunk).toList();
+        CompletableFuture<List<Embedding>> future = ollamaService.getEmbeddingAsync(summarizedChunks);
         List<Embedding> embeddings;
         try {
             embeddings = future.get();

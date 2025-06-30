@@ -97,4 +97,19 @@ public class OllamaService {
                 ));
         return CompletableFuture.completedFuture(embeddingResponse.getResults());
     }
+
+    @Async
+    public CompletableFuture<String> summarizeChunk(String batchText){
+        ChatResponse response = ollamaChatModel.call(
+                new Prompt(
+                        List.of(
+                                new SystemMessage("请阅读以下内容，并提炼出能用于向量检索的提示词或摘要"),
+                                new UserMessage(batchText)
+                        ),
+                        OllamaOptions.builder()
+                                .model(agentModelName)
+                                .build()
+                ));
+        return CompletableFuture.completedFuture(response.getResult().getOutput().getText());
+    }
 }

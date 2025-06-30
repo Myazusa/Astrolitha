@@ -5,6 +5,7 @@ import io.milvus.v2.client.ConnectConfig;
 import io.milvus.v2.client.MilvusClientV2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 public class DatabaseConfig {
@@ -13,6 +14,7 @@ public class DatabaseConfig {
      * @return
      */
     @Bean
+    @Lazy
     public MilvusClientV2 milvusClientV2(){
         ConnectConfig config = ConnectConfig.builder()
                 .uri("http://localhost:19530")

@@ -21,7 +21,9 @@ import io.milvus.v2.service.vector.request.data.FloatVec;
 import io.milvus.v2.service.vector.response.InsertResp;
 import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -33,11 +35,12 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 public class MilvusService {
-    private final MilvusClientV2 milvusClientV2;
+    private final ObjectProvider<MilvusClientV2> milvusClientV2ObjectProvider;
+    private MilvusClientV2 milvusClientV2;
 
     @Autowired
-    public MilvusService(MilvusClientV2 milvusClientV2) {
-        this.milvusClientV2 = milvusClientV2;
+    public MilvusService(ObjectProvider<MilvusClientV2> milvusClientV2ObjectProvider) {
+        this.milvusClientV2ObjectProvider = milvusClientV2ObjectProvider;
     }
 
     /**
@@ -45,17 +48,22 @@ public class MilvusService {
      */
     @Deprecated
     public void InitDatabase(){
+        if (serviceClientIsAvailable()) {
+            return;
+        }
         milvusClientV2.createDatabase(CreateDatabaseReq.builder()
                 .databaseName("user_vector_database")
                 .build());
     }
 
     public void SelectDatabase(String databaseName){
+        if (serviceClientIsAvailable()) {
+            return;
+        }
         try {
             milvusClientV2.useDatabase(databaseName);
         } catch (InterruptedException e) {
             log.error("选择了不存在的数据库");
-            e.printStackTrace();
         }
     }
 
@@ -80,7 +88,7 @@ public class MilvusService {
         schema.addField(AddFieldReq.builder()
                 .fieldName("content")
                 .dataType(DataType.VarChar)
-                .maxLength(800) // 这里是因为进行chunking时，默认chunk尺寸为800
+                .maxLength(1500) // 默认chunk尺寸为800
                 .build());
         schema.addField(AddFieldReq.builder()
                 .fieldName("name")
@@ -120,6 +128,9 @@ public class MilvusService {
     }
 
     public Boolean getCollectionState(String collectionName){
+        if (serviceClientIsAvailable()) {
+            return false;
+        }
         return milvusClientV2.getLoadState(GetLoadStateReq.builder()
                 .collectionName(collectionName)
                 .build());
@@ -208,5 +219,14 @@ public class MilvusService {
                 .build();
         SearchResp searchResp = milvusClientV2.search(searchReq);
         return CompletableFuture.completedFuture(searchResp.getSearchResults());
+    }
+
+    private Boolean serviceClientIsAvailable(){
+        MilvusClientV2 milvusClientV2 = milvusClientV2ObjectProvider.getIfAvailable();
+        if (milvusClientV2 == null){
+            return false;
+        }
+        this.milvusClientV2 = milvusClientV2;
+        return true;
     }
 }

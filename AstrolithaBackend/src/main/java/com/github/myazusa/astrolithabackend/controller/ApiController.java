@@ -8,7 +8,9 @@ import com.github.myazusa.astrolithabackend.model.RagFileDocument;
 import com.github.myazusa.astrolithabackend.service.*;
 import com.github.myazusa.astrolithabackend.service.micro.FasterWhisperService;
 import com.github.myazusa.astrolithabackend.service.micro.GPTSoVITSService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,21 +26,21 @@ import java.util.Optional;
 public class ApiController {
     private final GPTSoVITSService gptSoVITSService;
     private final FasterWhisperService fasterWhisperService;
-    private final AskQuestionCompositionService askQuestionCompositionService;
-    private final ParsingFileCompositionService parsingFileCompositionService;
+    private final ObjectProvider<AskQuestionCompositionService> askQuestionCompositionServiceObjectProvider;
+    private final ObjectProvider<ParsingFileCompositionService> parsingFileCompositionServiceObjectProvider;
     private final RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
-    private final RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService;
+    private final ObjectProvider<RagFilesElasticsearchCompositionService> ragFilesElasticsearchCompositionServiceObjectProvider;
     private final BackendStatsCompositionService backendStatsCompositionService;
     private final CustomAgentCompositionService customAgentCompositionService;
 
     @Autowired
-    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, AskQuestionCompositionService askQuestionCompositionService, ParsingFileCompositionService parsingFileCompositionService, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService, BackendStatsCompositionService backendStatsCompositionService, CustomAgentCompositionService customAgentCompositionService) {
+    public ApiController(GPTSoVITSService gptSoVITSService, FasterWhisperService fasterWhisperService, ObjectProvider<AskQuestionCompositionService> askQuestionCompositionServiceObjectProvider, ObjectProvider<ParsingFileCompositionService> parsingFileCompositionServiceObjectProvider, RagFilesOperationalCompositionService ragFilesOperationalCompositionService, ObjectProvider<RagFilesElasticsearchCompositionService> ragFilesElasticsearchCompositionServiceObjectProvider, BackendStatsCompositionService backendStatsCompositionService, CustomAgentCompositionService customAgentCompositionService) {
         this.gptSoVITSService = gptSoVITSService;
         this.fasterWhisperService = fasterWhisperService;
-        this.askQuestionCompositionService = askQuestionCompositionService;
-        this.parsingFileCompositionService = parsingFileCompositionService;
+        this.askQuestionCompositionServiceObjectProvider = askQuestionCompositionServiceObjectProvider;
+        this.parsingFileCompositionServiceObjectProvider = parsingFileCompositionServiceObjectProvider;
         this.ragFilesOperationalCompositionService = ragFilesOperationalCompositionService;
-        this.ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionService;
+        this.ragFilesElasticsearchCompositionServiceObjectProvider = ragFilesElasticsearchCompositionServiceObjectProvider;
         this.backendStatsCompositionService = backendStatsCompositionService;
         this.customAgentCompositionService = customAgentCompositionService;
     }
@@ -65,6 +67,10 @@ public class ApiController {
         switch (modelInterfaceEnums) {
             case ollama -> {
                 String answer;
+                AskQuestionCompositionService askQuestionCompositionService = askQuestionCompositionServiceObjectProvider.getIfAvailable();
+                if(askQuestionCompositionService == null) {
+                    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new InformationResponseDTO().setState("error").setMessage("当前微服务不存在或未被加载"));
+                }
                 if (questionRequestDTO.getEnableCustomAgent()) {
                     answer = askQuestionCompositionService.askQuestionWithCustomAgent(questionRequestDTO.getQuestion());
                 } else if (questionRequestDTO.getEnableAgent()) {
@@ -158,6 +164,11 @@ public class ApiController {
      */
     @PostMapping("/parsing")
     public ResponseEntity<InformationResponseDTO> Parsing(@RequestBody ParsingFileRequestDTO parsingFileRequestDTO){
+        ParsingFileCompositionService parsingFileCompositionService = parsingFileCompositionServiceObjectProvider.getIfAvailable();
+        RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionServiceObjectProvider.getIfAvailable();
+        if (parsingFileCompositionService == null || ragFilesElasticsearchCompositionService == null) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new InformationResponseDTO().setState("error").setMessage("当前微服务不存在或未被加载"));
+        }
         parsingFileCompositionService.ParsingFile(parsingFileRequestDTO.getFileName());
         ragFilesElasticsearchCompositionService.syncRagFiles();
         return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("解析成功"));
@@ -171,6 +182,10 @@ public class ApiController {
      */
     @PostMapping("/search")
     public ResponseEntity<List<RagFileDocument>> search(@RequestBody SearchRequestDTO searchRequestDTO) {
+        RagFilesElasticsearchCompositionService ragFilesElasticsearchCompositionService = ragFilesElasticsearchCompositionServiceObjectProvider.getIfAvailable();
+        if (ragFilesElasticsearchCompositionService == null) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).body(ragFilesElasticsearchCompositionService.findByFileName(searchRequestDTO.getKeyword()));
     }
 
