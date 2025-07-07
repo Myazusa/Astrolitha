@@ -2,7 +2,6 @@ package com.github.myazusa.astrolithabackend.common.inject;
 
 import com.github.myazusa.astrolithabackend.common.exception.RemoteServiceException;
 import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
-import jakarta.annotation.Nullable;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
