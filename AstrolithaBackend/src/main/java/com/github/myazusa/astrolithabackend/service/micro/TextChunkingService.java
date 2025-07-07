@@ -23,6 +23,7 @@ public class TextChunkingService {
         this.resourceLoader = resourceLoader;
     }
 
+    @Deprecated
     public List<String> TextChunking(String path){
         String parsedText = TextParsingUtils.ParsingAll(path,resourceLoader);
         return TextChunkingUtils.TextChunking(parsedText);
