@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
-import { ElAvatar, ElScrollbar, ElInput, ElButton, ElIcon } from 'element-plus'
+import {ElAvatar, ElScrollbar, ElInput, ElButton, ElIcon, ElMessage} from 'element-plus'
 import { Promotion } from '@element-plus/icons-vue'
 import {useUserCenterChatStore} from "@/store/UserCenterStore";
 import axios from "axios";
@@ -49,7 +49,7 @@ const handleSend = async () => {
       nextTick(() => scrollbarRef.value?.setScrollTop(Infinity))
     })
     .catch((err) => {
-      console.log(err)
+      ElMessage.warning(err.data.message)
       input.value = ''
     })
     .finally(()=>{
