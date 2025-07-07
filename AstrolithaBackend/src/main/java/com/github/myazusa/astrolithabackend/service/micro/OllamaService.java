@@ -103,7 +103,7 @@ public class OllamaService {
         ChatResponse response = ollamaChatModel.call(
                 new Prompt(
                         List.of(
-                                new SystemMessage("请阅读以下内容，并提炼出能用于向量检索的提示词或摘要"),
+                                new SystemMessage("请阅读以下内容，并提炼出能用于向量检索的摘要文本，只回答摘要即可，其他的不需要。"),
                                 new UserMessage(batchText)
                         ),
                         OllamaOptions.builder()

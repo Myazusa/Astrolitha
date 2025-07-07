@@ -2,6 +2,7 @@ package com.github.myazusa.astrolithabackend.service;
 
 import com.github.myazusa.astrolithabackend.common.exception.RemoteServiceException;
 import com.github.myazusa.astrolithabackend.common.exception.UnknownException;
+import com.github.myazusa.astrolithabackend.model.RagChunk;
 import com.github.myazusa.astrolithabackend.service.micro.MilvusService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
 import io.milvus.v2.service.vector.request.data.FloatVec;
@@ -46,14 +47,13 @@ public class QueryVDBCompositionService {
         List<String> entities = new ArrayList<>();
         if (milvusService.InitCollectionSchema()){
             milvusService.SelectDatabase("user_vector_database");
-            CompletableFuture<List<List<SearchResp.SearchResult>>> future2 = milvusService.ANNSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
+            CompletableFuture<List<RagChunk>> future2 = milvusService.ANNSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
 
             try {
-                List<List<SearchResp.SearchResult>> lists = future2.get();
-                for (List<SearchResp.SearchResult> results : lists) {
-                    for (SearchResp.SearchResult result : results) {
-                        entities.add((String)result.getEntity().get("content"));
-                    }
+                List<RagChunk> lists = future2.get();
+
+                for (RagChunk chunk : lists) {
+                    entities.add("这一段的相关性分数为："+chunk.score().toString()+ "。内容为：" + chunk.content() + "\n");
                 }
                 return entities;
             } catch (InterruptedException | ExecutionException e) {

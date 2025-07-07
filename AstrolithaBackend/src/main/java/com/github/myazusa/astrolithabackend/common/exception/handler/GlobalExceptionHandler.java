@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
         if (TransactionSynchronizationManager.isActualTransactionActive()) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("远端服务错误，"+e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("远端服务连接不稳定，请稍后重试");
     }
     @ExceptionHandler(InvalidAgentException.class)
     public ResponseEntity<String> handlerInvalidAgentException(Exception e){

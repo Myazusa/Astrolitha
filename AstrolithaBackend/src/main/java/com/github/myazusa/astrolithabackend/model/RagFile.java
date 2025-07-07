@@ -1,8 +1,6 @@
 package com.github.myazusa.astrolithabackend.model;
 
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,7 +8,9 @@ import java.time.LocalDateTime;
 @Data
 @TableName("rag_file")
 public class RagFile {
+    @TableId(type = IdType.AUTO)
     private Integer id;
+
     private String fileName;
     private String fileUuid;
     private String uploadUserUuid;

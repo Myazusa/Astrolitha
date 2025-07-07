@@ -3,12 +3,12 @@ package com.github.myazusa.astrolithabackend;
 import com.github.myazusa.astrolithabackend.common.util.JsonUtils;
 import com.github.myazusa.astrolithabackend.common.util.TextParsingUtils;
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
+import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
+import com.github.myazusa.astrolithabackend.service.QueryVDBCompositionService;
 import com.github.myazusa.astrolithabackend.service.micro.*;
 import com.google.gson.JsonObject;
 import io.milvus.orm.iterator.QueryIterator;
 import io.milvus.response.QueryResultsWrapper;
-import io.milvus.v2.service.vector.request.data.FloatVec;
-import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.embedding.Embedding;
@@ -54,6 +54,11 @@ public class MicroserviceTests {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    @Autowired
+    private QueryVDBCompositionService queryVDBCompositionService;
+
+    @Autowired
+    private ParsingFileCompositionService parsingFileCompositionService;
 
     // 测试从语音识别文本。成功
     @Test
@@ -147,43 +152,18 @@ public class MicroserviceTests {
         }
     }
 
-    // 查询相似向量。成功
+    // 查询相似向量组。成功
     @Test
     void testQueryRecords(){
-        List<String> strings = new ArrayList<>();
-        strings.add("考生应在规定的时间内到达指定地点集中，统一前往体检医院进行体检。不按规定时间、地点集中参加体检者，视为自动放弃体检资格。");
-        CompletableFuture<List<Embedding>> future = ollamaService.getEmbeddingAsync(strings);
-        List<Embedding> embeddings = new ArrayList<>();
-        try {
-            embeddings = future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("ollama服务访问失败", e);
-        }
+        List<String> strings = queryVDBCompositionService.queryVDB("我是2025年毕业的高校生，有什么政策能够帮助我找工作的么？");
+        System.out.println("暂停");
+    }
 
-        if (embeddings.isEmpty()) {
-            log.error("文件转换失败，向量组为空");
-            return;
-        }
-
-        if (milvusService.InitCollectionSchema()){
-            milvusService.SelectDatabase("user_vector_database");
-            CompletableFuture<List<List<SearchResp.SearchResult>>> future2 = milvusService.ANNSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
-            List<String> entities = new ArrayList<>();
-            try {
-                List<List<SearchResp.SearchResult>> lists = future2.get();
-                for (List<SearchResp.SearchResult> results : lists) {
-                    log.info("搜索到相关文本内容为：{}", results);
-                    for (SearchResp.SearchResult result : results) {
-                        entities.add((String)result.getEntity().get("content"));
-                    }
-                }
-                entities.forEach(entity -> {
-                    log.info("搜索到相关文本内容为：{}", entity);
-                });
-            } catch (InterruptedException | ExecutionException e) {
-                log.error("未能获取到miluvs的响应");
-            }
-        }
+    // 解析文件。测试成功
+    @Test
+    void parsingFile(){
+        parsingFileCompositionService.ParsingFile("2025年高校毕业生稳就业相关政策清单.pdf");
+        System.out.println("暂停");
     }
 
     // 列出所有记录。成功

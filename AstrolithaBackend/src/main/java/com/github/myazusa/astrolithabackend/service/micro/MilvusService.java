@@ -1,6 +1,7 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.common.exception.VectorDatabaseAccessException;
+import com.github.myazusa.astrolithabackend.model.RagChunk;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.milvus.orm.iterator.QueryIterator;
@@ -27,16 +28,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
 public class MilvusService {
     private final ObjectProvider<MilvusClientV2> milvusClientV2ObjectProvider;
     private MilvusClientV2 milvusClientV2;
+    private static final float THRESHOLD = 0.35f;
 
     @Autowired
     public MilvusService(ObjectProvider<MilvusClientV2> milvusClientV2ObjectProvider) {
@@ -48,7 +49,7 @@ public class MilvusService {
      */
     @Deprecated
     public void InitDatabase(){
-        if (serviceClientIsAvailable()) {
+        if (!serviceClientIsAvailable()) {
             return;
         }
         milvusClientV2.createDatabase(CreateDatabaseReq.builder()
@@ -57,7 +58,7 @@ public class MilvusService {
     }
 
     public void SelectDatabase(String databaseName){
-        if (serviceClientIsAvailable()) {
+        if (!serviceClientIsAvailable()) {
             return;
         }
         try {
@@ -128,7 +129,7 @@ public class MilvusService {
     }
 
     public Boolean getCollectionState(String collectionName){
-        if (serviceClientIsAvailable()) {
+        if (!serviceClientIsAvailable()) {
             return false;
         }
         return milvusClientV2.getLoadState(GetLoadStateReq.builder()
@@ -178,7 +179,7 @@ public class MilvusService {
     }
 
     @Async
-    public CompletableFuture<List<List<SearchResp.SearchResult>>> ANNSelectSchema(String collectionName, FloatVec queryVector){
+    public CompletableFuture<List<RagChunk>> ANNSelectSchema(String collectionName, FloatVec queryVector){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
@@ -190,7 +191,18 @@ public class MilvusService {
                 .topK(5)
                 .build();
         SearchResp searchResp = milvusClientV2.search(searchReq);
-        return CompletableFuture.completedFuture(searchResp.getSearchResults());
+        List<RagChunk> chunks = searchResp.getSearchResults().stream().flatMap(List::stream).map(searchResult -> {
+            Map<String, Object> fields = searchResult.getEntity();
+            return new RagChunk(
+                    (String) fields.get("content"),
+                    (String) fields.getOrDefault("name", ""),
+                    searchResult.getScore()
+            );
+        }).filter(chunk -> chunk.score() >= THRESHOLD) // 筛选
+                .sorted(Comparator.comparing(RagChunk::score).reversed()) //排序
+                .limit(5) // 限制数量
+                .toList();
+        return CompletableFuture.completedFuture(chunks);
     }
 
     @Async
@@ -207,6 +219,7 @@ public class MilvusService {
         return CompletableFuture.completedFuture(milvusClientV2.queryIterator(queryIteratorReq));
     }
 
+    @Deprecated
     @Async
     public CompletableFuture<List<List<SearchResp.SearchResult>>> ANNSelectSchema(String collectionName, List<BaseVector> queryVector){
         if (!getCollectionState("default_collection")){
