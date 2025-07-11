@@ -11,7 +11,7 @@ def normalize_audio(input_path, output_path, target_dBFS=-20.0):
     """
     音量归一化：把响度统一到 target_dBFS
     """
-    audio = AudioSegment.from_file(input_path)
+    audio = AudioSegment.from_file(input_path, format="wav")
     change_in_dBFS = target_dBFS - audio.dBFS
     print(f"[Normalize] 原始响度: {audio.dBFS:.2f} dBFS, 调整: {change_in_dBFS:.2f} dB")
     normalized_audio = audio.apply_gain(change_in_dBFS)
