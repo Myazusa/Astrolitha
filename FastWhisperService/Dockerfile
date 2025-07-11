@@ -18,11 +18,14 @@ RUN apt-get update && apt-get install -y python3 python3-venv
 RUN python3 -m venv /venv
 
 COPY requirements.txt /app/requirements.txt
-RUN /venv/bin/pip install -i https://mirrors.aliyun.com/pypi/simple/ --upgrade pip && /venv/bin/pip install -i https://mirrors.aliyun.com/pypi/simple/ python-multipart && /venv/bin/pip install -i https://mirrors.aliyun.com/pypi/simple/ -r /app/requirements.txt
+RUN /venv/bin/pip install -i https://mirrors.aliyun.com/pypi/simple/ --upgrade pip && /venv/bin/pip install -i https://mirrors.aliyun.com/pypi/simple/ -r /app/requirements.txt
 
 ENV PATH="/venv/bin:$PATH"
 
 WORKDIR /app
+COPY model ./model
+COPY rnnoise-models ./rnnoise-models
+COPY voice_process.py .
 COPY whisper_api.py .
 
 CMD ["python", "whisper_api.py","--host", "0.0.0.0", "--port", "10350"]
