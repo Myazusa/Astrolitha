@@ -1,7 +1,7 @@
 ﻿import {defineStore} from "pinia";
 
 export const useApiStore = defineStore('ApiStore',()=>{
-    const baseAddress:string = 'http://localhost:8080'
+    const baseAddress:string = ''
     const apiUrl:string = '/api'
     const askQuestionApi:string = '/ask'
     const speakApi:string = '/speak'
