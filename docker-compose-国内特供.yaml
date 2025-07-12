@@ -2,7 +2,7 @@ version: '3.8'
 services:
 # rdb的容器
   mysql:
-    image: mysql:latest
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/mysql:latest
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
@@ -14,7 +14,7 @@ services:
 
 # llm的容器
   ollama-embedding:
-    image: ollama/ollama:latest
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/ollama:latest
     container_name: ollama-embedding
     ports:
       - "11435:11434"
@@ -31,7 +31,7 @@ services:
       NVIDIA_VISIBLE_DEVICES: all
 
   ollama-chat:
-    image: ollama/ollama:latest
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/ollama:latest
     container_name: ollama-chat
     ports:
       - "11434:11434"
@@ -49,7 +49,7 @@ services:
 
 # asr的容器，这个容器是docker上没有镜像的，在本项目FastWhisperService下自己制作镜像
   whisper:
-    image: myadzusa/whisper:latest
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/whisper:latest
     container_name: whisper-service
     ports:
       - "10350:10350"
@@ -63,7 +63,7 @@ services:
 
 # tts的容器
   gpt-sovits:
-    image: xxxxrt666/gpt-sovits:latest-cu128-lite
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/gpt-sovits:latest-cu128-lite
     container_name: gpt-sovits-cu128-lite
     environment:
       - is_half=true
@@ -107,7 +107,7 @@ services:
   etcd:
     container_name: milvus-etcd
     #image: milvusdb/etcd:3.5.5-r2
-    image: milvusdb/etcd:latest
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/etcd:latest
     environment:
       - ETCD_AUTO_COMPACTION_MODE=revision
       - ETCD_AUTO_COMPACTION_RETENTION=1000
@@ -128,7 +128,7 @@ services:
   minio:
     container_name: milvus-minio
     #image: minio/minio:RELEASE.2023-03-20T20-16-18Z
-    image: minio/minio:latest
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/minio:latest
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
@@ -145,7 +145,7 @@ services:
       retries: 3
   standalone:
     container_name: milvus-standalone
-    image: milvusdb/milvus:v2.5.10
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/milvus:v2.5.10
     command: [ "milvus", "run", "standalone" ]
     security_opt:
       - seccomp:unconfined
@@ -168,7 +168,7 @@ services:
       - "minio"
 
   elasticsearch:
-    image: elasticsearch:8.18.1
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/elasticsearch:8.18.1
     container_name: elasticsearch
     ports:
       - "9200:9200"
@@ -179,7 +179,7 @@ services:
       - ES_JAVA_OPTS=-Xms1g -Xmx2g
 
   astrolitha-backend:
-    image: myadzusa/astrolitha-backend:v0.0.9-beta
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/astrolitha-backend:v0.0.9-beta
     container_name: astrolitha-backend
     cap_add:
       - SYS_ADMIN
@@ -194,7 +194,7 @@ services:
       - ./volumes/astrolitha/uploads:/app/uploads
 
   astrolitha-frontend:
-    image: myadzusa/astrolitha-frontend:v0.0.9-beta
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/astrolitha-frontend:v0.0.9-beta
     container_name: astrolitha-frontend
     ports:
       - "80:80"
