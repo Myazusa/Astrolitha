@@ -192,12 +192,17 @@ services:
       # - /proc:/proc:ro
       - /sys:/sys:ro
       - ./volumes/astrolitha/uploads:/app/uploads
+      - ./volumes/astrolitha/application.yml:/app/application.yml
 
   astrolitha-frontend:
     image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/astrolitha-frontend:v0.0.9-beta
     container_name: astrolitha-frontend
     ports:
       - "80:80"
+    volumes:
+      - ./volumes/astrolitha/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - "astrolitha-backend"
 networks:
   default:
     name: astrolitha
