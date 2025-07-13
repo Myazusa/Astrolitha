@@ -12,10 +12,10 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
 window.addEventListener('load', () => {
-    if (window["Live2DCubismCore"]) {
-        console.log('Live2DCubismCore，是已加载');
+    if ((window as any)["Live2DCubismCore"]) {
+        console.log('Live2DCubismCore已加载');
     } else {
-        console.error('Live2DCubismCore，是未加载');
+        console.error('Live2DCubismCore未加载');
     }
 });
 
