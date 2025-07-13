@@ -11,6 +11,14 @@ import '@/assets/styles/main.css'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
+window.addEventListener('load', () => {
+    if (window["Live2DCubismCore"]) {
+        console.log('Live2DCubismCore，是已加载');
+    } else {
+        console.error('Live2DCubismCore，是未加载');
+    }
+});
+
 const app = createApp(App)
 app.use(router)
 
