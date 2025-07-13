@@ -1,5 +1,11 @@
 ﻿<script setup lang="ts">
-import {useCommonStateStore, useModelStore, useRecorderStore, useSideButtonStateStore} from "@/store/Live2DStudioStore";
+import {
+  useCommonStateStore,
+  useModelStore,
+  useRecorderStore,
+  useSideButtonStateStore,
+  useTalkBubbleStore
+} from "@/store/Live2DStudioStore";
 import {onMounted, ref, watch} from "vue";
 import {ElIcon, ElMessage, ElSlider} from "element-plus";
 import {Headset} from "@element-plus/icons-vue";
@@ -30,10 +36,10 @@ const recordState = ref<string>('開啓')
 const audioFilePath:string = '/audio/test.wav';
 let audioContext: AudioContext;
 
-const controlMouth = (param:number) => {
-  if (param>1||param<0) return
-  modelStore.getModel()?.internalModel.coreModel.setParameterValueById("ParamMouthOpenY",param)
-}
+// const controlMouth = (param:number) => {
+//   if (param>1||param<0) return
+//   modelStore.getModel()?.internalModel.coreModel.setParameterValueById("ParamMouthOpenY",param)
+// }
 
 async function fetchData() {
   const response = await fetch(audioFilePath)
@@ -55,6 +61,7 @@ async function fetchData() {
       requestAnimationFrame(updateMouth)
     }
   }
+  useTalkBubbleStore().showBubble("不过老师怎么会知道这么可爱的地方？老师也喜欢？真的？",audioBuffer.duration*1000)
   updateMouth()
 }
 onMounted(()=>{

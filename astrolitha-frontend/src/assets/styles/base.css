@@ -147,7 +147,7 @@ input:focus,textarea:focus{
  * 定義主題字體
  */
 :root{
-  --theme-font: 'SetoFont';
+  --theme-font: 'ResourceHanRoundedCN';
   --theme-font-weight: normal;
 }
 

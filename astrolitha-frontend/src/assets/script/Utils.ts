@@ -43,3 +43,24 @@ export function noSpecialChars(obj: ToolFunction) :boolean{
 export function noEmpty(obj: ToolFunction) :boolean{
     return obj.name !== '' && obj.functionName !== '' && obj.remoteApi !== '' && obj.toolDescription !== '';
 }
+
+type Offset = { x: number; y: number }
+
+export function calculateAdaptedOffset(
+    currentScreen: { width: number; height: number },
+    referenceScreen: { width: number; height: number },
+    referenceOffset: Offset
+): Offset {
+    // 原始左边距
+    let leftMargin = -400
+
+    // 增宽
+    let incWidth = currentScreen.width - referenceScreen.width
+
+    // 公式可以简化
+    let x = (leftMargin + incWidth + 480) / 2.0
+    let y = referenceOffset.y
+    return {
+        x,y
+    }
+}

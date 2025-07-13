@@ -5,14 +5,16 @@ import Live2DStudioMain from "@/components/live2d-studio/Live2DStudioMain.vue";
 import Live2DStudioActionDialog from "@/components/live2d-studio/Live2DStudioActionDialog.vue";
 import Live2DStudioOptionDialog from "@/components/live2d-studio/Live2DStudioOptionDialog.vue";
 import Live2DStudioRadioDialog from "@/components/live2d-studio/Live2DStudioRadioDialog.vue";
-import {useSideButtonStateStore, useTalkBubbleStore} from "@/store/Live2DStudioStore";
+import {useSideButtonStateStore, useTalkBubbleStore, useUserTalkBubbleStore} from "@/store/Live2DStudioStore";
 import Live2DStudioRightTopSide from "@/components/live2d-studio/Live2DStudioRightTopSide.vue";
 import Live2DStudioTalkBubble from "@/components/live2d-studio/Live2DStudioTalkBubble.vue";
+import Live2DStudioUserTalkBuble from "@/components/live2d-studio/Live2DStudioUserTalkBuble.vue";
 
 const sideButtonStateStore = useSideButtonStateStore();
 
 const brightness = ref(100)
 const talkBubbleStore = useTalkBubbleStore();
+const userTalkBubbleStore = useUserTalkBubbleStore();
 
 </script>
 
@@ -24,6 +26,9 @@ const talkBubbleStore = useTalkBubbleStore();
     </transition>
     <transition name="bubble-fade">
       <Live2DStudioTalkBubble v-if="talkBubbleStore.getVisibleRef().value"/>
+    </transition>
+    <transition name="bubble-fade">
+      <Live2DStudioUserTalkBuble v-if="userTalkBubbleStore.getVisibleRef().value"/>
     </transition>
     <Live2DStudioRightTopSide />
     <Live2DStudioActionDialog />

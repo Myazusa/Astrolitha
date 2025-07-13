@@ -1,6 +1,6 @@
 ﻿import {ref, watch} from 'vue'
 import axios from 'axios'
-import {useModelStore, useRecorderStore} from '@/store/Live2DStudioStore'
+import {useModelStore, useRecorderStore, useTalkBubbleStore, useUserTalkBubbleStore} from '@/store/Live2DStudioStore'
 import { ElMessage } from 'element-plus'
 import {useApiStore} from "@/store/ApiStore";
 import audioBufferToWav from 'audiobuffer-to-wav';
@@ -60,7 +60,7 @@ export function VoiceRecorder() {
                 }
             }
         } catch (err) {
-            ElMessage.error('獲取麥克風失敗：'+err)
+            ElMessage.error('获取麦克风失败：'+err)
             recorderStore.isRecording = false
         }
     }
@@ -102,6 +102,7 @@ export function VoiceRecorder() {
                 chunks.value = []
                 // 语音转文字
                 console.log("获得得文字是：" + res.data.message)
+                useUserTalkBubbleStore().showBubble(res.data.message,5000)
                 // 文字调用LLM，不可以使用异步
                 const answer = await sendQuestion(res.data.message);
                 //
@@ -115,15 +116,14 @@ export function VoiceRecorder() {
                         useModelStore().getModel()?.expression(result.placeholders[0])
                     }
                     // 处理回答中的英文
-                    let filteredAnswer = removeEnglishCharacters(result.cleaned);
-                    console.log("处理英文得到：" + filteredAnswer)
+                    // let filteredAnswer = removeEnglishCharacters(result.cleaned);
+                    // console.log("处理英文得到：" + filteredAnswer)
                     // 文字转语音
-                    const arraybuffer = await voiceGenerator(filteredAnswer);
-
+                    const arraybuffer = await voiceGenerator(result.cleaned);
                     // 控制模型嘴部
-                    mouthControl(arraybuffer, returnAudioContext, result.cleaned)
+                    await mouthControl(arraybuffer, returnAudioContext, result.cleaned)
                 } else {
-                    ElMessage.error('LLM的回复为空');
+                    ElMessage.error('大模型的回复为空');
                 }
                 recorderStore.waitingResponse = false
             })

@@ -4,6 +4,7 @@ import {Cubism4InternalModel, Live2DModel} from "pixi-live2d-display/cubism4";
 import { defineStore } from 'pinia';
 import {ElMessage} from "element-plus";
 import Live2DStudioTalkBubble from "@/components/live2d-studio/Live2DStudioTalkBubble.vue";
+import {calculateAdaptedOffset} from "@/assets/script/Utils";
 
 export const useModelStore = defineStore('ModelStore', () => {
     const app = ref<PIXI.Application | null>(null);
@@ -22,6 +23,9 @@ export const useModelStore = defineStore('ModelStore', () => {
     }
     const getMotionButtonListRef = () => {
         return motionButtonList;
+    }
+    const getInited = () =>{
+        return inited.value;
     }
 
     const getModel = () => model.value
@@ -51,7 +55,11 @@ export const useModelStore = defineStore('ModelStore', () => {
         const localModel:Live2DModel<Cubism4InternalModel> = await Live2DModel.from(path) as Live2DModel<Cubism4InternalModel>
         model.value = localModel
         model.value.autoInteract = false
-        model.value.position.set(useModelStateStore().getModelPosition().x,useModelStateStore().getModelPosition().y)
+        const {x,y} = calculateAdaptedOffset(
+            { width: window.innerWidth, height: window.innerHeight },
+            { width: 800, height: 600 },
+            { x: 0, y: -180 })
+        model.value.position.set(x,y)
         model.value.scale.set(useModelStateStore().getModelScaleRef().value)
         initMotionButtonList()
         app.value.stage.addChild(localModel)
@@ -72,7 +80,8 @@ export const useModelStore = defineStore('ModelStore', () => {
         init,
         destroy,
         initMotionButtonList,
-        getMotionButtonListRef
+        getMotionButtonListRef,
+        getInited
     }
 })
 
@@ -81,7 +90,7 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
     const radioDialogVisible = ref<boolean>(false)
     const optionDialogVisible = ref<boolean>(false)
 
-    const leftSideVisible = ref<boolean>(true)
+    const leftSideVisible = ref<boolean>(false)
 
     const getLeftSideVisibleRef = () => {
         return leftSideVisible
@@ -158,16 +167,16 @@ export const useModelStateStore = defineStore('ModelStateStore', () => {
 },{
     persist: true
 })
-
-export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
+export const useUserTalkBubbleStore = defineStore('UserTalkBubbleStore', () => {
     const message = ref('')
     const visible = ref(false)
-
-    const bubbleRef = ref<InstanceType<typeof Live2DStudioTalkBubble>>()
-
+    /**
+     * 显示气泡
+     * @param newMessage 新的消息
+     * @param time 毫秒
+     */
     const showBubble = (newMessage:string,time:number) =>{
         visible.value = false
-
         setTimeout(() => {
             message.value = newMessage
             visible.value = true
@@ -177,8 +186,35 @@ export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
             }, time)
         }, 300)
     }
-    const getBubbleRef = ()=>{
-        return bubbleRef
+
+    const getMessageRef = () => {
+        return message
+    }
+    const getVisibleRef = () => {
+        return visible
+    }
+    return {getVisibleRef,getMessageRef,showBubble}
+})
+
+export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
+    const message = ref('')
+    const visible = ref(false)
+    /**
+     * 显示气泡
+     * @param newMessage 新的消息
+     * @param time 毫秒
+     */
+    const showBubble = (newMessage:string,time:number) =>{
+        useUserTalkBubbleStore().getVisibleRef().value = false
+        visible.value = false
+        setTimeout(() => {
+            message.value = newMessage
+            visible.value = true
+
+            setTimeout(() => {
+                visible.value = false
+            }, time)
+        }, 300)
     }
 
     const getMessageRef = () => {
@@ -187,7 +223,7 @@ export const useTalkBubbleStore = defineStore('TalkBubbleStore', () => {
     const getVisibleRef = () => {
         return visible
     }
-    return {getVisibleRef,getMessageRef,getBubbleRef,showBubble}
+    return {getVisibleRef,getMessageRef,showBubble}
 })
 
 export const useCommonStateStore = defineStore('CommonStateStore', () => {

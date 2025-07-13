@@ -85,15 +85,12 @@ function dragModel(draggable:boolean){
 /**
  * 模型加载相关
  */
-const isInitedModel = ref(false);
 
 const initialModel = async ()=> {
-  if (!isInitedModel.value) {
+  if (!modelStore.getInited()) {
     await modelStore.init("./models/D01/D01.model3.json")
-    isInitedModel.value = true
   }else {
     modelStore.destroy()
-    isInitedModel.value = false
   }
 };
 

@@ -1,30 +1,30 @@
 ﻿<script setup lang="ts">
-import {useTalkBubbleStore} from "@/store/Live2DStudioStore";
+import {useUserTalkBubbleStore} from "@/store/Live2DStudioStore";
 
-const talkBubbleStore = useTalkBubbleStore();
+const userTalkBubbleStore = useUserTalkBubbleStore();
 
 </script>
 
 <template>
-    <div
-        v-if="talkBubbleStore.getVisibleRef()"
-        class="chat-bubble"
-        :key="talkBubbleStore.getMessageRef().value"
-    >
-      {{ talkBubbleStore.getMessageRef() }}
-    </div>
+  <div
+      v-if="userTalkBubbleStore.getVisibleRef()"
+      class="user-chat-bubble"
+      :key="userTalkBubbleStore.getMessageRef().value"
+  >
+    {{ userTalkBubbleStore.getMessageRef() }}
+  </div>
 </template>
 
 <style scoped>
-.chat-bubble {
+.user-chat-bubble {
   position: fixed;
   bottom: 15vh;
   left: 50%;
   transform: translateX(-50%);
+  color: #838383;
   width: 60%;
   padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #333;
+  background-color: rgba(205, 227, 253, 0.9);
   border: 0.1rem solid #bababa;
   border-radius: 1rem;
   box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
