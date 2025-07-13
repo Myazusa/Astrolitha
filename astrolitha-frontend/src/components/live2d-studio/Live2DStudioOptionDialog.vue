@@ -15,7 +15,7 @@ const brightness = ref(100)
 <template>
   <el-dialog
       v-model="sideButtonStateStore.getOptionDialogVisibleRef().value"
-      title="通用設置"
+      title="通用设置"
       width="60vw"
       align-center
       :modal="false"

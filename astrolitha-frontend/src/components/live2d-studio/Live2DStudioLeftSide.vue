@@ -24,7 +24,7 @@ const isActiveMoveMode = ref(false);
 
 const moveModel = () => {
   if(!modelStore.getModel()) {
-    ElMessage.warning("模型未加載")
+    ElMessage.warning("模型未加载")
     return
   }
   if (isActiveMoveMode.value) {
@@ -103,7 +103,7 @@ function focusMouse(event: MouseEvent) {
 }
 const addFocus = () => {
   if(!modelStore.getModel()) {
-    ElMessage.warning("模型未加載")
+    ElMessage.warning("模型未加载")
     return
   }
   if (!isAddFocus.value) {

@@ -29,7 +29,7 @@ watch(() => recorderStore.isRecording, async (val) => {
       }
     }
 )
-const recordState = ref<string>('開啓')
+const recordState = ref<string>('开启')
 /**
  * 模型说话相关
  */
@@ -70,7 +70,7 @@ onMounted(()=>{
 
 const speak = ()=>{
   if(!modelStore.getModel()) {
-    ElMessage.warning("模型未加載")
+    ElMessage.warning("模型未加载")
     return
   }
   fetchData()
@@ -88,20 +88,20 @@ const speak = ()=>{
       overflow
   >
     <div class="dialog-layout">
+<!--      <div class="dialog-content">-->
+<!--        <div class="dialog-content-title">監聽説話</div>-->
+<!--        <div class="dialog-content-container">-->
+<!--          <el-switch-->
+<!--              v-model="recorderStore.isRecording"-->
+<!--              rounded="rounded"-->
+<!--              :active-text="recordState"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="dialog-content">
-        <div class="dialog-content-title">監聽説話</div>
+        <div class="dialog-content-title">模型音频测试</div>
         <div class="dialog-content-container">
-          <el-switch
-              v-model="recorderStore.isRecording"
-              rounded="rounded"
-              :active-text="recordState"
-          />
-        </div>
-      </div>
-      <div class="dialog-content">
-        <div class="dialog-content-title">模型音頻測試</div>
-        <div class="dialog-content-container">
-          <el-button color="transparent" round @click="speak">點擊播放默認音頻進行測試</el-button>
+          <el-button color="transparent" round @click="speak">点击播放默认测试音频</el-button>
         </div>
       </div>
       <div class="dialog-content">

@@ -13,7 +13,7 @@ const handleAddClick = () => {
 
 <template>
   <header>
-    <div class="header-title">工具鏈</div>
+    <div class="header-title">工具链</div>
     <div class="right-top-tools">
       <el-button class="add-tool-button" size="large" round @click="handleAddClick">添加工具</el-button>
     </div>

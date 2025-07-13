@@ -39,7 +39,7 @@ onMounted(() => {
         </div>
       </div>
       <div v-else>
-        沒有數據呢
+        沒有数据呢
       </div>
   </div>
   <UserCenterCustomToolDetailDialog ref="detailDialogRef"/>

@@ -29,7 +29,7 @@ const handleRename = (file: RagFile) => {
 const handleRenameConfirm = () => {
   if (!currentFile.value) return
   if (!newFileName.value.trim()) {
-    ElMessage.warning('文件名不能為空')
+    ElMessage.warning('文件名不能为空')
     return
   }
   userCenterDatabaseStore.renameFile(currentFile.value, newFileName.value)
@@ -98,13 +98,13 @@ const handleRenameCancel = () => {
   >
     <el-input
       v-model="newFileName"
-      placeholder="請輸入新的文件名"
+      placeholder="请输入新的文件名"
     />
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleRenameCancel">取消</el-button>
         <el-button type="primary" @click="handleRenameConfirm">
-          確認
+          确认
         </el-button>
       </span>
     </template>

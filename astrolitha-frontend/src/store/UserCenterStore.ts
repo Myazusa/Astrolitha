@@ -248,12 +248,12 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
                 if(res.status === 200){
                     tools.value = res.data
                 }else {
-                    ElMessage.error("獲取失敗：" + res.status)
+                    ElMessage.error("获取失败：" + res.status)
                 }
             })
             .catch(err => {
                 console.log(err)
-                ElMessage.error("獲取失敗：" + err)
+                ElMessage.error("获取失败：" + err)
             })
     }
     const enableTool = () => {
@@ -265,12 +265,12 @@ export const useUserCenterCustomToolStore = defineStore('UserCenterCustomToolSto
         })
             .then(res => {
                 if(res.status !== 200){
-                    ElMessage.error("啓用失敗：" + res.status)
+                    ElMessage.error("启用失败：" + res.status)
                 }
             })
             .catch(err => {
                 console.log(err)
-                ElMessage.error("啓用失敗：" + err)
+                ElMessage.error("启用失败：" + err)
             })
     }
     const getToolsRef = () => {

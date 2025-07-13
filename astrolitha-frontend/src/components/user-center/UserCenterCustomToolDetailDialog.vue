@@ -31,10 +31,10 @@ defineExpose({
   </div>
   <el-descriptions class="descriptions" size="large">
     <el-descriptions-item label="工具名">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].name }}</el-descriptions-item>
-    <el-descriptions-item label="函數名">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].functionName }}</el-descriptions-item>
-    <el-descriptions-item label="函數描述">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].toolDescription }}</el-descriptions-item>
+    <el-descriptions-item label="函数名">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].functionName }}</el-descriptions-item>
+    <el-descriptions-item label="函数描述">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].toolDescription }}</el-descriptions-item>
     <el-descriptions-item label="接口地址">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].remoteApi }}</el-descriptions-item>
-    <el-descriptions-item label="請求方法">
+    <el-descriptions-item label="请求方法">
       <el-tag size="small">{{ userCenterCustomToolStore.getToolsRef().value[userCenterCustomToolStore.selectedToolIndex].requestMethod }}</el-tag>
     </el-descriptions-item>
   </el-descriptions>

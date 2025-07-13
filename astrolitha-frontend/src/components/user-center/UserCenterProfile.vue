@@ -20,18 +20,18 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="profile-root">
-    <div class="profile-title">儀表盤</div>
+    <div class="profile-title">仪表盘</div>
     <el-card class="profile-container" shadow="never">
       <template #header>
         <div class="card-header">
-          <span>系統概況</span>
+          <span>系统概况</span>
         </div>
       </template>
       <div class="system-detail">
         <el-card shadow="never" class="system-detail-card">
             <div><el-icon size="3rem"><Cpu /></el-icon></div>
             <div>
-              <el-row>處理器占用率</el-row>
+              <el-row>处理器占用</el-row>
               <el-row style="align-items: end"><span style="font-size: 1.5rem;margin-right: 0.4rem">{{userCenterProfile.getCpuDetailRef()}}</span>%</el-row>
             </div>
         </el-card>
@@ -45,14 +45,14 @@ onBeforeUnmount(() => {
         <el-card shadow="never" class="system-detail-card">
           <div><el-icon size="3rem"><Coin /></el-icon></div>
           <div>
-            <el-row>磁盤占用率</el-row>
+            <el-row>磁盘占用率</el-row>
             <el-row style="align-items: end"><span style="font-size: 1.5rem;margin-right: 0.4rem">{{userCenterProfile.getDiskDetailRef()}}</span>G</el-row>
           </div>
         </el-card>
         <el-card shadow="never" class="system-detail-card">
           <div><el-icon size="3rem"><Document /></el-icon></div>
           <div>
-            <el-row>RAG文件量</el-row>
+            <el-row>RAG文件数</el-row>
             <el-row style="align-items: end"><span style="font-size: 1.5rem;margin-right: 0.4rem">{{userCenterProfile.getFileDetailRef()}}</span>件文檔</el-row>
           </div>
         </el-card>
@@ -61,11 +61,11 @@ onBeforeUnmount(() => {
     <el-card class="profile-container" shadow="never">
       <template #header>
         <div class="card-header">
-          <span>用戶信息</span>
+          <span>用户信息</span>
         </div>
       </template>
       <div class="user-details">
-        暫無用戶信息
+        暂无用户信息
       </div>
     </el-card>
   </div>

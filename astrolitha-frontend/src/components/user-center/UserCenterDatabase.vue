@@ -33,12 +33,12 @@ const handleSearch = async () => {
 
 <template>
   <header>
-    <div class="header-title">向量數據庫</div>
+    <div class="header-title">向量数据库</div>
     <div class="right-top-tools">
       <el-input
           v-model="searchContent"
           style="max-width: 600px"
-          placeholder="想要找什麽呢？"
+          placeholder="想要找什么呢？"
           class="input-with-select"
       >
         <template #append>
@@ -46,7 +46,7 @@ const handleSearch = async () => {
         </template>
       </el-input>
       <el-button class="reflash-button" size="large" round @click="userCenterDatabaseStore.initTable()">刷新</el-button>
-      <el-button class="upload-button" size="large" round @click="handleUploadClick">點我上傳</el-button>
+      <el-button class="upload-button" size="large" round @click="handleUploadClick">点我上传</el-button>
     </div>
   </header>
   <main>

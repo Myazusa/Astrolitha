@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import {Cubism4InternalModel, Live2DModel} from "pixi-live2d-display/cubism4";
 import { defineStore } from 'pinia';
 import {ElMessage} from "element-plus";
-import Live2DStudioTalkBubble from "@/components/live2d-studio/Live2DStudioTalkBubble.vue";
 import {calculateAdaptedOffset} from "@/assets/script/Utils";
 
 export const useModelStore = defineStore('ModelStore', () => {
@@ -113,7 +112,7 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
     }
     const setRadioDialogVisible = (visible:boolean) => {
         if(!useModelStore().getModel()) {
-            ElMessage.warning("模型未加載")
+            ElMessage.warning("模型未加载")
             return
         }
         radioDialogVisible.value = visible
@@ -121,7 +120,7 @@ export const useSideButtonStateStore = defineStore('SideButtonStateStore', () =>
     const setActionDialogVisible = (visible:boolean) =>{
         var model = useModelStore().getModel();
         if(!useModelStore().getModel()) {
-            ElMessage.warning("模型未加載")
+            ElMessage.warning("模型未加载")
             return
         }
         actionDialogVisible.value = visible
@@ -144,7 +143,7 @@ export const useModelStateStore = defineStore('ModelStateStore', () => {
 
     const setModelPosition = (x:number,y:number) =>{
         if(!useModelStore().getModel()) {
-            ElMessage.warning("模型未加載")
+            ElMessage.warning("模型未加载")
             return
         }
         modelPositionX.value = x

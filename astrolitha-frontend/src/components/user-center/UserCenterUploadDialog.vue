@@ -46,7 +46,7 @@ const removeDuplicateFile = (file: UploadFile): void => {
  */
 const handleOnChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
   if(isFileDuplicate(uploadFile)){
-    ElMessage.warning(`文件 "${uploadFile.name}" 已存在，請勿重複上傳`)
+    ElMessage.warning(`文件 "${uploadFile.name}" 已存在，请勿重复上传`)
     removeDuplicateFile(uploadFile)
     return
   }
@@ -57,7 +57,7 @@ const handleOnChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
  */
 const handleUpload = async () => {
   if (fileList.value.length === 0) {
-    ElMessage.warning('請選擇要上傳的文件')
+    ElMessage.warning('请选择要上传的文件')
     return
   }
 
@@ -72,10 +72,10 @@ const handleUpload = async () => {
         'Content-Type': 'multipart/form-data'
       }
     })
-    ElMessage.success('上傳成功')
+    ElMessage.success('上传成功')
     handleClose()
   } catch (error) {
-    ElMessage.error('上傳失敗')
+    ElMessage.error('上传失败')
     console.error('Upload error:', error)
   }
 }
@@ -95,7 +95,7 @@ defineExpose({
 <template>
   <el-dialog
     v-model="dialogVisible"
-    title="上傳數據庫"
+    title="上传数据库"
     width="30rem"
     :close-on-click-modal="false"
     style="background: var(--theme-color-secondary) !important; color: var(--theme-color-on-secondary) !important;"
@@ -113,11 +113,11 @@ defineExpose({
     >
       <el-icon class="el-icon--upload"><Upload /></el-icon>
       <div class="el-upload__text">
-        拖拽文件到此处或 <em>點擊上傳</em>
+        拖拽文件到此处 <em>点击上传</em>
       </div>
       <template #tip>
         <div class="el-upload__tip">
-          可以上傳多個文件
+          可以上传多个文件
         </div>
       </template>
     </el-upload>
@@ -126,7 +126,7 @@ defineExpose({
       <span class="dialog-footer">
         <el-button @click="handleClear">清空</el-button>
         <el-button type="primary" @click="handleUpload">
-          確定上傳
+          确认上传
         </el-button>
       </span>
     </template>

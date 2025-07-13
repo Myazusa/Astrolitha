@@ -1,6 +1,5 @@
 ﻿import {Question} from "@/interface/Question";
 import axios from "axios";
-import {useModelStore} from "@/store/Live2DStudioStore";
 import {useApiStore} from "@/store/ApiStore";
 
 export async function sendQuestion(question: string) {

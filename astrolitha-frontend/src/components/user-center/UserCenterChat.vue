@@ -89,7 +89,7 @@ const handleSend = async () => {
         max-height: 6.5rem;"
         resize="none"
         class="llm-chat-input"
-        placeholder="想問些什麽呢？"
+        placeholder="想问些什么呢？"
         @keydown.enter.exact.prevent="handleSend"
       />
       <el-button

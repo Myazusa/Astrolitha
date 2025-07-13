@@ -14,7 +14,7 @@ const loading = ref(false)
 
 const handleSignin = async () => {
   ElMessage({
-    message: '暫不開放注冊哦',
+    message: '暂不开放注册哦',
     type: 'warning',
     plain: true
   })
@@ -26,14 +26,14 @@ const handleLogin = async () => {
     // todo:添加登录逻辑
     await new Promise(resolve => setTimeout(resolve, 1000))
     ElMessage({
-      message: '登錄成功',
+      message: '登录成功',
       type: 'success',
       plain: true
     })
     await router.replace({name: 'UserCenter'})
   } catch (error) {
     ElMessage({
-      message: '登錄失敗',
+      message: '登录失败',
       type: 'error',
       plain: true
     })
@@ -47,17 +47,17 @@ const handleLogin = async () => {
   <div class="login-box">
     <el-col>
       <el-row justify="center">
-        <h2 class="title">歡迎登錄</h2>
+        <h2 class="title">欢迎登录</h2>
       </el-row>
       <el-row justify="center">
         <el-form :model="loginForm" class="login-form">
-          <el-form-item label="君の名は" label-position="top">
+          <el-form-item label="你的名字是" label-position="top">
             <el-input
                 v-model="loginForm.username"
                 prefix-icon="User"
             />
           </el-form-item>
-          <el-form-item label="密碼" label-position="top">
+          <el-form-item label="密码" label-position="top">
             <el-input
                 v-model="loginForm.password"
                 type="password"
@@ -69,12 +69,12 @@ const handleLogin = async () => {
       <el-row justify="center" :gutter=30>
         <el-col :span="50">
           <el-button type="primary" class="login-button" color="var(--theme-color-surface-container)" @click="handleSignin">
-            加入我們<span class="emotion-icon"> ~￣▽￣)~■</span>
+            加入我们<span class="emotion-icon"> ~￣▽￣)~■</span>
           </el-button>
         </el-col>
         <el-col :span="40">
           <el-button type="primary" class="login-button" color="var(--theme-color-tertiary)" :loading="loading" @click="handleLogin">
-            讓我們<span class="emotion-icon"> Go! ~(#°Д°)!</span>
+            让我们<span class="emotion-icon"> Go! ~(#°Д°)!</span>
           </el-button>
         </el-col>
       </el-row>

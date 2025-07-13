@@ -15,7 +15,7 @@ const modelStateStore = useModelStateStore();
 const scale = modelStateStore.getModelScaleRef()
 watch(scale, (value) => {
   if(!useModelStore().getModel()) {
-    ElMessage.warning("模型未加載")
+    ElMessage.warning("模型未加载")
     return
   }
   modelStore.getModel()?.scale.set(value)
@@ -33,7 +33,7 @@ const handleButtonClick = (buttonName: string) => {
     currentButtonName = buttonName
     modelStore.getModel()?.expression(buttonName)
   }else {
-    ElMessage.error("還沒有模型被加載哦")
+    ElMessage.error("还没有模型被加载")
   }
 };
 
@@ -42,7 +42,7 @@ const handleButtonClick = (buttonName: string) => {
 <template>
   <el-dialog
       v-model="sideButtonStateStore.getActionDialogVisibleRef().value"
-      title="模型設置"
+      title="模型设置"
       width="60vw"
       align-center
       :modal="false"
@@ -50,7 +50,7 @@ const handleButtonClick = (buttonName: string) => {
   >
     <div class="dialog-layout">
         <div class="dialog-content">
-          <div class="dialog-content-title">動作列表</div>
+          <div class="dialog-content-title">动作列表</div>
           <div class="dialog-content-container">
             <el-button v-for="(name,index) in modelStore.getMotionButtonListRef().value" :key="index" class="dialog-content-element" color="transparent" round @click="handleButtonClick(name)">{{name}}</el-button>
           </div>

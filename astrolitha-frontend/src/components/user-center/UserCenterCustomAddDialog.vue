@@ -23,15 +23,15 @@ const toolFunction = ref<ToolFunction>({
 
 const handleConfirmClick = () => {
   if (!noSpaces(toolFunction.value)){
-    ElMessage.warning("函數名和接口地址不可以包含空格")
+    ElMessage.warning("函数名和接口地址不可以包含空格")
     return
   }
   if (!noEmpty(toolFunction.value)){
-    ElMessage.warning("表單内不可以有空項")
+    ElMessage.warning("表单内不可以有空项")
     return
   }
   if (!noSpecialChars(toolFunction.value)){
-    ElMessage.warning("函數名定義不允許有特殊字符")
+    ElMessage.warning("函数名定义不允许有特殊字符")
     return
   }
   const temp: ToolFunction = {
@@ -96,7 +96,7 @@ defineExpose({
         </el-input>
         <HelpTip content="你自己项目的接口地址，要精确到接口" />
       </el-form-item>
-      <el-form-item label="請求方法">
+      <el-form-item label="请求方法">
         <el-select v-model="toolFunction.requestMethod" style="width: 6rem">
           <el-option value="get" />
           <el-option value="post" />
@@ -107,7 +107,7 @@ defineExpose({
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="handleConfirmClick">
-          確認
+          确认
         </el-button>
       </span>
     </template>
