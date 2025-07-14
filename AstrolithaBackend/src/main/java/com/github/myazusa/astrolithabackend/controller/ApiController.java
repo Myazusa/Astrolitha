@@ -54,41 +54,14 @@ public class ApiController {
      */
     @PostMapping("/ask")
     public ResponseEntity<InformationResponseDTO> askQuestion(@RequestBody QuestionRequestDTO questionRequestDTO){
-        // todo:改为策略加责任链模式
-        ModelInterfaceEnums modelInterfaceEnums = null;
-        try{
-            modelInterfaceEnums = ModelInterfaceEnums.getFromString(questionRequestDTO.getModelInterface());
-        } catch (Exception e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new InformationResponseDTO().setState("error").setMessage("modelInterface参数不正确"));
+        AskQuestionCompositionService askQuestionCompositionService = askQuestionCompositionServiceObjectProvider.getIfAvailable();
+        String answer;
+        if(askQuestionCompositionService == null) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new InformationResponseDTO().setState("error").setMessage("当前微服务不存在或未被加载"));
+        }else {
+            answer = askQuestionCompositionService.askQuestion(questionRequestDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(answer));
         }
-        if (Optional.ofNullable(modelInterfaceEnums).isEmpty()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new InformationResponseDTO().setState("error").setMessage("modelInterface枚举化失败"));
-        }
-        switch (modelInterfaceEnums) {
-            case ollama -> {
-                String answer;
-                AskQuestionCompositionService askQuestionCompositionService = askQuestionCompositionServiceObjectProvider.getIfAvailable();
-                if(askQuestionCompositionService == null) {
-                    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new InformationResponseDTO().setState("error").setMessage("当前微服务不存在或未被加载"));
-                }
-                if (questionRequestDTO.getEnableCustomAgent()) {
-                    answer = askQuestionCompositionService.askQuestionWithCustomAgent(questionRequestDTO.getQuestion());
-                } else if (questionRequestDTO.getEnableAgent()) {
-                    answer = askQuestionCompositionService.askQuestionWithAgent(questionRequestDTO.getQuestion(),questionRequestDTO.getEmotions());
-                } else {
-                    answer = askQuestionCompositionService.askQuestion(questionRequestDTO.getQuestion());
-                }
-                //
-                return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage(answer));
-            }
-            case python -> {
-                // todo:调用python，为集群模式暂不实现
-                return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("error").setMessage("该部分微服务暂未实现"));
-            }
-            default -> {
-            }
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new InformationResponseDTO().setState("error").setMessage("未收到请求体"));
     }
 
     /**

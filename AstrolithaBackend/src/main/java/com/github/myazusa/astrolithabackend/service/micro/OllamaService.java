@@ -1,5 +1,6 @@
 package com.github.myazusa.astrolithabackend.service.micro;
 
+import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -40,47 +41,40 @@ public class OllamaService {
         this.ollamaEmbeddingModel = ollamaEmbeddingModel;
     }
 
-    @Async
-    public CompletableFuture<String> getAnswerAsync(String constructedPrompt,String question){
-        ChatResponse response = ollamaChatModel.call(
-                new Prompt(
-                        List.of(
-                                new SystemMessage(constructedPrompt),
-                                new UserMessage(question)
-                        ),
-                        OllamaOptions.builder()
-                                .model(chatModelName)
-                                .temperature(0.4)
-                                .build()
-                ));
-        return CompletableFuture.completedFuture(response.getResult().getOutput().getText());
-    }
-
     /**
      * 如果需要agent，就用这个
+     * @param processedQuestionRequestDTO 责任链构造好的dto
      * @param constructedPrompt 构造好prompt
-     * @param question 用户提问
      * @param toolCallbacks 工具链
      * @return 模型的回答
      */
     @Async
-    public CompletableFuture<String> getAnswerAsync(String constructedPrompt,String question,List<ToolCallback> toolCallbacks){
+    public CompletableFuture<String> getAnswerAsync(QuestionRequestDTO processedQuestionRequestDTO,String constructedPrompt, List<ToolCallback> toolCallbacks){
+        OllamaOptions build;
+        if (toolCallbacks == null || toolCallbacks.isEmpty()){
+            build = OllamaOptions.builder()
+                    .model(agentModelName) // 这里应该是chatModelName的，但是deepseek没有toolcall功能暂时用这个也能代替
+                    .temperature(processedQuestionRequestDTO.getTemperature())
+                    .build();
+        }else {
+            build = OllamaOptions.builder()
+                    .model(agentModelName)
+                    .temperature(processedQuestionRequestDTO.getTemperature())
+                    .toolCallbacks(toolCallbacks)
+                    .build();
+        }
         ChatResponse response = ollamaChatModel.call(
                 new Prompt(
                         List.of(
                             new SystemMessage(constructedPrompt),
-                            new UserMessage(question)
-                        ),
-                        OllamaOptions.builder()
-                                .model(agentModelName)
-                                .toolCallbacks(toolCallbacks)
-                                .build()
+                            new UserMessage(processedQuestionRequestDTO.getQuestion())
+                        ),build
                 ));
         return CompletableFuture.completedFuture(response.getResult().getOutput().getText());
     }
+
     // todo:需要开启心跳请求
     // todo:不要在中途切换模型，切换模型会重加载内存非常耗时
-
     /**
      * @param stringList 这里一定是分割好的切片string集合
      * @return 获取结果是List<Embedding>，里面的每一个float[]都对应一个切片

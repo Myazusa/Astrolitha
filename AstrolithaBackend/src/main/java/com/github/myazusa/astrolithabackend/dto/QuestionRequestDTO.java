@@ -8,19 +8,28 @@ import java.util.List;
 
 @Data
 public class QuestionRequestDTO {
-    @NotNull
-    @NotBlank
-    private String modelInterface;
-
+    // 用户输入的问题
     @NotNull
     @NotBlank
     private String question;
 
-    @NotNull
+    // 模型接口，只支持ollama和python，必选一个
+    private String modelInterface;
+
+    // 是否启用Agent
     private Boolean enableAgent;
 
-    @NotNull
+    // 是否启用自定义Agent
     private Boolean enableCustomAgent;
 
+    // 是否启用Live2D表情
     private List<String> emotions;
+
+    // 模型聊天的温度
+    private Double temperature;
+
+    // 三种模型的名字设置
+    private String chatModelName;
+    private String embeddingModelName;
+    private String agentModelName;
 }
