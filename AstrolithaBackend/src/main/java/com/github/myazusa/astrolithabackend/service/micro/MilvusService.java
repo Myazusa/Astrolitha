@@ -24,13 +24,11 @@ import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -48,7 +46,7 @@ public class MilvusService {
      * 应该在milvusClientV2的Bean就定义好
      */
     @Deprecated
-    public void InitDatabase(){
+    public void initDatabase(){
         if (!serviceClientIsAvailable()) {
             return;
         }
@@ -57,7 +55,7 @@ public class MilvusService {
                 .build());
     }
 
-    public void SelectDatabase(String databaseName){
+    public void selectDatabase(String databaseName){
         if (!serviceClientIsAvailable()) {
             return;
         }
@@ -68,7 +66,7 @@ public class MilvusService {
         }
     }
 
-    public Boolean InitCollectionSchema(){
+    public Boolean initCollectionSchema(){
         // 如果有这表就不创建
         if (getCollectionState("default_collection")){
             return true;
@@ -138,7 +136,7 @@ public class MilvusService {
     }
 
     @Deprecated
-    public void InsertToSchema(String collectionName,String json){
+    public void insertToSchema(String collectionName, String json){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
@@ -156,7 +154,7 @@ public class MilvusService {
      * @param collectionName 插入哪个表
      * @param records 要插入的记录，请使用项目中JsonUtils来构造记录
      */
-    public void InsertToSchema(String collectionName,List<JsonObject> records){
+    public void insertToSchema(String collectionName, List<JsonObject> records){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
@@ -168,18 +166,18 @@ public class MilvusService {
         log.info("插入成功：{}",insertResp.toString());
     }
 
-    public void DeleteSchemaEntity(String collectionName,String metaData){
+    public void deleteSchemaEntity(String collectionName,String fileName){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         milvusClientV2.delete(DeleteReq.builder()
                 .collectionName(collectionName)
-                .filter("meta in ['" + metaData + "']")
+                .filter("name in ['" + fileName + "']")
                 .build());
     }
 
     @Async
-    public CompletableFuture<List<RagChunk>> ANNSelectSchema(String collectionName, FloatVec queryVector){
+    public CompletableFuture<List<RagChunk>> annSelectSchema(String collectionName, FloatVec queryVector){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
@@ -206,7 +204,7 @@ public class MilvusService {
     }
 
     @Async
-    public CompletableFuture<QueryIterator> PagingSelectSchema(String collectionName){
+    public CompletableFuture<QueryIterator> pagingSelectSchema(String collectionName){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
@@ -221,7 +219,7 @@ public class MilvusService {
 
     @Deprecated
     @Async
-    public CompletableFuture<List<List<SearchResp.SearchResult>>> ANNSelectSchema(String collectionName, List<BaseVector> queryVector){
+    public CompletableFuture<List<List<SearchResp.SearchResult>>> annSelectSchema(String collectionName, List<BaseVector> queryVector){
         if (!getCollectionState("default_collection")){
             throw new VectorDatabaseAccessException("不存在的集合");
         }

@@ -126,4 +126,23 @@ public class RagFileExplorerService {
         Path filePath = ragDir.resolve(cleanFilename).normalize();
         return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
+
+    public boolean deleteFile(String filename) {
+        String safeName = StringUtils.cleanPath(filename);
+
+        if (safeName.contains("..")) {
+            throw new FileOperationException("非法的文件名，禁止包含路径穿越符号");
+        }
+
+        Path path = ragDir.resolve(safeName).normalize();
+        if (!Files.exists(path)) {
+            return true;
+        }
+        try {
+            Files.delete(path);
+            return true;
+        } catch (IOException e) {
+            throw new FileOperationException("删除文件失败: " + e.getMessage());
+        }
+    }
 }

@@ -6,7 +6,6 @@ import com.github.myazusa.astrolithabackend.model.RagChunk;
 import com.github.myazusa.astrolithabackend.service.micro.MilvusService;
 import com.github.myazusa.astrolithabackend.service.micro.OllamaService;
 import io.milvus.v2.service.vector.request.data.FloatVec;
-import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.embedding.Embedding;
 import org.springframework.stereotype.Service;
@@ -45,9 +44,9 @@ public class QueryVDBCompositionService {
             throw new UnknownException("文件转换失败，向量组为空");
         }
         List<String> entities = new ArrayList<>();
-        if (milvusService.InitCollectionSchema()){
-            milvusService.SelectDatabase("user_vector_database");
-            CompletableFuture<List<RagChunk>> future2 = milvusService.ANNSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
+        if (milvusService.initCollectionSchema()){
+            milvusService.selectDatabase("user_vector_database");
+            CompletableFuture<List<RagChunk>> future2 = milvusService.annSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
 
             try {
                 List<RagChunk> lists = future2.get();
