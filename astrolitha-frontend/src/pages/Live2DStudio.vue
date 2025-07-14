@@ -9,6 +9,7 @@ import {useSideButtonStateStore, useTalkBubbleStore, useUserTalkBubbleStore} fro
 import Live2DStudioRightTopSide from "@/components/live2d-studio/Live2DStudioRightTopSide.vue";
 import Live2DStudioTalkBubble from "@/components/live2d-studio/Live2DStudioTalkBubble.vue";
 import Live2DStudioUserTalkBuble from "@/components/live2d-studio/Live2DStudioUserTalkBuble.vue";
+import Live2DStudioBottomChat from "@/components/live2d-studio/Live2DStudioBottomChat.vue";
 
 const sideButtonStateStore = useSideButtonStateStore();
 
@@ -34,6 +35,7 @@ const userTalkBubbleStore = useUserTalkBubbleStore();
     <Live2DStudioActionDialog />
     <Live2DStudioOptionDialog />
     <Live2DStudioRadioDialog />
+    <Live2DStudioBottomChat />
   </div>
 </template>
 

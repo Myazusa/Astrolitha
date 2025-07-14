@@ -6,9 +6,9 @@ const routes: RouteRecordRaw[] = [
         component: ()=>import("@/App.vue"),
         children:[
             {
-                path:'/',
-                name: 'UserLogin',
-                component: ()=>import("@/pages/UserLogin.vue"),
+                path: '/',
+                name: 'Live2DStudio',
+                component: ()=>import("@/pages/Live2DStudio.vue"),
             }
         ]
     },
@@ -45,9 +45,9 @@ const routes: RouteRecordRaw[] = [
         ]
     },
     {
-        path: '/l2d',
-        name: 'Live2DStudio',
-        component: ()=>import("@/pages/Live2DStudio.vue"),
+        path:'/login',
+        name: 'UserLogin',
+        component: ()=>import("@/pages/UserLogin.vue"),
     }
 ]
 
