@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import {Hide,Microphone} from '@element-plus/icons-vue'
+import {Hide,Microphone,ChatDotRound} from '@element-plus/icons-vue'
 import {ElButton, ElMessage} from "element-plus";
 import {
   useRecorderStore,
@@ -49,12 +49,12 @@ watch(() => recorderStore.isRecording, async (val) => {
       }
     }
 )
-// const sayHello = () => {
-//   talkBubbleStore.showBubble('测试，这是一个渐入渐出的气泡',2500)
-// }
-// const sayMyHello = () => {
-//   userTalkBubbleStore.showBubble('测试，这是一个用户渐入渐出的气泡',2500)
-// }
+const sayHello = () => {
+  talkBubbleStore.showBubble('测试，这是一个渐入渐出的气泡',2500)
+}
+const sayMyHello = () => {
+  userTalkBubbleStore.showBubble('测试，这是一个用户渐入渐出的气泡',2500)
+}
 </script>
 
 <template>
@@ -66,11 +66,11 @@ watch(() => recorderStore.isRecording, async (val) => {
 <!--      <el-button class="tool-btn" @click="sayMyHello"><el-icon><ChatDotRound /></el-icon></el-button>-->
       <el-button class="tool-btn" @click="handleLogin">
         <el-icon>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="var(--theme-color-on-primary)" viewBox="0 0 24 24" id="Login--Streamline-Sharp-Material" height="24" width="24">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#b3b3b3" viewBox="0 0 24 24" id="Login--Streamline-Sharp-Material" height="24" width="24">
             <desc>
               Login Streamline Icon: https://streamlinehq.com
             </desc>
-            <path fill="var(--theme-color-on-primary)" d="M12.025 21v-1.5H19.5V4.5H12.025V3H21v18H12.025Zm-1.375 -4.625 -1.075 -1.075 2.55 -2.55H3v-1.5h9.075l-2.55 -2.55 1.075 -1.075 4.4 4.4 -4.35 4.35Z" stroke-width="0.5"></path>
+            <path fill="#b3b3b3" d="M12.025 21v-1.5H19.5V4.5H12.025V3H21v18H12.025Zm-1.375 -4.625 -1.075 -1.075 2.55 -2.55H3v-1.5h9.075l-2.55 -2.55 1.075 -1.075 4.4 4.4 -4.35 4.35Z" stroke-width="0.5"></path>
           </svg>
         </el-icon>
       </el-button>
@@ -100,24 +100,39 @@ watch(() => recorderStore.isRecording, async (val) => {
   height: 40%;
   aspect-ratio: 1 / 1;
   border-radius: 1rem;
-  background: rgba(64, 64, 64, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(241, 241, 241, 0.9);
+  border: 0.1rem solid #bababa;
   color: var(--theme-color-on-primary);
   transition: all 0.3s ease;
-  border: 0.1rem solid rgba(255, 255, 255, 0.1);
+}
+.tool-btn:hover{
+  background-color: rgba(227, 227, 227, 0.9);
+}
+.el-icon{
+  color: #b3b3b3;
+}
+.tool-btn:hover .el-icon{
+  color: #ff76e4;
+}
+.tool-btn:hover svg path{
+  fill: #ff76e4;
 }
 .tool-btn.active {
   width: 40%;
   height: 40%;
   aspect-ratio: 1 / 1;
   border-radius: 1rem;
-  background: rgba(46, 46, 46, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(227, 227, 227, 0.9);
   color: var(--theme-color-on-primary);
   transition: all 0.3s ease;
-  border: 0.1rem solid rgba(255, 255, 255, 0.1);
+  border: 0.1rem solid #bababa;
+}
+
+.tool-btn.active .el-icon{
+  color: #ff76e4;
+}
+.tool-btn.active svg path{
+  fill: #ff76e4;
 }
 :deep(.el-button){
   margin: 0;
