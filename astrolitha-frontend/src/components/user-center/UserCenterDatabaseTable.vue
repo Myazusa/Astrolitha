@@ -156,8 +156,8 @@ const handleParseFile = async (file: RagFile) => {
     <div>此操作将同时删除：上传的文件、向量数据库内已解析的对应条目</div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleRenameCancel">取消</el-button>
-        <el-button type="primary" @click="handleRenameConfirm">
+        <el-button @click="handleRemoveCancel">取消</el-button>
+        <el-button type="primary" @click="handleRemoveFileConfirm">
           确认
         </el-button>
       </span>
