@@ -179,7 +179,7 @@ services:
       - ES_JAVA_OPTS=-Xms1g -Xmx2g
 
   astrolitha-backend:
-    image: myadzusa/astrolitha-backend:v0.0.9-beta
+    image: myadzusa/astrolitha-backend:v1.0.0-beta
     container_name: astrolitha-backend
     cap_add:
       - SYS_ADMIN
@@ -194,7 +194,7 @@ services:
       - ./volumes/astrolitha/uploads:/app/uploads
       - ./volumes/astrolitha/application.yml:/app/application.yml
   astrolitha-frontend:
-    image: myadzusa/astrolitha-frontend:v0.0.9-beta
+    image: myadzusa/astrolitha-frontend:v1.0.0-beta
     container_name: astrolitha-frontend
     ports:
       - "80:80"

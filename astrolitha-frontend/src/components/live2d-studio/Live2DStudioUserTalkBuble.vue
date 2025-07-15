@@ -35,6 +35,7 @@ const userTalkBubbleStore = useUserTalkBubbleStore();
   text-wrap: auto;
   word-break: break-word;
   white-space: normal;
+  color: #9a4581;
   overflow: auto;
   z-index: 1000;
   font-size: 1rem;

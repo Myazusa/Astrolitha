@@ -36,7 +36,6 @@ const handleRenameConfirm = () => {
   userCenterDatabaseStore.renameFile(currentFile.value, newFileName.value)
   currentFile.value = null
   renameDialogVisible.value = false
-  userCenterDatabaseStore.initTable()
 }
 const handleRenameCancel = () => {
   renameDialogVisible.value = false
@@ -48,13 +47,13 @@ const currentRemoveFile = ref<RagFile | null>(null)
 const removeDialogVisible = ref(false)
 const handleRemoveFile = (file: RagFile) => {
   currentRemoveFile.value = file
+  removeDialogVisible.value = true
 }
 const handleRemoveFileConfirm = () => {
   if (!currentRemoveFile.value) return
   userCenterDatabaseStore.removeFile(currentRemoveFile.value)
   removeDialogVisible.value = false
   currentRemoveFile.value = null
-  userCenterDatabaseStore.initTable()
 }
 const handleRemoveCancel = () => {
   removeDialogVisible.value = false
@@ -95,34 +94,36 @@ const handleParseFile = async (file: RagFile) => {
     </el-table-column>
     <el-table-column
       label="操作"
-      :min-width="100"
+      :min-width="120"
     >
       <template #default="{ row }">
-        <el-button
-          type="primary"
-          size="small"
-          :disabled="row.isParsed"
-          @click="handleParseFile(row)"
-          round
-        >
-          解析
-        </el-button>
-        <el-button
-          type="info"
-          size="small"
-          @click="handleRename(row)"
-          round
-        >
-          重命名
-        </el-button>
-        <el-button
-            type="danger"
-            size="small"
-            @click="handleRemoveFile(row)"
-            round
-        >
-          删除
-        </el-button>
+        <div  style="display: flex;flex-direction: row;flex-wrap: wrap;align-content: center;justify-content: center">
+          <el-button
+              type="primary"
+              size="small"
+              :disabled="row.isParsed"
+              @click="handleParseFile(row)"
+              round
+          >
+            解析
+          </el-button>
+          <el-button
+              type="info"
+              size="small"
+              @click="handleRename(row)"
+              round
+          >
+            重命名
+          </el-button>
+          <el-button
+              type="danger"
+              size="small"
+              @click="handleRemoveFile(row)"
+              round
+          >
+            删除
+          </el-button>
+        </div>
       </template>
     </el-table-column>
   </el-table>
@@ -152,8 +153,12 @@ const handleParseFile = async (file: RagFile) => {
       width="25rem"
       :close-on-click-modal="false"
   >
-    <div>确认删除么？</div>
-    <div>此操作将同时删除：上传的文件、向量数据库内已解析的对应条目</div>
+    <div class="dialog-text">
+      <div style="font-size: 1.15rem;margin-top: 1rem;">确认删除么？</div>
+      <div style="font-size: 0.9rem;color: #ff9e9e;margin-top: 0.5rem;">此操作将同时删除</div>
+      <div style="font-size: 0.9rem;color: #ff9e9e">- 上传的文件 -</div>
+      <div style="font-size: 0.9rem;color: #ff9e9e">- 向量数据库内已解析的对应条目 -</div>
+    </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleRemoveCancel">取消</el-button>
@@ -166,6 +171,13 @@ const handleParseFile = async (file: RagFile) => {
 </template>
 
 <style scoped>
+.dialog-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 :deep(.el-table) {
   background-color: var(--theme-color-surface-container);
   color: var(--theme-color-on-primary);
@@ -219,7 +231,7 @@ const handleParseFile = async (file: RagFile) => {
 }
 
 :deep(.el-button) {
-  margin: 0 0.3rem;
+  margin: 0.2rem 0.3rem;
 }
 
 .dialog-footer {
@@ -238,7 +250,9 @@ const handleParseFile = async (file: RagFile) => {
 }
 
 :deep(.el-input__wrapper) {
+  margin-top: 1rem;
   background-color: var(--theme-color-primary);
+  border-radius: 0.5rem !important;
 }
 
 :deep(.el-input__inner) {

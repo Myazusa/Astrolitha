@@ -1,6 +1,7 @@
 ﻿import {defineStore} from "pinia";
 
 export const useApiStore = defineStore('ApiStore',()=>{
+    //const baseAddress:string = 'http://localhost:8080'
     const baseAddress:string = ''
     const apiUrl:string = '/api'
     const askQuestionApi:string = '/ask'
@@ -18,7 +19,7 @@ export const useApiStore = defineStore('ApiStore',()=>{
     const removeFileApi:string = '/remove_file'
 
     const getRemoveFileApi = () => {
-        return baseAddress + apiUrl + renameFileApi
+        return baseAddress + apiUrl + removeFileApi
     }
     const getEnableToolApi = () => {
         return baseAddress + apiUrl + enableToolApi

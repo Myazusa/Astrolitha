@@ -47,6 +47,7 @@ public class AgentBuilderService {
         }
 
         public AgentBuilder withKnowledgeBaseAgent(){
+            // todo:由于懒加载的原因，第一次加载这里不一定能够有queryVDBCompositionService对象，因此这个tool可能构造失败
             ToolCallback[] toolCallbacks = ToolCallbacks.from(new KnowledgeBaseAgent(queryVDBCompositionService));
             this.addAgent(toolCallbacks);
             return this;

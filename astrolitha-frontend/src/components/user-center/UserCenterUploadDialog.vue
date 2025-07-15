@@ -4,6 +4,7 @@ import {ElMessage, UploadProps, UploadFile, UploadRawFile} from 'element-plus'
 import axios from 'axios'
 import {Upload} from '@element-plus/icons-vue'
 import {useApiStore} from "@/store/ApiStore";
+import {useUserCenterDatabaseStore} from "@/store/UserCenterStore";
 
 const dialogVisible = ref(false)
 const uploadRef = ref()
@@ -73,6 +74,7 @@ const handleUpload = async () => {
       }
     })
     ElMessage.success('上传成功')
+    useUserCenterDatabaseStore().initTable()
     handleClose()
   } catch (error) {
     ElMessage.error('上传失败')

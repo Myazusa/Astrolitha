@@ -22,12 +22,18 @@ const handleButtonClick = (e: MouseEvent) => {
 
 // 发送消息逻辑
 const sendMessage = async () => {
+  if (useRecorderStore().waitingResponse){
+    ElMessage.warning("正在等待模型回复")
+    return
+  }
   if (!message.value.trim()) {
     ElMessage.warning("请输入一些内容")
     return
   }
   // todo: 换成后端调用
   console.log('发送消息:', message.value)
+  expanded.value = false
+
   useRecorderStore().waitingResponse = true
   useUserTalkBubbleStore().showBubble(message.value,5000)
 
@@ -49,9 +55,7 @@ const sendMessage = async () => {
   } else {
     ElMessage.error('大模型的回复为空');
   }
-
   message.value = ''
-  expanded.value = false
   useRecorderStore().waitingResponse = false
 }
 

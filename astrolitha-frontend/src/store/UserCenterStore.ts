@@ -209,7 +209,7 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
             .then(res => {
                 if (res.status === 200) {
                     ElMessage.success('修改成功')
-
+                    initTable()
                 }else {
                     ElMessage.error('修改失败'+res.status)
                 }
@@ -229,7 +229,7 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
             .then(res => {
                 if (res.status === 200) {
                     ElMessage.success('删除成功')
-
+                    initTable()
                 }else {
                     ElMessage.error('删除失败'+res.status)
                 }
