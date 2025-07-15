@@ -5,7 +5,7 @@ import { useUserCenterDatabaseStore } from '@/store/UserCenterStore'
 import type { RagFile } from '@/interface/RagFile'
 import axios from "axios";
 import {useApiStore} from "@/store/ApiStore";
-
+import { ElLoading } from 'element-plus'
 const userCenterDatabaseStore = useUserCenterDatabaseStore()
 const files = userCenterDatabaseStore.getFilesRef()
 const apiStore = useApiStore();
@@ -21,6 +21,7 @@ onMounted(async () => {
 const renameDialogVisible = ref(false)
 const currentFile = ref<RagFile | null>(null)
 const newFileName = ref('')
+
 const handleRename = (file: RagFile) => {
   currentFile.value = file
   newFileName.value = file.fileName
@@ -33,12 +34,40 @@ const handleRenameConfirm = () => {
     return
   }
   userCenterDatabaseStore.renameFile(currentFile.value, newFileName.value)
+  currentFile.value = null
   renameDialogVisible.value = false
+  userCenterDatabaseStore.initTable()
 }
 const handleRenameCancel = () => {
   renameDialogVisible.value = false
   currentFile.value = null
   newFileName.value = ''
+}
+
+const currentRemoveFile = ref<RagFile | null>(null)
+const removeDialogVisible = ref(false)
+const handleRemoveFile = (file: RagFile) => {
+  currentRemoveFile.value = file
+}
+const handleRemoveFileConfirm = () => {
+  if (!currentRemoveFile.value) return
+  userCenterDatabaseStore.removeFile(currentRemoveFile.value)
+  removeDialogVisible.value = false
+  currentRemoveFile.value = null
+  userCenterDatabaseStore.initTable()
+}
+const handleRemoveCancel = () => {
+  removeDialogVisible.value = false
+  currentRemoveFile.value = null
+}
+
+const handleParseFile = async (file: RagFile) => {
+  const loadingInstance = ElLoading.service({
+    lock: true,
+    text: '文件解析中...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+  await userCenterDatabaseStore.parseFile(file,loadingInstance)
 }
 </script>
 
@@ -73,7 +102,7 @@ const handleRenameCancel = () => {
           type="primary"
           size="small"
           :disabled="row.isParsed"
-          @click="userCenterDatabaseStore.parseFile(row)"
+          @click="handleParseFile(row)"
           round
         >
           解析
@@ -85,6 +114,14 @@ const handleRenameCancel = () => {
           round
         >
           重命名
+        </el-button>
+        <el-button
+            type="danger"
+            size="small"
+            @click="handleRemoveFile(row)"
+            round
+        >
+          删除
         </el-button>
       </template>
     </el-table-column>
@@ -100,6 +137,23 @@ const handleRenameCancel = () => {
       v-model="newFileName"
       placeholder="请输入新的文件名"
     />
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="handleRenameCancel">取消</el-button>
+        <el-button type="primary" @click="handleRenameConfirm">
+          确认
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+  <el-dialog
+      v-model="removeDialogVisible"
+      title="删除文件"
+      width="25rem"
+      :close-on-click-modal="false"
+  >
+    <div>确认删除么？</div>
+    <div>此操作将同时删除：上传的文件、向量数据库内已解析的对应条目</div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleRenameCancel">取消</el-button>

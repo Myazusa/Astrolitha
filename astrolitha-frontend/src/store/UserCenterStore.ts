@@ -1,4 +1,4 @@
-﻿import {ref, reactive} from 'vue'
+﻿import {ref, reactive, nextTick} from 'vue'
 import { User, Setting, Document, SwitchButton } from '@element-plus/icons-vue'
 import {defineStore} from "pinia";
 import {Message} from "@/interface/Message";
@@ -168,24 +168,31 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
         return files
     }
 
-    const parseFile = (file: RagFile) => {
+    const parseFile = async (file: RagFile, loadingInstance: any) => {
         const apiStore = useApiStore();
-        let data = {fileName:file.fileName}
-        axios.post(apiStore.getParsingApi(), data)
+        let data = {fileName: file.fileName}
+        await axios.post(apiStore.getParsingApi(), data)
             .then(res => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     ElMessage.success("解析完成")
                     file.isParsed = true
-                }else {
+                } else {
                     ElMessage.error("暫不支持該種文件" + res.status)
                 }
             })
             .catch(err => {
-                if(err.response.status === 500){
+                if (err.response.status === 500) {
                     ElMessage.error("解析失敗，不支持的文件")
-                }else {
+                } else {
                     ElMessage.error("解析失敗，網絡錯誤")
                 }
+
+            })
+            .finally(() => {
+                nextTick(() => {
+                    loadingInstance.close()
+                }).then(r => {
+                })
             })
     }
 
@@ -213,12 +220,32 @@ export const useUserCenterDatabaseStore = defineStore('UserCenterDatabaseStore',
         file.fileName = newName
     }
 
+    const removeFile = (file: RagFile) => {
+        if (!file){
+            return
+        }
+        let data = {fileName: file.fileName}
+        axios.post(useApiStore().getRemoveFileApi(),data)
+            .then(res => {
+                if (res.status === 200) {
+                    ElMessage.success('删除成功')
+
+                }else {
+                    ElMessage.error('删除失败'+res.status)
+                }
+            })
+            .catch(err => {
+                ElMessage.error("删除失败：" + err)
+            })
+    }
+
     return {
         getFilesRef,
         parseFile,
         renameFile,
         initTable,
-        reflashFiles
+        reflashFiles,
+        removeFile
     }
 })
 
