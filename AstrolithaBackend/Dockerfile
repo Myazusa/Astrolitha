@@ -2,7 +2,7 @@ FROM openjdk:24
 
 WORKDIR /app
 
-COPY target/AstrolithaBackend-0.0.9-beta.jar ./AstrolithaBackend.jar
+COPY target/AstrolithaBackend-1.0.0-beta.jar ./AstrolithaBackend.jar
 
 EXPOSE 8080
 

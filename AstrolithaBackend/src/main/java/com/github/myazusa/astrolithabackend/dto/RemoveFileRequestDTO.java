@@ -10,5 +10,5 @@ import javax.validation.constraints.NotNull;
 public class RemoveFileRequestDTO {
     @NotBlank
     @NotNull
-    String filename;
+    String fileName;
 }

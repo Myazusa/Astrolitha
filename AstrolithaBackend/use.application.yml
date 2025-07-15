@@ -10,17 +10,17 @@ spring:
     name: AstrolithaBackend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/default?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql:3306/default?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     hikari:
       initialization-fail-timeout: -1
   elasticsearch:
-    uris: http://localhost:9200
+    uris: http://elasticsearch:9200
   ai:
     ollama:
-      base-url: http://localhost:11434
-      sub-url: http://localhost:11435
+      base-url: http://ollama-chat:11434
+      sub-url: http://ollama-embedding:11434
       chat:
         model: deepseek-r1:7b
       agent:
@@ -54,18 +54,18 @@ app:
 ollama:
   warmup:
     - name: llama3.1:8b
-      url: http://localhost:11434/api/generate
+      url: http://ollama-chat:11434/api/generate
       prompt: ping
     - name: bge-m3:latest
-      url: http://localhost:11435/api/embeddings
+      url: http://ollama-embedding:11434/api/embeddings
       prompt: ping
 milvus:
-  uri: http://localhost:19530
+  uri: http://standalone:19530
   token: root:Milvus
   database: user_vector_database
 
 microservice:
   gpt-sovits:
-    url: http://localhost:9880/tts
+    url: http://gpt-sovits:9880/tts
   whisper:
-    url: http://localhost:10350
+    url: http://whisper:10350

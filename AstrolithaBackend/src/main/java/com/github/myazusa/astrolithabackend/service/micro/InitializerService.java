@@ -2,7 +2,6 @@ package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.service.RagFilesElasticsearchCompositionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

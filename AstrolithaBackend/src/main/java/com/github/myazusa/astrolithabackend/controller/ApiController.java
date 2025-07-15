@@ -131,7 +131,7 @@ public class ApiController {
 
     @PostMapping("/remove_file")
     public ResponseEntity<InformationResponseDTO> removeFile(@RequestBody RemoveFileRequestDTO removeFileRequestDTO){
-        ragFilesOperationalCompositionService.removeFile(removeFileRequestDTO.getFilename());
+        ragFilesOperationalCompositionService.removeFile(removeFileRequestDTO.getFileName());
         return ResponseEntity.status(HttpStatus.OK).body(new InformationResponseDTO().setState("success").setMessage("移除成功"));
     }
     /**

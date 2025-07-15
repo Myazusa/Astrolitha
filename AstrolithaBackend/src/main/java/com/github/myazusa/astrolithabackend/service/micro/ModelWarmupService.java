@@ -21,7 +21,7 @@ public class ModelWarmupService {
     }
 
     public void warmupOnStartup() {
-        log.info("spring服务器启动完成，开始进行模型预热");
+        log.info("spring服务器初始化中，开始进行模型预热");
         pingAllModels();
     }
 

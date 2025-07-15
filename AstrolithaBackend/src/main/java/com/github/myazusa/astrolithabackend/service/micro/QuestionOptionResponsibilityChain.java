@@ -4,9 +4,7 @@ import com.github.myazusa.astrolithabackend.common.builder.PromptConstructionBui
 import com.github.myazusa.astrolithabackend.dto.QuestionRequestDTO;
 import com.github.myazusa.astrolithabackend.service.agent.AgentBuilderService;
 import com.github.myazusa.astrolithabackend.service.agent.CustomAgentBuilderService;
-import com.github.myazusa.astrolithabackend.service.chain.ModelInterfaceHandler;
-import com.github.myazusa.astrolithabackend.service.chain.ModelOptionHandler;
-import com.github.myazusa.astrolithabackend.service.chain.QuestionOptionHandler;
+import com.github.myazusa.astrolithabackend.service.chain.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,8 +19,17 @@ public class QuestionOptionResponsibilityChain {
     private final QuestionOptionHandler chain;
 
     @Autowired
-    public QuestionOptionResponsibilityChain(ModelInterfaceHandler modelInterfaceHandler, ModelOptionHandler modelOptionHandler) {
+    public QuestionOptionResponsibilityChain(ModelInterfaceHandler modelInterfaceHandler,
+                                             ModelOptionHandler modelOptionHandler,
+                                             ModelNameHandler modelNameHandler,
+                                             ModelAgentHandler modelAgentHandler,
+                                             EmotionHandler emotionHandler,
+                                             PromptSettingHandler promptSettingHandler) {
         modelInterfaceHandler.setNext(modelOptionHandler);
+        modelOptionHandler.setNext(modelNameHandler);
+        modelNameHandler.setNext(modelAgentHandler);
+        modelAgentHandler.setNext(emotionHandler);
+        emotionHandler.setNext(promptSettingHandler);
         this.chain = modelInterfaceHandler;
     }
 
