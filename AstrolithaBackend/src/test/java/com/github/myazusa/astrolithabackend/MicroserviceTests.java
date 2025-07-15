@@ -5,6 +5,7 @@ import com.github.myazusa.astrolithabackend.common.util.TextParsingUtils;
 import com.github.myazusa.astrolithabackend.dto.GPTSoVITSRequestDTO;
 import com.github.myazusa.astrolithabackend.service.ParsingFileCompositionService;
 import com.github.myazusa.astrolithabackend.service.QueryVDBCompositionService;
+import com.github.myazusa.astrolithabackend.service.RagFilesOperationalCompositionService;
 import com.github.myazusa.astrolithabackend.service.micro.*;
 import com.google.gson.JsonObject;
 import io.milvus.orm.iterator.QueryIterator;
@@ -60,6 +61,9 @@ public class MicroserviceTests {
     @Autowired
     private ParsingFileCompositionService parsingFileCompositionService;
 
+    @Autowired
+    private RagFilesOperationalCompositionService ragFilesOperationalCompositionService;
+
     // 测试从语音识别文本。成功
     @Test
     void testWhisperService(){
@@ -96,6 +100,12 @@ public class MicroserviceTests {
         for (String file : ragFileExplorerService.listAllFiles()) {
             log.info("文件：{}", file);
         }
+    }
+
+    // 删除文件。成功
+    @Test
+    void testRemoveFile(){
+        ragFilesOperationalCompositionService.removeFile("2025年高校毕业生稳就业相关政策清单.pdf");
     }
 
     // 解析文件。成功
