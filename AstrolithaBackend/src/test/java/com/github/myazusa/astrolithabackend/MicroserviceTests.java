@@ -156,9 +156,9 @@ public class MicroserviceTests {
         // 无论什么操作前，都得先初始化表，因为里面包含检测表存不存在，存在就不初始化，不存在才初始化
         if (milvusService.initCollectionSchema()) {
             // 选择此表
-            milvusService.selectDatabase("user_vector_database");
+            milvusService.selectDatabase();
             List<JsonObject> records = JsonUtils.getJsonObjectList(embeddings, chunks, new File(path).getName(),"");
-            milvusService.insertToSchema("default_collection",records);
+            milvusService.insertToSchema(records);
         }
     }
 
@@ -179,8 +179,8 @@ public class MicroserviceTests {
     // 列出所有记录。成功
     @Test
     void testPagingQuery(){
-        milvusService.selectDatabase("user_vector_database");
-        CompletableFuture<QueryIterator> future = milvusService.pagingSelectSchema("default_collection");
+        milvusService.selectDatabase();
+        CompletableFuture<QueryIterator> future = milvusService.pagingSelectSchema();
         try {
             while (true) {
                 QueryIterator queryIterator = future.get();

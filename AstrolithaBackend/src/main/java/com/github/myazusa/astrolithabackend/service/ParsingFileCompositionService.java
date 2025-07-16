@@ -73,9 +73,9 @@ public class ParsingFileCompositionService {
         // 无论什么操作前，都得先初始化表，因为里面包含检测表存不存在，存在就不初始化，不存在才初始化
         if (milvusService.initCollectionSchema()) {
             // 不允许没有该数据库
-            milvusService.selectDatabase("user_vector_database");
+            milvusService.selectDatabase();
             List<JsonObject> records = JsonUtils.getJsonObjectList(embeddings, summarizedChunks, new File(path).getName(),"");
-            milvusService.insertToSchema("default_collection",records);
+            milvusService.insertToSchema(records);
         }
     }
 }

@@ -45,8 +45,8 @@ public class QueryVDBCompositionService {
         }
         List<String> entities = new ArrayList<>();
         if (milvusService.initCollectionSchema()){
-            milvusService.selectDatabase("user_vector_database");
-            CompletableFuture<List<RagChunk>> future2 = milvusService.annSelectSchema("default_collection", new FloatVec(embeddings.getFirst().getOutput()));
+            milvusService.selectDatabase();
+            CompletableFuture<List<RagChunk>> future2 = milvusService.annSelectSchema(new FloatVec(embeddings.getFirst().getOutput()));
 
             try {
                 List<RagChunk> lists = future2.get();

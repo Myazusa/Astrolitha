@@ -24,6 +24,7 @@ import io.milvus.v2.service.vector.response.SearchResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,13 @@ import java.util.concurrent.CompletableFuture;
 public class MilvusService {
     private final ObjectProvider<MilvusClientV2> milvusClientV2ObjectProvider;
     private MilvusClientV2 milvusClientV2;
-    private static final float THRESHOLD = 0.35f;
+    @Value("${milvus.threshold}")
+    private float threshold;
+
+    @Value("${milvus.database}")
+    private String milvusDatabase;
+    @Value("${milvus.collection}")
+    private String milvusCollection;
 
     @Autowired
     public MilvusService(ObjectProvider<MilvusClientV2> milvusClientV2ObjectProvider) {
@@ -51,16 +58,16 @@ public class MilvusService {
             return;
         }
         milvusClientV2.createDatabase(CreateDatabaseReq.builder()
-                .databaseName("user_vector_database")
+                .databaseName(milvusDatabase)
                 .build());
     }
 
-    public void selectDatabase(String databaseName){
+    public void selectDatabase(){
         if (!serviceClientIsAvailable()) {
             return;
         }
         try {
-            milvusClientV2.useDatabase(databaseName);
+            milvusClientV2.useDatabase(milvusDatabase);
         } catch (InterruptedException e) {
             log.error("选择了不存在的数据库");
         }
@@ -68,7 +75,7 @@ public class MilvusService {
 
     public Boolean initCollectionSchema(){
         // 如果有这表就不创建
-        if (getCollectionState("default_collection")){
+        if (getCollectionState(milvusCollection)){
             return true;
         }
         // 创建列名和定义
@@ -116,14 +123,14 @@ public class MilvusService {
 
         // 创建集合
         CreateCollectionReq customizedSetupReq1 = CreateCollectionReq.builder()
-                .collectionName("default_collection")
+                .collectionName(milvusCollection)
                 .collectionSchema(schema)
                 .indexParams(indexParams)
                 .build();
         milvusClientV2.createCollection(customizedSetupReq1);
 
         // 返回是否创建成功
-        return getCollectionState("default_collection");
+        return getCollectionState(milvusCollection);
     }
 
     public Boolean getCollectionState(String collectionName){
@@ -136,14 +143,14 @@ public class MilvusService {
     }
 
     @Deprecated
-    public void insertToSchema(String collectionName, String json){
-        if (!getCollectionState("default_collection")){
+    public void insertToSchema(String json){
+        if (!getCollectionState(milvusCollection)){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         Gson gson = new Gson();
         List<JsonObject> data = List.of(gson.fromJson(json, JsonObject.class));
         InsertReq insertReq = InsertReq.builder()
-                .collectionName(collectionName)
+                .collectionName(milvusCollection)
                 .data(data)
                 .build();
         milvusClientV2.insert(insertReq);
@@ -151,38 +158,37 @@ public class MilvusService {
 
     /**
      * 插入记录方法
-     * @param collectionName 插入哪个表
      * @param records 要插入的记录，请使用项目中JsonUtils来构造记录
      */
-    public void insertToSchema(String collectionName, List<JsonObject> records){
-        if (!getCollectionState("default_collection")){
+    public void insertToSchema(List<JsonObject> records){
+        if (!getCollectionState(milvusCollection)){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         InsertReq insertReq = InsertReq.builder()
-                .collectionName(collectionName)
+                .collectionName(milvusCollection)
                 .data(records)
                 .build();
         InsertResp insertResp = milvusClientV2.insert(insertReq);
         log.info("插入成功：{}",insertResp.toString());
     }
 
-    public void deleteSchemaEntity(String collectionName,String fileName){
-        if (!getCollectionState("default_collection")){
+    public void deleteSchemaEntity(String fileName){
+        if (!getCollectionState(milvusCollection)){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         milvusClientV2.delete(DeleteReq.builder()
-                .collectionName(collectionName)
+                .collectionName(milvusCollection)
                 .filter("name in ['" + fileName + "']")
                 .build());
     }
 
     @Async
-    public CompletableFuture<List<RagChunk>> annSelectSchema(String collectionName, FloatVec queryVector){
-        if (!getCollectionState("default_collection")){
+    public CompletableFuture<List<RagChunk>> annSelectSchema(FloatVec queryVector){
+        if (!getCollectionState(milvusCollection)){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         SearchReq searchReq = SearchReq.builder()
-                .collectionName(collectionName)
+                .collectionName(milvusCollection)
                 .data(Collections.singletonList(queryVector))
                 .outputFields(Collections.singletonList("name"))
                 .outputFields(Collections.singletonList("content"))
@@ -196,7 +202,7 @@ public class MilvusService {
                     (String) fields.getOrDefault("name", ""),
                     searchResult.getScore()
             );
-        }).filter(chunk -> chunk.score() >= THRESHOLD) // 筛选
+        }).filter(chunk -> chunk.score() >= threshold) // 筛选
                 .sorted(Comparator.comparing(RagChunk::score).reversed()) //排序
                 .limit(5) // 限制数量
                 .toList();
@@ -204,12 +210,12 @@ public class MilvusService {
     }
 
     @Async
-    public CompletableFuture<QueryIterator> pagingSelectSchema(String collectionName){
-        if (!getCollectionState("default_collection")){
+    public CompletableFuture<QueryIterator> pagingSelectSchema(){
+        if (!getCollectionState(milvusCollection)){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         QueryIteratorReq queryIteratorReq = QueryIteratorReq.builder()
-                .collectionName(collectionName)
+                .collectionName(milvusCollection)
                 .batchSize(50L)
                 .outputFields(Collections.singletonList("name"))
                 .consistencyLevel(ConsistencyLevel.BOUNDED)
@@ -219,12 +225,12 @@ public class MilvusService {
 
     @Deprecated
     @Async
-    public CompletableFuture<List<List<SearchResp.SearchResult>>> annSelectSchema(String collectionName, List<BaseVector> queryVector){
-        if (!getCollectionState("default_collection")){
+    public CompletableFuture<List<List<SearchResp.SearchResult>>> annSelectSchema(List<BaseVector> queryVector){
+        if (!getCollectionState(milvusCollection)){
             throw new VectorDatabaseAccessException("不存在的集合");
         }
         SearchReq searchReq = SearchReq.builder()
-                .collectionName(collectionName)
+                .collectionName(milvusCollection)
                 .data(queryVector)
                 .topK(5)
                 .build();

@@ -50,7 +50,7 @@ public class RagFilesOperationalCompositionService {
             // 同时移除数据库里的东西就行了
             ragSqlService.deleteByFileName(fileName);
             // 删除VDB里面解析的东西
-            milvusService.deleteSchemaEntity("default_collection",fileName);
+            milvusService.deleteSchemaEntity(fileName);
         }
     }
 

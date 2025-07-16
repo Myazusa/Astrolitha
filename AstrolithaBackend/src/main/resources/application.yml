@@ -8,6 +8,10 @@ spring:
       max-request-size: 500MB
   application:
     name: AstrolithaBackend
+  sql:
+    init:
+      schema-locations: classpath:init.sql
+      mode: always
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/default?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
@@ -59,10 +63,13 @@ ollama:
     - name: bge-m3:latest
       url: http://localhost:11435/api/embeddings
       prompt: ping
+
 milvus:
   uri: http://localhost:19530
   token: root:Milvus
-  database: user_vector_database
+  database: default
+  collection: default_collection
+  threshold: 0.35
 
 microservice:
   gpt-sovits:
