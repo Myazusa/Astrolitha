@@ -2,7 +2,6 @@ package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.common.config.OllamaWarmupProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +20,6 @@ public class ModelWarmupService {
         this.warmupProperties = warmupProperties;
     }
 
-    @Async
     public void warmupOnStartup() {
         log.info("spring服务器初始化中，开始进行模型预热");
         pingAllModels();
@@ -32,25 +30,24 @@ public class ModelWarmupService {
     public void keepModelWarm() {
         pingAllModels();
     }
+
     private void pingAllModels() {
         List<OllamaWarmupProperties.Model> models = warmupProperties.getWarmup();
-
-        for (OllamaWarmupProperties.Model model : models) {
+        models.parallelStream().forEach(model -> {
             Map<String, Object> body = new HashMap<>();
             body.put("model", model.getName());
             body.put("prompt", model.getPrompt());
             body.put("stream", false);
             try {
-                pingModel(model,body);
+                pingModel(model, body); // 同步调用
                 log.info("模型保活成功：{}", model.getName());
             } catch (Exception e) {
                 log.info("模型保活失败：{}", e.getMessage());
             }
-        }
+        });
     }
-    // todo: 写完这里异步预热模型
-    @Async
-    public void pingModel(OllamaWarmupProperties.Model model,Map<String, Object> body){
-        restTemplate.postForObject(model.getUrl(), body, String.class);
+
+    public void pingModel(OllamaWarmupProperties.Model model, Map<String, Object> body){
+        String s = restTemplate.postForObject(model.getUrl(), body, String.class);
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Service
 public class InitializerService {
@@ -21,7 +23,9 @@ public class InitializerService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
-        modelWarmupService.warmupOnStartup();
-        ragFilesElasticsearchCompositionService.initElasticsearchDataOnStartup();
+        CompletableFuture<Void> warmupFuture = CompletableFuture.runAsync(modelWarmupService::warmupOnStartup);
+        CompletableFuture<Void> initFuture = CompletableFuture.runAsync(ragFilesElasticsearchCompositionService::initElasticsearchDataOnStartup);
+        // 等两个都完成
+        CompletableFuture.allOf(warmupFuture, initFuture).join();
     }
 }

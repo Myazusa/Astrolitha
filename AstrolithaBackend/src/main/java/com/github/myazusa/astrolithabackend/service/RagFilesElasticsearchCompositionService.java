@@ -49,7 +49,7 @@ public class RagFilesElasticsearchCompositionService {
     }
 
     public void initElasticsearchDataOnStartup() {
-        log.info("spring服务器启动完成，开始进行数据elasticsearch同步");
+        log.info("开始进行数据elasticsearch同步");
         syncRagFiles();
     }
 

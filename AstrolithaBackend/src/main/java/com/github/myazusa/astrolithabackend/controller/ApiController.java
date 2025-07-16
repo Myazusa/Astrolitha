@@ -42,7 +42,6 @@ public class ApiController {
         this.customAgentCompositionService = customAgentCompositionService;
     }
 
-
     /**
      * 测试成功
      * 提问接口

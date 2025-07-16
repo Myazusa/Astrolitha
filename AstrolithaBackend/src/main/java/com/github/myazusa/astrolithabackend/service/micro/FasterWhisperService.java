@@ -37,7 +37,6 @@ public class FasterWhisperService {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = whisperUrl + "/transcribe";
-
         ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
