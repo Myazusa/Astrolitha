@@ -2,6 +2,7 @@ package com.github.myazusa.astrolithabackend.service.micro;
 
 import com.github.myazusa.astrolithabackend.common.config.OllamaWarmupProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,7 @@ public class ModelWarmupService {
         this.warmupProperties = warmupProperties;
     }
 
+    @Async
     public void warmupOnStartup() {
         log.info("spring服务器初始化中，开始进行模型预热");
         pingAllModels();
@@ -38,13 +40,17 @@ public class ModelWarmupService {
             body.put("model", model.getName());
             body.put("prompt", model.getPrompt());
             body.put("stream", false);
-
             try {
-                restTemplate.postForObject(model.getUrl(), body, String.class);
+                pingModel(model,body);
                 log.info("模型保活成功：{}", model.getName());
             } catch (Exception e) {
                 log.info("模型保活失败：{}", e.getMessage());
             }
         }
+    }
+    // todo: 写完这里异步预热模型
+    @Async
+    public void pingModel(OllamaWarmupProperties.Model model,Map<String, Object> body){
+        restTemplate.postForObject(model.getUrl(), body, String.class);
     }
 }

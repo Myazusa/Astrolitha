@@ -22,6 +22,6 @@ public class InitializerService {
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
         modelWarmupService.warmupOnStartup();
-        //ragFilesElasticsearchCompositionService.initElasticsearchDataOnStartup();
+        ragFilesElasticsearchCompositionService.initElasticsearchDataOnStartup();
     }
 }

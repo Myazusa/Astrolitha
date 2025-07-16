@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.HttpProtocol;
 import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
+
 @Configuration
 public class MicroserviceConfig {
     @Value("${microservice.gpt-sovits.url}")
@@ -17,6 +19,7 @@ public class MicroserviceConfig {
     public WebClient gptSoVITSClient(){
         HttpClient httpClient = HttpClient.create()
                 .protocol(HttpProtocol.HTTP11)
+                .responseTimeout(Duration.ofSeconds(360))
                 .wiretap(true);
         return WebClient.builder()
                 .baseUrl(gptSoVITSUrl)
