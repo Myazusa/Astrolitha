@@ -168,7 +168,7 @@ services:
       - "minio"
 
   elasticsearch:
-    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/elasticsearch:8.18.1
+    image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/elasticsearch-ch:9.0.3
     container_name: elasticsearch
     ports:
       - "9200:9200"
