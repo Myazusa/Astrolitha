@@ -2,7 +2,12 @@
 import  {Promotion,ChatRound} from '@element-plus/icons-vue'
 import {onBeforeUnmount, onMounted, ref} from 'vue'
 import {ElMessage} from "element-plus";
-import {useModelStateStore, useModelStore, useRecorderStore, useUserTalkBubbleStore} from "@/store/Live2DStudioStore";
+import {
+  useModelStore,
+  useRecorderStore,
+  useThinkingStore,
+  useUserTalkBubbleStore
+} from "@/store/Live2DStudioStore";
 import {sendQuestion} from "@/assets/script/SendQuestion";
 import {extractAndRemoveEPlaceholders} from "@/assets/script/Utils";
 import {voiceGenerator} from "@/assets/script/VoiceGenerator";
@@ -30,16 +35,17 @@ const sendMessage = async () => {
     ElMessage.warning("请输入一些内容")
     return
   }
-  // todo: 换成后端调用
-  console.log('发送消息:', message.value)
   expanded.value = false
 
   useRecorderStore().waitingResponse = true
   useUserTalkBubbleStore().showBubble(message.value,5000)
 
+  useThinkingStore().getThinkingProgressVisibleRef().value = true
+  useThinkingStore().thinking = true
   const answer = await sendQuestion(message.value);
   const audioContext = new AudioContext();
   console.log("获得得回答是：" + answer)
+
   if (answer.length > 0) {
     // 处理回答中的控制符
     const result = extractAndRemoveEPlaceholders(answer);
@@ -49,10 +55,13 @@ const sendMessage = async () => {
       useModelStore().getModel()?.expression(result.placeholders[0])
     }
     // 文字转语音
+    useThinkingStore().speechSynthesis = true
     const arraybuffer = await voiceGenerator(result.cleaned);
     // 控制模型嘴部
     await mouthControl(arraybuffer, audioContext, result.cleaned)
   } else {
+    useThinkingStore().answerException = true
+    useThinkingStore().resetAll()
     ElMessage.error('大模型的回复为空');
   }
   message.value = ''

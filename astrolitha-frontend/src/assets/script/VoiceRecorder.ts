@@ -1,6 +1,12 @@
 ﻿import {ref, watch} from 'vue'
 import axios from 'axios'
-import {useModelStore, useRecorderStore, useTalkBubbleStore, useUserTalkBubbleStore} from '@/store/Live2DStudioStore'
+import {
+    useModelStore,
+    useRecorderStore,
+    useTalkBubbleStore,
+    useThinkingStore,
+    useUserTalkBubbleStore
+} from '@/store/Live2DStudioStore'
 import { ElMessage } from 'element-plus'
 import {useApiStore} from "@/store/ApiStore";
 import audioBufferToWav from 'audiobuffer-to-wav';
@@ -86,6 +92,8 @@ export function VoiceRecorder() {
         if (chunks.value.length === 0) return
 
         recorderStore.waitingResponse = true
+        useThinkingStore().getThinkingProgressVisibleRef().value = true
+        useThinkingStore().thinking = true
 
         const floatData = flattenChunks()
         const buffer = audioContext.createBuffer(1, floatData.length, audioContext.sampleRate)
@@ -105,7 +113,6 @@ export function VoiceRecorder() {
                 useUserTalkBubbleStore().showBubble(res.data.message,5000)
                 // 文字调用LLM，不可以使用异步
                 const answer = await sendQuestion(res.data.message);
-                //
                 console.log("获得得回答是：" + answer)
                 if (answer.length > 0) {
                     // 处理回答中的控制符
@@ -120,20 +127,26 @@ export function VoiceRecorder() {
                     // console.log("处理英文得到：" + filteredAnswer)
                     // 文字转语音
                     const arraybuffer = await voiceGenerator(result.cleaned);
+                    useThinkingStore().thinkingCompleted = true
                     // 控制模型嘴部
                     await mouthControl(arraybuffer, returnAudioContext, result.cleaned)
                 } else {
+                    useThinkingStore().answerException = true
                     ElMessage.error('大模型的回复为空');
                 }
+                useThinkingStore().resetAll()
                 recorderStore.waitingResponse = false
             })
             .catch(err => {
                 console.error('上传失败', err)
-                recorderStore.isRecording = false
+                useThinkingStore().thinkingException = true
+                useThinkingStore().resetAll()
+                recorderStore.waitingResponse = false
             })
     }
 
     function stopRecording() {
+        recorderStore.isRecording = false
         workletNode.value?.disconnect()
         source.value?.disconnect()
         mediaStream.value?.getTracks().forEach(track => track.stop())

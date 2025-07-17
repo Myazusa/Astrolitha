@@ -244,3 +244,48 @@ export const useRecorderStore = defineStore('RecorderStore', () => {
         isRecording,waitingResponse,
     }
 })
+
+export const useThinkingStore = defineStore('ThinkingStore', () => {
+    const thinkingProgressVisible = ref(false);
+    const currentSession = ref<string>('')
+    const thinking = ref<boolean>(false)
+    const thinkingCompleted = ref<boolean>(false)
+    const thinkingException = ref<boolean>(false)
+    const answered = ref(false)
+    const answerException = ref(false)
+    const speechSynthesis = ref<boolean>(false)
+    const speechSynthesisException = ref<boolean>(false)
+    const progressStatus = ref('')
+
+    const resetAll = () =>{
+        setTimeout(() => {
+            currentSession.value = ''
+            thinking.value = false
+            thinkingException.value = false
+            answered.value = false
+            answerException.value = false
+            speechSynthesis.value = false
+            speechSynthesisException.value = false
+            thinkingCompleted.value = false
+            thinkingProgressVisible.value = false
+            progressStatus.value = ''
+        }, 1000)
+    }
+    const getThinkingProgressVisibleRef = () =>{
+        return thinkingProgressVisible
+    }
+
+    return{
+        resetAll,
+        getThinkingProgressVisibleRef,
+        thinking,
+        thinkingException,
+        answered,
+        currentSession,
+        speechSynthesis,
+        answerException,
+        speechSynthesisException,
+        thinkingCompleted,
+        progressStatus
+    }
+})

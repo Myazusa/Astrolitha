@@ -10,6 +10,7 @@ import Live2DStudioRightTopSide from "@/components/live2d-studio/Live2DStudioRig
 import Live2DStudioTalkBubble from "@/components/live2d-studio/Live2DStudioTalkBubble.vue";
 import Live2DStudioUserTalkBuble from "@/components/live2d-studio/Live2DStudioUserTalkBuble.vue";
 import Live2DStudioBottomChat from "@/components/live2d-studio/Live2DStudioBottomChat.vue";
+import Live2DStudioThinkingProgress from "@/components/live2d-studio/Live2DStudioThinkingProgress.vue";
 
 const sideButtonStateStore = useSideButtonStateStore();
 
@@ -35,6 +36,7 @@ const userTalkBubbleStore = useUserTalkBubbleStore();
     <Live2DStudioActionDialog />
     <Live2DStudioOptionDialog />
     <Live2DStudioRadioDialog />
+    <Live2DStudioThinkingProgress />
     <Live2DStudioBottomChat />
   </div>
 </template>
@@ -43,6 +45,9 @@ const userTalkBubbleStore = useUserTalkBubbleStore();
 .l2d-studio {
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   background-image: url('@/assets/image/l2d_studio_background.jpg');
   background-size: cover;
