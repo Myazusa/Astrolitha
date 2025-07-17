@@ -193,7 +193,10 @@ services:
       - /sys:/sys:ro
       - ./volumes/astrolitha/uploads:/app/uploads
       - ./volumes/astrolitha/application.yml:/app/application.yml
-
+    depends_on:
+      - "elasticsearch"
+      - "mysql"
+      - "standalone"
   astrolitha-frontend:
     image: crpi-1el5vzg9he29yp1k.cn-shanghai.personal.cr.aliyuncs.com/myadzusa/astrolitha-frontend:v1.0.0-beta
     container_name: astrolitha-frontend

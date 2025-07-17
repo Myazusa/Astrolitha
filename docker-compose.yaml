@@ -168,7 +168,7 @@ services:
       - "minio"
 
   elasticsearch:
-    image: elasticsearch-ch:9.0.3
+    image: myadzusa/elasticsearch-ch:9.0.3
     container_name: elasticsearch
     ports:
       - "9200:9200"
@@ -193,6 +193,10 @@ services:
       - /sys:/sys:ro
       - ./volumes/astrolitha/uploads:/app/uploads
       - ./volumes/astrolitha/application.yml:/app/application.yml
+    depends_on:
+      - "elasticsearch"
+      - "mysql"
+      - "standalone"
   astrolitha-frontend:
     image: myadzusa/astrolitha-frontend:v1.0.0-beta
     container_name: astrolitha-frontend
